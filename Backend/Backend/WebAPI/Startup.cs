@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.Extensions;
 
 namespace WebAPI
 {
@@ -26,6 +27,8 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddSwaggerExtension();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +49,8 @@ namespace WebAPI
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwaggerExtension();
         }
     }
 }
