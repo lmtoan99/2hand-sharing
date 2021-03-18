@@ -6,6 +6,6 @@ namespace Domain
 {
     public abstract class BaseEntity
     {
-        private int id;
+        public int Id { get; set; }
     }
 }

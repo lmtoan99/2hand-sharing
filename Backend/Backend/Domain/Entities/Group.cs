@@ -6,9 +6,9 @@ namespace Domain.Entities
 {
     class Group : BaseEntity
     {
-        private string GroupName;
-        private string Description;
-        private DateTime CreateDate;
-        private string Rules;
+        public string GroupName{get;set;}
+        public string Description{get;set;}
+        public DateTime CreateDate{get;set;}
+        public string Rules { get; set; }
     }
 }

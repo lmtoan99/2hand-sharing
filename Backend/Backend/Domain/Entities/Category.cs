@@ -6,6 +6,6 @@ namespace Domain.Entities
 {
     class Category : BaseEntity
     {
-        private string CategoryName;
+        public string CategoryName { get; set; }
     }
 }
