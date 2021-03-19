@@ -5,12 +5,13 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class Award : BaseEntity
+    public class Award : BaseEntity
     {
-        [ForeignKey("Account")]
-        public int AccountId { get; set; }
+        public int? AccountId { get; set; }
         public DateTime CreateTime { get; set; }
         public int DonateTime { get; set; }
-        public Account Account { get; set; }
+        [ForeignKey("AccountId")]
+        [InverseProperty("Awards")]
+        public virtual Account Account { get; set; }
     }
 }

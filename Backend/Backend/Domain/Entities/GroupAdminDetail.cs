@@ -5,14 +5,16 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class GroupAdminDetail : BaseEntity
+    public class GroupAdminDetail : BaseEntity
     {
-        [ForeignKey("Admin")]
         public int AdminId { get; set; }
-        [ForeignKey("Group")]
         public int GroupId{get;set;}
         public DateTime AppointDate{get;set;}
-        public Account Admin { get; set; }
-        public Group Group { get; set; }
+        [ForeignKey("AdminId")]
+        [InverseProperty("GroupAdminDetails")]
+        public virtual Account Admin { get; set; }
+        [ForeignKey("GroupId")]
+        [InverseProperty("GroupAdminDetails")]
+        public virtual Group Group { get; set; }
     }
 }

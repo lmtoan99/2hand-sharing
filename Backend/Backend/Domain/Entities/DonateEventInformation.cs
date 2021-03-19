@@ -5,14 +5,17 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class DonateEventInformation : BaseEntity
+    public class DonateEventInformation : BaseEntity
     {
-        [ForeignKey("Event")]
         public int EventId { get; set; }
-        [ForeignKey("Item")]
         public int ItemId{get;set;}
         public string Note{get;set;}
-        public Item Item { get; set; }
-        public Event Event { get; set; }
+        [ForeignKey("ItemId")]
+        [InverseProperty("DonateEventInformation")]
+        public virtual Item Item { get; set; }
+        [ForeignKey("EventId")]
+        [InverseProperty("DonateEventInformations")]
+        public virtual Event Event { get; set; }
+        public virtual ICollection<Assignment> Assignments { get; set; }
     }
 }

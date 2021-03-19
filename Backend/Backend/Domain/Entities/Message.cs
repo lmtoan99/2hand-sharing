@@ -5,15 +5,17 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class Message : BaseEntity
+    public class Message : BaseEntity
     {
         public string Content { get; set; }
         public int SendDate{get;set;}
-        [ForeignKey("SendFromAccount")]
         public int SendFromAccountId { get; set; }
-        [ForeignKey("SendToAccount")]
         public int SendToAccountId{get;set;}
-        public Account SendFromAccount { get; set; }
-        public Account SendToAccount { get; set; }
+        [ForeignKey("SendFromAccountId")]
+        [InverseProperty("MessageSends")]
+        public virtual Account SendFromAccount { get; set; }
+        [ForeignKey("SendToAccountId")]
+        [InverseProperty("MessageReceives")]
+        public virtual Account SendToAccount { get; set; }
     }
 }

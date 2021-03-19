@@ -5,16 +5,20 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class GroupPost : BaseEntity
+    public class GroupPost : BaseEntity
     {
         public string Content { get; set; }
         public DateTime PostTime{get;set;}
-        [ForeignKey("Group")]
         public int GroupId{get;set;}
-        [ForeignKey("PostByAccount")]
         public int PostByAccountId{get;set;}
         public int Visibility{get;set;}
-        public Group Group { get; set; }
-        public Account PostByAccount { get; set; }
+        [ForeignKey("GroupId")]
+        [InverseProperty("GroupPosts")]
+        public virtual Group Group { get; set; }
+        [ForeignKey("PostByAccountId")]
+        [InverseProperty("GroupPosts")]
+        public virtual Account PostByAccount { get; set; }
+        public virtual ICollection<GroupPostImageRelationship> GroupPostImageRelationships { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

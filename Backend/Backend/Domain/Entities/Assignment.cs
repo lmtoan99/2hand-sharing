@@ -5,18 +5,23 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class Assignment : BaseEntity
+    public class Assignment : BaseEntity
     {
         public DateTime AssignmentDate{get;set;}
         public DateTime ExpirationDate { get; set; }
         public int Status{get;set;}
         public string Note{get;set;}
         public int DonateEventInformationId{get;set;}
-        [ForeignKey("AssignedMemberAccount")]
         public int AssignedMemberId{get;set;}
-        [ForeignKey("AssignByAccount")]
         public int AssignByAccountId { get;set;}
-        public Account AssignByAccount { get; set; }
-        public Account AssignedMember { get; set; }
+        [ForeignKey("AssignByAccountId")]
+        [InverseProperty("AdminAssigns")]
+        public virtual Account AssignByAccount { get; set; }
+        [ForeignKey("AssignedMemberId")]
+        [InverseProperty("Assignments")]
+        public virtual Account AssignedMember { get; set; }
+        [ForeignKey("DonateEventInformationId")]
+        [InverseProperty("Assignments")]
+        public virtual DonateEventInformation DonateEventInformation { get; set; }
     }
 }

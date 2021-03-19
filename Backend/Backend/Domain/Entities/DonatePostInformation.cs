@@ -5,11 +5,13 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class DonatePostInformation : BaseEntity
+    public class DonatePostInformation : BaseEntity
     {
         public string Description { get; set; }
-        [ForeignKey("Item")]
         public int ItemId { get; set; }
-        public Item Item { get; set; }
+        [ForeignKey("ItemId")]
+        [InverseProperty("DonatePostInformation")]
+        public virtual Item Item { get; set; }
+        public virtual ICollection<ReceiveItemInformation> ReceiveItemInformations { get; set; }
     }
 }

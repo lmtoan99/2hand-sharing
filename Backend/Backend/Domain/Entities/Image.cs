@@ -5,8 +5,10 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class Image : BaseEntity
+    public class Image : BaseEntity
     {
         public string Url { get; set; }
+        public virtual GroupPostImageRelationship GroupPostImageRelationship { get; set; }
+        public virtual ItemImageRelationship ItemImageRelationship { get; set; }
     }
 }

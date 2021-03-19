@@ -5,14 +5,16 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class ReportAccount : BaseEntity
+    public class ReportAccount : BaseEntity
     {
         public string Content { get; set; }
-        [ForeignKey("ReportFromAccount")]
         public int ReportFromAccountId { get; set; }
-        [ForeignKey("ReportToAccount")]
         public int ReportToAccountId { get; set; }
-        public Account ReportFromAccount { get; set; }
-        public Account ReportToAccount { get; set; }
+        [ForeignKey("ReportFromAccountId")]
+        [InverseProperty("ReportSends")]
+        public virtual Account ReportFromAccount { get; set; }
+        [ForeignKey("ReportToAccountId")]
+        [InverseProperty("ReportReceives")]
+        public virtual Account ReportToAccount { get; set; }
     }
 }

@@ -5,13 +5,15 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    class ItemImageRelationship : BaseEntity
+    public class ItemImageRelationship : BaseEntity
     {
-        [ForeignKey("Image")]
         public int ImageId { get; set; }
-        [ForeignKey("Item")]
         public int ItemId { get; set; }
-        public Image Image { get; set; }
-        public Item Item { get; set; }
+        [ForeignKey("ImageId")]
+        [InverseProperty("ItemImageRelationship")]
+        public virtual Image Image { get; set; }
+        [ForeignKey("ItemId")]
+        [InverseProperty("ItemImageRelationships")]
+        public virtual Item Item { get; set; }
     }
 }
