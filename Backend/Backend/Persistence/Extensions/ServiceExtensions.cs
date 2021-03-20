@@ -24,9 +24,10 @@ namespace Persistence.Extensions
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
             services.AddTransient<IAccountRepositoryAsync, AccountRepositoryAsync>();
             services.AddTransient<ICategoryRepositoryAsync, CategoryRepositoryAsync>();
+            services.AddTransient<IItemRepositoryAsync, ItemRepositoryAsync>();
             #endregion
 
-            #region Repositories
+            #region ApplicationContext
             services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
             #endregion
         }

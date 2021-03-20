@@ -13,10 +13,6 @@ namespace WebAPI.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            if (HttpContext.User.Identity.Name != null)
-            {
-                Console.WriteLine("1"+HttpContext.User.Identity.Name);
-            }
             return Ok(await Mediator.Send(new GetAllCategoriesQuery()));
         }
     }

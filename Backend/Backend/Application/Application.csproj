@@ -9,7 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\AccountFeatures\Queries\" />
+    <Folder Include="Features\AccountsFeature\Queries\" />
+    <Folder Include="Features\DonatePostInformationFeatures\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

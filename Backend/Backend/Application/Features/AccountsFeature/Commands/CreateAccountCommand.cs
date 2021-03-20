@@ -21,20 +21,20 @@ namespace Application.Features.AccountFeatures.Commands
         public string Address { get; set; }
         public string Email { get; set; }
     }
-    public class CreateProductCommandHandler : IRequestHandler<CreateAccountCommand, Response<int>>
+    public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Response<int>>
     {
-        private readonly IAccountRepositoryAsync _productRepository;
+        private readonly IAccountRepositoryAsync _accountRepository;
         private readonly IMapper _mapper;
-        public CreateProductCommandHandler(IAccountRepositoryAsync productRepository, IMapper mapper)
+        public CreateAccountCommandHandler(IAccountRepositoryAsync accountRepository, IMapper mapper)
         {
-            _productRepository = productRepository;
+            _accountRepository = accountRepository;
             _mapper = mapper;
         }
 
         public async Task<Response<int>> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
         {
             var product = _mapper.Map<Account>(request);
-            await _productRepository.AddAsync(product);
+            await _accountRepository.AddAsync(product);
             return new Response<int>(product.Id);
         }
     }
