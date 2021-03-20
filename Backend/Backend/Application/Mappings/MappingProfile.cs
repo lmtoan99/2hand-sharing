@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Account;
 using Application.Features.AccountFeatures.Commands;
+using Application.Features.CategoryFeatures.Queries.GetAllCategories;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -16,6 +17,7 @@ namespace Application.Mappings
             CreateMap<RegisterRequest, Account>();
             CreateMap<Account, RegisterResponse>();
             CreateMap<Account, AuthenticateResponse>();
+            CreateMap<Category, CategoryViewModel>();
         }
     }
 }

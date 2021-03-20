@@ -99,24 +99,22 @@ namespace Identity.Service
 
         private JwtSecurityToken GenerateJWToken(Account account)
         {
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, account.Username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, account.Email),
-                new Claim("uid", account.Id.ToString())
-            };
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+            //Create a List of Claims, Keep claims name short    
+            var permClaims = new List<Claim>();
+            permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+            permClaims.Add(new Claim("userid", account.Id.ToString()));
+            permClaims.Add(new Claim("username", account.Username));
 
-            var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _jwtSettings.Issuer,
-                audience: _jwtSettings.Audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
-                signingCredentials: signingCredentials);
-            return jwtSecurityToken;
+            //Create Security Token object by giving required parameters    
+            var token = new JwtSecurityToken(_jwtSettings.Issuer, //Issure    
+                            _jwtSettings.Audience,  //Audience    
+                            permClaims,
+                            expires: DateTime.Now.AddMinutes(_jwtSettings.DurationInMinutes),
+                            signingCredentials: credentials);
+            return token;
         }
     }
 }
