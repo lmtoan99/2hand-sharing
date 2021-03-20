@@ -12,6 +12,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.Extensions;
 using Persistence.Extensions;
+using Application.Extensions;
+using Identity.Extensions;
+
 namespace WebAPI
 {
     public class Startup
@@ -31,6 +34,10 @@ namespace WebAPI
             services.AddSwaggerExtension();
 
             services.AddPersistenceInfrastructure(Configuration);
+
+            services.AddApplicationLayer();
+
+            services.AddIdentityInfrastructure(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

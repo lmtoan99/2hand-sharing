@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
-using Application.Interfaces.Contexts;
+﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Persistence.Context
+namespace Application.Interfaces.Contexts
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    public interface IApplicationDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<Award> Awards { get; set; }
@@ -27,5 +30,6 @@ namespace Persistence.Context
         public DbSet<Message> Messages { get; set; }
         public DbSet<ReceiveItemInformation> ReceiveItemInformation { get; set; }
         public DbSet<ReportAccount> ReportAccounts { get; set; }
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

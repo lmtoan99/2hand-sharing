@@ -1,7 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Application.Interfaces;
+using Application.Interfaces.Contexts;
+using Application.Interfaces.Repositories;
+using Domain.Settings;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Context;
+using Persistence.Repositories;
+using Persistence.Repositories.EntityRepositories;
 
 namespace Persistence.Extensions
 {
@@ -13,6 +19,15 @@ namespace Persistence.Extensions
                options.UseLazyLoadingProxies().UseMySql(
                    configuration.GetConnectionString("DefaultConnection"),
                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+            #region Repositories
+            services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
+            services.AddTransient<IAccountRepositoryAsync, AccountRepositoryAsync>();
+            #endregion
+
+            #region Repositories
+            services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
+            #endregion
         }
     }
 }

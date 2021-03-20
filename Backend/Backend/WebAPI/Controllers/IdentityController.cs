@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.DTOs.Account;
+using Application.Interfaces.Service;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +12,22 @@ namespace WebAPI.Controllers
     [ApiController]
     public class IdentityController : ControllerBase
     {
-        public IdentityController()
+        private readonly IAccountService _service;
+        public IdentityController(IAccountService service)
         {
+            this._service = service;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync()
+        public async Task<IActionResult> RegisterAsync([FromBody]RegisterRequest request)
         {
-            return Ok();
+            return Ok(await _service.RegisterAsync(request));
         }
 
         [HttpPost("authenticate")]
-        public async Task<IActionResult> AuthenticateAsync()
+        public async Task<IActionResult> AuthenticateAsync([FromBody]AuthenticateRequest request)
         {
-            return Ok();
+            return Ok(await _service.AuthenticateAsync(request));
         }
     }
 }
