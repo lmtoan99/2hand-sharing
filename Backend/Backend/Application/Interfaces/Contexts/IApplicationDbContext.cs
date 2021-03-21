@@ -16,7 +16,6 @@ namespace Application.Interfaces.Contexts
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<DonateEventInformation> DonateEventInformation { get; set; }
-        public DbSet<DonatePostInformation> DonatePostInformation { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupAdminDetail> GroupAdminDetails { get; set; }

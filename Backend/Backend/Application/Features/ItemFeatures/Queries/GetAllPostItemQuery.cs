@@ -28,7 +28,7 @@ namespace Application.Features.ItemFeatures.Queries
         public async Task<PagedResponse<IEnumerable<GetAllItemViewModel>>> Handle(GetAllPostItemQuery request, CancellationToken cancellationToken)
         {
             var validFilter = _mapper.Map<GetAllItemsParameter>(request);
-            var item = await _itemRepository.GetPagedReponseAsync(validFilter.PageNumber, validFilter.PageSize);
+            var item = await _itemRepository.GetAllPostItemsAsync(validFilter.PageNumber, validFilter.PageSize);
             var itemViewModel = _mapper.Map<IEnumerable<GetAllItemViewModel>>(item);
             return new PagedResponse<IEnumerable<GetAllItemViewModel>>(itemViewModel, validFilter.PageNumber, validFilter.PageSize);
         }

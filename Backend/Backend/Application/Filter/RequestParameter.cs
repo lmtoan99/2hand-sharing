@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Application.Filter
+﻿namespace Application.Filter
 {
     public class RequestParameter
     {

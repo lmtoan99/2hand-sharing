@@ -2,9 +2,11 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
-using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using Application.Enums;
 
 namespace Persistence.Repositories.EntityRepositories
 {
@@ -14,6 +16,16 @@ namespace Persistence.Repositories.EntityRepositories
         public ItemRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
             _item = dbContext.Set<Item>();
+        }
+
+        public async Task<IReadOnlyList<Item>> GetAllPostItemsAsync(int pageNumber, int pageSize)
+        {
+            return await _item
+                .Where(i => i.DonateType == (int)eDonateType.DonatePost)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

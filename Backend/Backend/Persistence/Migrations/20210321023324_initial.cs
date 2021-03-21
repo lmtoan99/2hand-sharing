@@ -156,7 +156,9 @@ namespace Persistence.Migrations
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     DonateAccountId = table.Column<int>(type: "int", nullable: false),
                     PostTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Status = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    Status = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DonateType = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -283,26 +285,6 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DonatePostInformation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Description = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    ItemId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DonatePostInformation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DonatePostInformation_Items_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "Items",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ItemImageRelationships",
                 columns: table => new
                 {
@@ -350,6 +332,35 @@ namespace Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_ItemReports_Items_ReportToItemId",
                         column: x => x.ReportToItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReceiveItemInformation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ReceiveStatus = table.Column<int>(type: "int", nullable: false),
+                    Thanks = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    ReceiveReason = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    ItemId = table.Column<int>(type: "int", nullable: false),
+                    ReceiverId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReceiveItemInformation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReceiveItemInformation_Accounts_ReceiverId",
+                        column: x => x.ReceiverId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReceiveItemInformation_Items_ItemId",
+                        column: x => x.ItemId,
                         principalTable: "Items",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -438,35 +449,6 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReceiveItemInformation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ReceiveStatus = table.Column<int>(type: "int", nullable: false),
-                    Thanks = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    ReceiveReason = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    DonatePostInformationId = table.Column<int>(type: "int", nullable: false),
-                    ReceiverId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReceiveItemInformation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ReceiveItemInformation_Accounts_ReceiverId",
-                        column: x => x.ReceiverId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ReceiveItemInformation_DonatePostInformation_DonatePostInfor~",
-                        column: x => x.DonatePostInformationId,
-                        principalTable: "DonatePostInformation",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Assignments",
                 columns: table => new
                 {
@@ -541,12 +523,6 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_DonateEventInformation_ItemId",
                 table: "DonateEventInformation",
-                column: "ItemId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DonatePostInformation_ItemId",
-                table: "DonatePostInformation",
                 column: "ItemId",
                 unique: true);
 
@@ -638,9 +614,9 @@ namespace Persistence.Migrations
                 column: "SendToAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReceiveItemInformation_DonatePostInformationId",
+                name: "IX_ReceiveItemInformation_ItemId",
                 table: "ReceiveItemInformation",
-                column: "DonatePostInformationId");
+                column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReceiveItemInformation_ReceiverId",
@@ -701,9 +677,6 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Images");
-
-            migrationBuilder.DropTable(
-                name: "DonatePostInformation");
 
             migrationBuilder.DropTable(
                 name: "Events");

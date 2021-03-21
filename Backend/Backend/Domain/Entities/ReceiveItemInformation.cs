@@ -10,11 +10,11 @@ namespace Domain.Entities
         public int ReceiveStatus { get; set; }
         public string Thanks { get; set; }
         public string ReceiveReason { get; set; }
-        public int DonatePostInformationId { get; set; }
+        public int ItemId { get; set; }
         public int ReceiverId { get; set; }
-        [ForeignKey("DonatePostInformationId")]
+        [ForeignKey("ItemId")]
         [InverseProperty("ReceiveItemInformations")]
-        public virtual DonatePostInformation DonatePostInformation { get; set; }
+        public virtual Item Items { get; set; }
         [ForeignKey("ReceiverId")]
         [InverseProperty("ReceiveItemInformations")]
         public virtual Account Receiver { get; set; }

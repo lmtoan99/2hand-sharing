@@ -13,6 +13,8 @@ namespace Domain.Entities
         public int DonateAccountId { get; set; }
         public DateTime PostTime { get; set; }
         public bool Status { get; set; }
+        public int DonateType { get; set; }
+        public string Description { get; set; }
         [ForeignKey("CategoryId")]
         [InverseProperty("Items")]
         public virtual Category Category { get; set; }
@@ -21,7 +23,7 @@ namespace Domain.Entities
         public virtual Account DonateAccount { get; set; }
         public virtual DonateEventInformation DonateEventInformation { get; set; }
         public virtual ICollection<ItemReport> ItemReports { get; set; }
-        public virtual DonatePostInformation DonatePostInformation { get; set; }
+        public virtual ICollection<ReceiveItemInformation> ReceiveItemInformations { get; set; }
         public virtual ICollection<ItemImageRelationship> ItemImageRelationships { get; set; }
 
     }

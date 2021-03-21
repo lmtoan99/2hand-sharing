@@ -15,6 +15,7 @@ namespace WebAPI.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter)
         {
+            if (filter==null)return Ok(await Mediator.Send(new GetAllPostItemQuery()));
             return Ok(await Mediator.Send(new GetAllPostItemQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
         }
     }

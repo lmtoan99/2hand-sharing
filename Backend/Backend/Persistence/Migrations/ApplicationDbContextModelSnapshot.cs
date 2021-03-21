@@ -178,26 +178,6 @@ namespace Persistence.Migrations
                     b.ToTable("DonateEventInformation");
                 });
 
-            modelBuilder.Entity("Domain.Entities.DonatePostInformation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ItemId")
-                        .IsUnique();
-
-                    b.ToTable("DonatePostInformation");
-                });
-
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
                     b.Property<int>("Id")
@@ -375,7 +355,13 @@ namespace Persistence.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<int>("DonateAccountId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DonateType")
                         .HasColumnType("int");
 
                     b.Property<string>("ItemName")
@@ -478,7 +464,7 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("DonatePostInformationId")
+                    b.Property<int>("ItemId")
                         .HasColumnType("int");
 
                     b.Property<string>("ReceiveReason")
@@ -495,7 +481,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DonatePostInformationId");
+                    b.HasIndex("ItemId");
 
                     b.HasIndex("ReceiverId");
 
@@ -594,17 +580,6 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Event");
-
-                    b.Navigation("Item");
-                });
-
-            modelBuilder.Entity("Domain.Entities.DonatePostInformation", b =>
-                {
-                    b.HasOne("Domain.Entities.Item", "Item")
-                        .WithOne("DonatePostInformation")
-                        .HasForeignKey("Domain.Entities.DonatePostInformation", "ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Item");
                 });
@@ -774,9 +749,9 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.ReceiveItemInformation", b =>
                 {
-                    b.HasOne("Domain.Entities.DonatePostInformation", "DonatePostInformation")
+                    b.HasOne("Domain.Entities.Item", "Items")
                         .WithMany("ReceiveItemInformations")
-                        .HasForeignKey("DonatePostInformationId")
+                        .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -786,7 +761,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DonatePostInformation");
+                    b.Navigation("Items");
 
                     b.Navigation("Receiver");
                 });
@@ -851,11 +826,6 @@ namespace Persistence.Migrations
                     b.Navigation("Assignments");
                 });
 
-            modelBuilder.Entity("Domain.Entities.DonatePostInformation", b =>
-                {
-                    b.Navigation("ReceiveItemInformations");
-                });
-
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
                     b.Navigation("DonateEventInformations");
@@ -890,11 +860,11 @@ namespace Persistence.Migrations
                 {
                     b.Navigation("DonateEventInformation");
 
-                    b.Navigation("DonatePostInformation");
-
                     b.Navigation("ItemImageRelationships");
 
                     b.Navigation("ItemReports");
+
+                    b.Navigation("ReceiveItemInformations");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
-﻿using Application.Filter;
+﻿using Application.Enums;
+using Application.Filter;
 
 namespace Application.Features.ItemFeatures.Queries
 {
