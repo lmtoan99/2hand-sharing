@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Folder Include="Features\AccountsFeature\Queries\" />
-    <Folder Include="Features\DonatePostInformationFeatures\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

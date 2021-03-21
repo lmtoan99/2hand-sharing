@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Application.Enums;
+using System;
 
 namespace Persistence.Repositories.EntityRepositories
 {
@@ -24,7 +25,6 @@ namespace Persistence.Repositories.EntityRepositories
                 .Where(i => i.DonateType == (int)eDonateType.DonatePost)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .AsNoTracking()
                 .ToListAsync();
         }
     }
