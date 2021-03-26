@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Account;
 using Application.Features.AccountFeatures.Commands;
 using Application.Features.CategoryFeatures.Queries.GetAllCategories;
+using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
 using AutoMapper;
 using Domain.Entities;
@@ -29,6 +30,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.Description, o => o.MapFrom(source => source.Description))
                 .ForMember(dest => dest.PostTime, o => o.MapFrom(source => source.PostTime))
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.Url));
+            CreateMap<PostItemCommand, Item>();
         }
     }
 }

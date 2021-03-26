@@ -1,4 +1,7 @@
-﻿using Application.Features.ItemFeatures.Queries;
+﻿using Application.DTOs.Item;
+using Application.Features.ItemFeatures.Commands;
+using Application.Features.ItemFeatures.Queries;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,6 +20,20 @@ namespace WebAPI.Controllers.v1
         {
             if (filter==null)return Ok(await Mediator.Send(new GetAllPostItemQuery()));
             return Ok(await Mediator.Send(new GetAllPostItemQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] PostItemRequest item)
+        {
+            Response<int> itemResponse = await Mediator.Send(new PostItemCommand(){
+                ItemName = item.ItemName,
+                ReceiveAddress = item.ReceiveAddress,
+                CategoryId = item.CategoryId,
+                DonateAccountId = int.Parse(HttpContext.User.FindFirst("userid").Value),
+                Description = item.Description
+                });
+            if (itemResponse.Errors != null) return Ok(itemResponse);
+
+            return Ok(itemResponse);
         }
     }
 }

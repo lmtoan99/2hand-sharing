@@ -33,9 +33,9 @@ namespace Application.Features.AccountFeatures.Commands
 
         public async Task<Response<int>> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
         {
-            var product = _mapper.Map<Account>(request);
-            await _accountRepository.AddAsync(product);
-            return new Response<int>(product.Id);
+            var account = _mapper.Map<Account>(request);
+            await _accountRepository.AddAsync(account);
+            return new Response<int>(account.Id);
         }
     }
 }

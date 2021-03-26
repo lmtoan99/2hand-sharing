@@ -12,7 +12,7 @@ namespace Domain.Entities
         public int CategoryId { get; set; }
         public int DonateAccountId { get; set; }
         public DateTime PostTime { get; set; }
-        public bool Status { get; set; }
+        public int Status { get; set; }
         public int DonateType { get; set; }
         public string Description { get; set; }
         [ForeignKey("CategoryId")]

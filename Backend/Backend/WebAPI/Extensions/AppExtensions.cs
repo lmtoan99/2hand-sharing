@@ -9,7 +9,7 @@ namespace WebAPI.Extensions
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnionArchitecture");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "2HandSharing");
             });
         }
     }
