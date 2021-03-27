@@ -24,12 +24,13 @@ namespace WebAPI.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PostItemRequest item)
         {
-            Response<int> itemResponse = await Mediator.Send(new PostItemCommand(){
+            Response<PostItemResponse> itemResponse = await Mediator.Send(new PostItemCommand(){
                 ItemName = item.ItemName,
                 ReceiveAddress = item.ReceiveAddress,
                 CategoryId = item.CategoryId,
                 DonateAccountId = int.Parse(HttpContext.User.FindFirst("userid").Value),
-                Description = item.Description
+                Description = item.Description,
+                ImageNumber = item.ImageNumber
                 });
             if (itemResponse.Errors != null) return Ok(itemResponse);
 

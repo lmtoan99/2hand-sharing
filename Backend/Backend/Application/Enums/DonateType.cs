@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Application.Enums
 {
-    public enum eDonateType
+    public enum EDonateType
     {
-        DonatePost = 0,
-        DonateEvent = 1
+        DONATE_POST = 0,
+        DONATE_EVENT = 1
     }
 }

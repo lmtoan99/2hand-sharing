@@ -22,7 +22,7 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<IReadOnlyList<Item>> GetAllPostItemsAsync(int pageNumber, int pageSize)
         {
             return await _item
-                .Where(i => i.DonateType == (int)eDonateType.DonatePost)
+                .Where(i => i.DonateType == (int)EDonateType.DONATE_POST)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

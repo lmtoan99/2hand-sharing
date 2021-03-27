@@ -5,8 +5,7 @@ using System.Text;
 
 namespace Application.Interfaces.Repositories
 {
-    public interface IImageRepository : IGenericRepositoryAsync<Image>
+    public interface IItemImageRelationshipRepositoryAsync : IGenericRepositoryAsync<ItemImageRelationship>
     {
-        public string GenerateV4UploadSignedUrl(string fileName);
     }
 }

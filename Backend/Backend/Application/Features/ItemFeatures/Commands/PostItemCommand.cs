@@ -1,4 +1,5 @@
-﻿using Application.Enums;
+﻿using Application.DTOs.Item;
+using Application.Enums;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
@@ -12,31 +13,51 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ItemFeatures.Commands
 {
-    public partial class PostItemCommand : IRequest<Response<int>>
+    public partial class PostItemCommand : IRequest<Response<PostItemResponse>>
     {
         public string ItemName { get; set; }
         public string ReceiveAddress { get; set; }
         public int CategoryId { get; set; }
         public int DonateAccountId { get; set; }
         public string Description { get; set; }
+        public int ImageNumber { get; set; }
     }
-    public class PostItemCommandHandle : IRequestHandler<PostItemCommand, Response<int>>
+    public class PostItemCommandHandle : IRequestHandler<PostItemCommand, Response<PostItemResponse>>
     {
         private readonly IItemRepositoryAsync _itemRepository;
+        private readonly IImageRepository _imageRepository;
+        private readonly IItemImageRelationshipRepositoryAsync _itemImageRelationshipRepository;
         private readonly IMapper _mapper;
-        public PostItemCommandHandle(IItemRepositoryAsync itemRepository, IMapper mapper)
+        public PostItemCommandHandle(IItemRepositoryAsync itemRepository, IImageRepository imageRepository, IItemImageRelationshipRepositoryAsync itemImageRelationshipRepository, IMapper mapper)
         {
+            _imageRepository = imageRepository;
             _itemRepository = itemRepository;
+            _itemImageRelationshipRepository = itemImageRelationshipRepository;
             _mapper = mapper;
         }
-        public async Task<Response<int>> Handle(PostItemCommand request, CancellationToken cancellationToken)
+        public async Task<Response<PostItemResponse>> Handle(PostItemCommand request, CancellationToken cancellationToken)
         {
             var item = _mapper.Map<Item>(request);
-            item.DonateType = (int)eDonateType.DonatePost;
+            item.DonateType = (int)EDonateType.DONATE_POST;
             item.Status = (int)ItemStatus.NOT_YET;
             item.PostTime = DateTime.Now;
             await _itemRepository.AddAsync(item);
-            return new Response<int>(item.Id);
+
+            var response = new PostItemResponse() { Id = item.Id };
+            response.ImageUploads = new List<PostItemResponse.ImageUpload>();
+            for (int i = 0; i < request.ImageNumber;i++)
+            {
+                string fileName = Guid.NewGuid().ToString();
+                var image = new Image { Url = fileName };
+                await _imageRepository.AddAsync(image);
+
+                _itemImageRelationshipRepository.AddAsync(new ItemImageRelationship { ImageId = image.Id, ItemId = item.Id });
+
+                string signUrl = _imageRepository.GenerateV4UploadSignedUrl(fileName);
+                response.ImageUploads.Add(new PostItemResponse.ImageUpload { ImageName = fileName, PresignUrl = signUrl });
+            }
+
+            return new Response<PostItemResponse>(response);
         }
     }
 }
