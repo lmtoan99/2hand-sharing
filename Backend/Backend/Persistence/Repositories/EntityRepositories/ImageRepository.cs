@@ -42,5 +42,10 @@ namespace Persistence.Repositories.EntityRepositories
             string url = urlSigner.Sign(template, options);
             return url;
         }
+        public string GenerateV4SignedReadUrl(string fileName)
+        {
+            string url = string.Format(@"https://storage.googleapis.com/{0}/{1}",bucketName, fileName);
+            return url;
+        }
     }
 }

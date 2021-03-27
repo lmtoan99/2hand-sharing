@@ -18,10 +18,12 @@ namespace Application.Features.ItemFeatures.Queries
     public class GetAllItemsQueryHandler : IRequestHandler<GetAllPostItemQuery, PagedResponse<IEnumerable<GetAllItemViewModel>>>
     {
         private readonly IItemRepositoryAsync _itemRepository;
+        private readonly IImageRepository _imageRepository;
         private readonly IMapper _mapper;
-        public GetAllItemsQueryHandler(IItemRepositoryAsync itemRepository, IMapper mapper)
+        public GetAllItemsQueryHandler(IItemRepositoryAsync itemRepository, IImageRepository imageRepository, IMapper mapper)
         {
             _itemRepository = itemRepository;
+            _imageRepository = imageRepository;
             _mapper = mapper;
         }
 
@@ -29,7 +31,13 @@ namespace Application.Features.ItemFeatures.Queries
         {
             var validFilter = _mapper.Map<GetAllItemsParameter>(request);
             var item = await _itemRepository.GetAllPostItemsAsync(validFilter.PageNumber, validFilter.PageSize);
-            var itemViewModel = _mapper.Map<IEnumerable<GetAllItemViewModel>>(item);
+            var itemViewModel = _mapper.Map<List<GetAllItemViewModel>>(item);
+
+            itemViewModel.ForEach(item =>
+            {
+                item.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(item.ImageUrl);
+            });
+
             return new PagedResponse<IEnumerable<GetAllItemViewModel>>(itemViewModel, validFilter.PageNumber, validFilter.PageSize);
         }
     }

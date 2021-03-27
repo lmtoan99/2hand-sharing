@@ -7,7 +7,7 @@ namespace Domain.Entities
 {
     public class Image : BaseEntity
     {
-        public string Url { get; set; }
+        public string FileName { get; set; }
         public virtual GroupPostImageRelationship GroupPostImageRelationship { get; set; }
         public virtual ItemImageRelationship ItemImageRelationship { get; set; }
     }

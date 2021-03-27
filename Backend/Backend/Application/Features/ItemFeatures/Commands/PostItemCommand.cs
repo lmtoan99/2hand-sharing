@@ -48,7 +48,7 @@ namespace Application.Features.ItemFeatures.Commands
             for (int i = 0; i < request.ImageNumber;i++)
             {
                 string fileName = Guid.NewGuid().ToString();
-                var image = new Image { Url = fileName };
+                var image = new Image { FileName = fileName };
                 await _imageRepository.AddAsync(image);
 
                 _itemImageRelationshipRepository.AddAsync(new ItemImageRelationship { ImageId = image.Id, ItemId = item.Id });
