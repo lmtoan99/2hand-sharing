@@ -15,6 +15,7 @@ using Persistence.Extensions;
 using Application.Extensions;
 using Identity.Extensions;
 using Domain.Settings;
+using Infrastructure.Shared;
 
 namespace WebAPI
 {
@@ -48,8 +49,9 @@ namespace WebAPI
             services.AddIdentityInfrastructure(Configuration);
 
             services.AddOptions();                                         // Kích hoạt Options
-            var mailsettings = Configuration.GetSection("MailSettings");  // đọc config
-            services.Configure<MailSettings>(mailsettings);                // đăng ký để Inject
+
+            services.AddSharedInfrastructure(Configuration);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

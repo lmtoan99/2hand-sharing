@@ -29,11 +29,12 @@ namespace Identity.Service
         private readonly JWTSettings _jwtSettings;
         private static Random random = new Random();
         private readonly IEmailService _emailService;
-        public AccountService(IApplicationDbContext dbContext, IMapper mapper, IOptions<JWTSettings> jwtSettings)
+        public AccountService(IApplicationDbContext dbContext, IMapper mapper,IEmailService emailService, IOptions<JWTSettings> jwtSettings)
         {
             this._dbContext = dbContext;
             _account = dbContext.Accounts;
             _mapper = mapper;
+            _emailService = emailService;
             _jwtSettings = jwtSettings.Value;
         }
         
@@ -128,7 +129,7 @@ namespace Identity.Service
 
         public async Task ForgotPassword(ForgotPasswordRequest request, string origin)
         {           
-            var userWithSameEmail = await _account.Where(a => a.Email.Equals(request.Email)).FirstOrDefaultAsync();
+            var userWithSameEmail = _account.Where(a => a.Email.Equals(request.Email)).FirstOrDefault();
 
             // always return ok response to prevent email enumeration
             if (userWithSameEmail == null) return;
