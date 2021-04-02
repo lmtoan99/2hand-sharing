@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +14,8 @@ using WebAPI.Extensions;
 using Persistence.Extensions;
 using Application.Extensions;
 using Identity.Extensions;
+using Domain.Settings;
+using Shared;
 
 namespace WebAPI
 {
@@ -46,6 +48,11 @@ namespace WebAPI
             services.AddApplicationLayer();
 
             services.AddIdentityInfrastructure(Configuration);
+
+            services.AddOptions();                                         // Kích hoạt Options
+
+            services.AddSharedInfrastructure(Configuration);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

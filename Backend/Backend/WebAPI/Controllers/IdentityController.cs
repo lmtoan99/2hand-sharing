@@ -29,5 +29,11 @@ namespace WebAPI.Controllers
         {
             return Ok(await _service.AuthenticateAsync(request));
         }
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
+        {
+            await _service.ForgotPassword(model, Request.Headers["origin"]);
+            return Ok();
+        }
     }
 }

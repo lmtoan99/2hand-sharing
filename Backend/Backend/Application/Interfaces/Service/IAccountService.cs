@@ -12,5 +12,9 @@ namespace Application.Interfaces.Service
         Task<Response<RegisterResponse>> RegisterAsync(RegisterRequest request);
         public Task<Response<AuthenticateResponse>> AuthenticateAsync(AuthenticateRequest request);
 
+        
+        Task ForgotPassword(ForgotPasswordRequest model, string origin);
+        Task<Response<string>> ResetPassword(ResetPasswordRequest model);
+
     }
 }
