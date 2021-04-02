@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using WebAPI.Middlewares;
 
 namespace WebAPI.Extensions
 {
@@ -11,6 +12,11 @@ namespace WebAPI.Extensions
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "2HandSharing");
             });
+        }
+
+        public static void UseErrorHandlingMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ErrorHandlerMiddleware>();
         }
     }
 }
