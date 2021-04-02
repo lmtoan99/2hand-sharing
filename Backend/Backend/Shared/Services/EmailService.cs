@@ -11,7 +11,7 @@ using MimeKit;
 using System;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Shared.Services
+namespace Shared.Services
 {
     public class EmailService : IEmailService
     {

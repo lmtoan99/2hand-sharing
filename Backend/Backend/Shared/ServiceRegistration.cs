@@ -1,11 +1,11 @@
 ﻿using Application.Interfaces;
 using Application.Interfaces.Service;
 using Domain.Settings;
-using Infrastructure.Shared.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Services;
 
-namespace Infrastructure.Shared
+namespace Shared
 {
     public static class ServiceRegistration
     {
