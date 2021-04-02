@@ -74,6 +74,8 @@ namespace WebAPI
 
             app.UseRouting();
 
+            app.UseErrorHandlingMiddleware();
+
             app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
@@ -84,8 +86,6 @@ namespace WebAPI
             });
 
             app.UseSwaggerExtension();
-
-            app.UseErrorHandlingMiddleware();
         }
     }
 }
