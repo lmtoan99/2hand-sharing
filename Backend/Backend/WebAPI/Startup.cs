@@ -15,7 +15,7 @@ using Persistence.Extensions;
 using Application.Extensions;
 using Identity.Extensions;
 using Domain.Settings;
-using Infrastructure.Shared;
+using Shared;
 
 namespace WebAPI
 {
