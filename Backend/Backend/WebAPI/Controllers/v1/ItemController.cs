@@ -36,5 +36,11 @@ namespace WebAPI.Controllers.v1
 
             return Ok(itemResponse);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
+        }
     }
 }

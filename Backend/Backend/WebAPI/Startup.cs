@@ -39,7 +39,8 @@ namespace WebAPI
                        .AllowAnyHeader();
             }));
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(OptionsBuilderConfigurationExtensions =>
+            OptionsBuilderConfigurationExtensions.SerializerSettings.ReferenceLoopHandling=Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSwaggerExtension();
 
