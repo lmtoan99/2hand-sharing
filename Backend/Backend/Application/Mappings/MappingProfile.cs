@@ -23,7 +23,9 @@ namespace Application.Mappings
             CreateMap<Category, CategoryViewModel>();
             CreateMap<GetAllPostItemQuery, GetAllItemsParameter>();
             CreateMap<Item, GetAllItemViewModel>()
-                .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName));
+                .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
+                .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
+                    source.DonateAccount.FullName));
             CreateMap<PostItemCommand, Item>();
         }
     }
