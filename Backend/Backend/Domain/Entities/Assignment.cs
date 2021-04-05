@@ -16,10 +16,10 @@ namespace Domain.Entities
         public int AssignByAccountId { get;set;}
         [ForeignKey("AssignByAccountId")]
         [InverseProperty("AdminAssigns")]
-        public virtual Account AssignByAccount { get; set; }
+        public virtual User AssignByAccount { get; set; }
         [ForeignKey("AssignedMemberId")]
         [InverseProperty("Assignments")]
-        public virtual Account AssignedMember { get; set; }
+        public virtual User AssignedMember { get; set; }
         [ForeignKey("DonateEventInformationId")]
         [InverseProperty("Assignments")]
         public virtual DonateEventInformation DonateEventInformation { get; set; }

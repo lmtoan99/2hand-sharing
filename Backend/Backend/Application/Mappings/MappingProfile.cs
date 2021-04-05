@@ -16,10 +16,10 @@ namespace Application.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<CreateAccountCommand, Account>();
-            CreateMap<RegisterRequest, Account>();
-            CreateMap<Account, RegisterResponse>();
-            CreateMap<Account, AuthenticateResponse>();
+            CreateMap<CreateAccountCommand, User>();
+            CreateMap<RegisterRequest, User>();
+            CreateMap<User, RegisterResponse>();
+            CreateMap<User, AuthenticateResponse>();
             CreateMap<Category, CategoryViewModel>();
             CreateMap<GetAllPostItemQuery, GetAllItemsParameter>();
             CreateMap<Item, GetAllItemViewModel>()

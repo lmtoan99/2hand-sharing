@@ -13,9 +13,9 @@ namespace Domain.Entities
         public int SendToAccountId{get;set;}
         [ForeignKey("SendFromAccountId")]
         [InverseProperty("MessageSends")]
-        public virtual Account SendFromAccount { get; set; }
+        public virtual User SendFromAccount { get; set; }
         [ForeignKey("SendToAccountId")]
         [InverseProperty("MessageReceives")]
-        public virtual Account SendToAccount { get; set; }
+        public virtual User SendToAccount { get; set; }
     }
 }

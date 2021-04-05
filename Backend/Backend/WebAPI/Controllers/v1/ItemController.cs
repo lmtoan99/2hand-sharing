@@ -28,11 +28,10 @@ namespace WebAPI.Controllers.v1
                 ItemName = item.ItemName,
                 ReceiveAddress = item.ReceiveAddress,
                 CategoryId = item.CategoryId,
-                DonateAccountId = int.Parse(HttpContext.User.FindFirst("userid").Value),
+                DonateAccountId = int.Parse(HttpContext.User.FindFirst("uid").Value),
                 Description = item.Description,
                 ImageNumber = item.ImageNumber
                 });
-            if (itemResponse.Errors != null) return Ok(itemResponse);
 
             return Ok(itemResponse);
         }

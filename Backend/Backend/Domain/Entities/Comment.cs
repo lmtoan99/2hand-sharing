@@ -13,7 +13,7 @@ namespace Domain.Entities
         public int PostId { get; set; }
         [ForeignKey("PostByAccountId")]
         [InverseProperty("Comments")]
-        public virtual Account PostByAccount { get; set; }
+        public virtual User PostByAccount { get; set; }
         [ForeignKey("PostId")]
         [InverseProperty("Comments")]
         public virtual GroupPost Post { get; set; }

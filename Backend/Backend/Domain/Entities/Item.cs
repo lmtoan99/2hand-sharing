@@ -20,7 +20,7 @@ namespace Domain.Entities
         public virtual Category Category { get; set; }
         [ForeignKey("DonateAccountId")]
         [InverseProperty("DonateItems")]
-        public virtual Account DonateAccount { get; set; }
+        public virtual User DonateAccount { get; set; }
         public virtual DonateEventInformation DonateEventInformation { get; set; }
         public virtual ICollection<ItemReport> ItemReports { get; set; }
         public virtual ICollection<ReceiveItemInformation> ReceiveItemInformations { get; set; }

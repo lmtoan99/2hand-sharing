@@ -10,7 +10,7 @@ namespace Application.Interfaces.Contexts
 {
     public interface IApplicationDbContext
     {
-        public DbSet<Account> Accounts { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<Award> Awards { get; set; }
         public DbSet<Category> Categories { get; set; }

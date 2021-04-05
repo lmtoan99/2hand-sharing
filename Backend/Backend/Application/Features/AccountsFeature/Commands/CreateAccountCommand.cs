@@ -23,18 +23,18 @@ namespace Application.Features.AccountFeatures.Commands
     }
     public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Response<int>>
     {
-        private readonly IAccountRepositoryAsync _accountRepository;
+        private readonly IUserRepositoryAsync _userRepository;
         private readonly IMapper _mapper;
-        public CreateAccountCommandHandler(IAccountRepositoryAsync accountRepository, IMapper mapper)
+        public CreateAccountCommandHandler(IUserRepositoryAsync accountRepository, IMapper mapper)
         {
-            _accountRepository = accountRepository;
+            _userRepository = accountRepository;
             _mapper = mapper;
         }
 
         public async Task<Response<int>> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
         {
-            var account = _mapper.Map<Account>(request);
-            await _accountRepository.AddAsync(account);
+            var account = _mapper.Map<User>(request);
+            await _userRepository.AddAsync(account);
             return new Response<int>(account.Id);
         }
     }

@@ -17,7 +17,7 @@ namespace Domain.Entities
         public virtual Group Group { get; set; }
         [ForeignKey("PostByAccountId")]
         [InverseProperty("GroupPosts")]
-        public virtual Account PostByAccount { get; set; }
+        public virtual User PostByAccount { get; set; }
         public virtual ICollection<GroupPostImageRelationship> GroupPostImageRelationships { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
     }

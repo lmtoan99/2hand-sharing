@@ -12,9 +12,9 @@ namespace Domain.Entities
         public int ReportToAccountId { get; set; }
         [ForeignKey("ReportFromAccountId")]
         [InverseProperty("ReportSends")]
-        public virtual Account ReportFromAccount { get; set; }
+        public virtual User ReportFromAccount { get; set; }
         [ForeignKey("ReportToAccountId")]
         [InverseProperty("ReportReceives")]
-        public virtual Account ReportToAccount { get; set; }
+        public virtual User ReportToAccount { get; set; }
     }
 }

@@ -17,6 +17,6 @@ namespace Domain.Entities
         public virtual Item Items { get; set; }
         [ForeignKey("ReceiverId")]
         [InverseProperty("ReceiveItemInformations")]
-        public virtual Account Receiver { get; set; }
+        public virtual User Receiver { get; set; }
     }
 }

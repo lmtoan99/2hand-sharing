@@ -12,7 +12,7 @@ namespace Domain.Entities
         public DateTime AppointDate{get;set;}
         [ForeignKey("AdminId")]
         [InverseProperty("GroupAdminDetails")]
-        public virtual Account Admin { get; set; }
+        public virtual User Admin { get; set; }
         [ForeignKey("GroupId")]
         [InverseProperty("GroupAdminDetails")]
         public virtual Group Group { get; set; }

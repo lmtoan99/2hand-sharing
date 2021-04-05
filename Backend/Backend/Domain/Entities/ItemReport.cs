@@ -12,7 +12,7 @@ namespace Domain.Entities
         public string Content { get; set; }
         [ForeignKey("ReportFromAccountId")]
         [InverseProperty("ItemReports")]
-        public virtual Account ReportFromAccount { get; set; }
+        public virtual User ReportFromAccount { get; set; }
         [ForeignKey("ReportToItemId")]
         [InverseProperty("ItemReports")]
         public virtual Item ReportToItem { get; set; }

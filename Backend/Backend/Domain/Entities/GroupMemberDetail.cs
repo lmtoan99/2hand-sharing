@@ -13,7 +13,7 @@ namespace Domain.Entities
         public DateTime JoinDate{get;set;}
         [ForeignKey("MemberId")]
         [InverseProperty("GroupMemberDetails")]
-        public virtual Account Member { get; set; }
+        public virtual User Member { get; set; }
         [ForeignKey("GroupId")]
         [InverseProperty("GroupMemberDetails")]
         public virtual Group Group { get; set; }

@@ -12,6 +12,6 @@ namespace Domain.Entities
         public int DonateTime { get; set; }
         [ForeignKey("AccountId")]
         [InverseProperty("Awards")]
-        public virtual Account Account { get; set; }
+        public virtual User Account { get; set; }
     }
 }
