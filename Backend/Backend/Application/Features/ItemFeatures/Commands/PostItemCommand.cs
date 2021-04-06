@@ -51,7 +51,7 @@ namespace Application.Features.ItemFeatures.Commands
                 var image = new Image { FileName = fileName };
                 await _imageRepository.AddAsync(image);
 
-                _itemImageRelationshipRepository.AddAsync(new ItemImageRelationship { ImageId = image.Id, ItemId = item.Id });
+                _ = _itemImageRelationshipRepository.AddAsync(new ItemImageRelationship { ImageId = image.Id, ItemId = item.Id });
 
                 string signUrl = _imageRepository.GenerateV4UploadSignedUrl(fileName);
                 response.ImageUploads.Add(new PostItemResponse.ImageUpload { ImageName = fileName, PresignUrl = signUrl });
