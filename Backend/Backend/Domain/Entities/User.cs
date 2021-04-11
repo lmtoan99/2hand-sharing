@@ -25,5 +25,7 @@ namespace Domain.Entities
         public virtual ICollection<GroupMemberDetail> GroupMemberDetails { get; set; }
         public virtual ICollection<Award> Awards { get; set; }
         public virtual ICollection<Item> DonateItems { get; set; }
+        public int ImageId { get; set; }
+        public virtual Image Image { get; set; }
     }
 }

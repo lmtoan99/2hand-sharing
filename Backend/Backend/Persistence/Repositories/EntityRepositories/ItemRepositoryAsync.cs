@@ -27,5 +27,14 @@ namespace Persistence.Repositories.EntityRepositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+
+        public async Task<IReadOnlyList<Item>> GetAllPostItemsByCategoryIdAsync(int pageNumber, int pageSize, int categoryId)
+        {
+            return await _item
+                .Where(i => (i.DonateType == (int)EDonateType.DONATE_POST) && i.CategoryId==categoryId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }

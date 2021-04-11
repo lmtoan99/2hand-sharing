@@ -9,5 +9,6 @@ namespace Application.Interfaces.Repositories
     public interface IItemRepositoryAsync : IGenericRepositoryAsync<Item>
     {
         Task<IReadOnlyList<Item>> GetAllPostItemsAsync(int pageNumber, int pageSize);
+        Task<IReadOnlyList<Item>> GetAllPostItemsByCategoryIdAsync(int pageNumber, int pageSize, int categoryId);
     }
 }

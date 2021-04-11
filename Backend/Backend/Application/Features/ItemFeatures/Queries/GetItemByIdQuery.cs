@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ItemFeatures.Queries
 {
-    public class GetItemByIdQuery : IRequest<Response<GetAllItemViewModel>>
+    public class GetItemByIdQuery : IRequest<Response<GetItemByIdViewModel>>
     {
         public int Id { get; set; }
         
         //private readonly IImageRepository _imageRepository;
         
-        public class GetItemByIdQueryHandler : IRequestHandler<GetItemByIdQuery, Response<GetAllItemViewModel>>
+        public class GetItemByIdQueryHandler : IRequestHandler<GetItemByIdQuery, Response<GetItemByIdViewModel>>
         {
             private readonly IItemRepositoryAsync _itemRepository;
             private readonly IMapper _mapper;
@@ -29,13 +29,19 @@ namespace Application.Features.ItemFeatures.Queries
                 _mapper = mapper;
                 _imageRepository = imageRepository;
             }
-            public async Task<Response<GetAllItemViewModel>> Handle(GetItemByIdQuery query, CancellationToken cancellationToken)
+            public async Task<Response<GetItemByIdViewModel>> Handle(GetItemByIdQuery query, CancellationToken cancellationToken)
             {
-                var item = await _itemRepository.GetByIdAsync(query.Id);         
-                var itemViewModel = _mapper.Map<GetAllItemViewModel>(item);
-                itemViewModel.ImageUrl= _imageRepository.GenerateV4SignedReadUrl(itemViewModel.ImageUrl);
+                var item = await _itemRepository.GetByIdAsync(query.Id);
                 if (item == null) throw new ApiException($"Item Not Found.");
-                return new Response<GetAllItemViewModel>(itemViewModel);
+
+                var itemViewModel = _mapper.Map<GetItemByIdViewModel>(item);
+
+                for (int i = 0; i < itemViewModel.ImageUrl.Count; i++)
+                {
+                    itemViewModel.ImageUrl[i] = _imageRepository.GenerateV4SignedReadUrl(itemViewModel.ImageUrl[i]);
+                }
+
+                return new Response<GetItemByIdViewModel>(itemViewModel);
             }
         }
     }

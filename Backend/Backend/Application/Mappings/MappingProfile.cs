@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Account;
 using Application.Features.AccountFeatures.Commands;
+using Application.Features.CategoryFeatures.Commands;
 using Application.Features.CategoryFeatures.Queries.GetAllCategories;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
@@ -27,6 +28,12 @@ namespace Application.Mappings
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName));
             CreateMap<PostItemCommand, Item>();
+            CreateMap<GetAllItemByCategoryIdQuery, GetAllItemsParameter>();
+            CreateMap<Item, GetItemByIdViewModel>()
+                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().Select(e=>e.Image.FileName)))
+                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
+                    source.DonateAccount.FullName));
+
         }
     }
 }
