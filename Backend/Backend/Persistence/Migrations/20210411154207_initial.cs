@@ -9,22 +9,20 @@ namespace Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Accounts",
+                name: "Address",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Username = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Password = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    FullName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Dob = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Address = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Email = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    StreetNumber = table.Column<int>(type: "int", nullable: false),
+                    Street = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    WardId = table.Column<int>(type: "int", nullable: false),
+                    DistrictId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                    table.PrimaryKey("PK_Address", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,119 +60,11 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Url = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    FileName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Images", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Awards",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    AccountId = table.Column<int>(type: "int", nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    DonateTime = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Awards", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Awards_Accounts_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Content = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    SendDate = table.Column<int>(type: "int", nullable: false),
-                    SendFromAccountId = table.Column<int>(type: "int", nullable: false),
-                    SendToAccountId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Messages_Accounts_SendFromAccountId",
-                        column: x => x.SendFromAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Messages_Accounts_SendToAccountId",
-                        column: x => x.SendToAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ReportAccounts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Content = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    ReportFromAccountId = table.Column<int>(type: "int", nullable: false),
-                    ReportToAccountId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReportAccounts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ReportAccounts_Accounts_ReportFromAccountId",
-                        column: x => x.ReportFromAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ReportAccounts_Accounts_ReportToAccountId",
-                        column: x => x.ReportToAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Items",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ItemName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    ReceiveAddress = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    DonateAccountId = table.Column<int>(type: "int", nullable: false),
-                    PostTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Status = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DonateType = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Items", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Items_Accounts_DonateAccountId",
-                        column: x => x.DonateAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Items_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -201,6 +91,57 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    AccountId = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    FullName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Dob = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    AvatarId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Address_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Users_Images_AvatarId",
+                        column: x => x.AvatarId,
+                        principalTable: "Images",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Awards",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    AccountId = table.Column<int>(type: "int", nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    DonateTime = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Awards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Awards_Users_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GroupAdminDetails",
                 columns: table => new
                 {
@@ -214,15 +155,15 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_GroupAdminDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupAdminDetails_Accounts_AdminId",
-                        column: x => x.AdminId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_GroupAdminDetails_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupAdminDetails_Users_AdminId",
+                        column: x => x.AdminId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -242,15 +183,15 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_GroupMemberDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupMemberDetails_Accounts_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_GroupMemberDetails_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupMemberDetails_Users_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -271,15 +212,190 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_GroupPosts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupPosts_Accounts_PostByAccountId",
-                        column: x => x.PostByAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_GroupPosts_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupPosts_Users_PostByAccountId",
+                        column: x => x.PostByAccountId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Items",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ItemName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    DonateAccountId = table.Column<int>(type: "int", nullable: false),
+                    PostTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    DonateType = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Items", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Items_Address_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Items_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Items_Users_DonateAccountId",
+                        column: x => x.DonateAccountId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Content = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    SendDate = table.Column<int>(type: "int", nullable: false),
+                    SendFromAccountId = table.Column<int>(type: "int", nullable: false),
+                    SendToAccountId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_Users_SendFromAccountId",
+                        column: x => x.SendFromAccountId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Messages_Users_SendToAccountId",
+                        column: x => x.SendToAccountId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReportAccounts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Content = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    ReportFromAccountId = table.Column<int>(type: "int", nullable: false),
+                    ReportToAccountId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReportAccounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReportAccounts_Users_ReportFromAccountId",
+                        column: x => x.ReportFromAccountId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReportAccounts_Users_ReportToAccountId",
+                        column: x => x.ReportToAccountId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Content = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    PostByAccontId = table.Column<int>(type: "int", nullable: false),
+                    PostTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    PostByAccountId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_GroupPosts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "GroupPosts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_Users_PostByAccountId",
+                        column: x => x.PostByAccountId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupPostImageRelationships",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ImageId = table.Column<int>(type: "int", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupPostImageRelationships", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupPostImageRelationships_GroupPosts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "GroupPosts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupPostImageRelationships_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DonateEventInformation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    EventId = table.Column<int>(type: "int", nullable: false),
+                    ItemId = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DonateEventInformation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DonateEventInformation_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DonateEventInformation_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -324,15 +440,15 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_ItemReports", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ItemReports_Accounts_ReportFromAccountId",
-                        column: x => x.ReportFromAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_ItemReports_Items_ReportToItemId",
                         column: x => x.ReportToItemId,
                         principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ItemReports_Users_ReportFromAccountId",
+                        column: x => x.ReportFromAccountId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -353,97 +469,15 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_ReceiveItemInformation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReceiveItemInformation_Accounts_ReceiverId",
-                        column: x => x.ReceiverId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_ReceiveItemInformation_Items_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Items",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DonateEventInformation",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    EventId = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DonateEventInformation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DonateEventInformation_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DonateEventInformation_Items_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "Items",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Comments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Content = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    PostByAccontId = table.Column<int>(type: "int", nullable: false),
-                    PostTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: false),
-                    PostByAccountId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comments_Accounts_PostByAccountId",
-                        column: x => x.PostByAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Comments_GroupPosts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "GroupPosts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GroupPostImageRelationships",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ImageId = table.Column<int>(type: "int", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GroupPostImageRelationships", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GroupPostImageRelationships_GroupPosts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "GroupPosts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GroupPostImageRelationships_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
+                        name: "FK_ReceiveItemInformation_Users_ReceiverId",
+                        column: x => x.ReceiverId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -466,21 +500,21 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_Assignments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Assignments_Accounts_AssignByAccountId",
-                        column: x => x.AssignByAccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Assignments_Accounts_AssignedMemberId",
-                        column: x => x.AssignedMemberId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Assignments_DonateEventInformation_DonateEventInformationId",
                         column: x => x.DonateEventInformationId,
                         principalTable: "DonateEventInformation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Assignments_Users_AssignByAccountId",
+                        column: x => x.AssignByAccountId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Assignments_Users_AssignedMemberId",
+                        column: x => x.AssignedMemberId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -594,6 +628,11 @@ namespace Persistence.Migrations
                 column: "ReportToItemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Items_AddressId",
+                table: "Items",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Items_CategoryId",
                 table: "Items",
                 column: "CategoryId");
@@ -632,6 +671,18 @@ namespace Persistence.Migrations
                 name: "IX_ReportAccounts_ReportToAccountId",
                 table: "ReportAccounts",
                 column: "ReportToAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_AddressId",
+                table: "Users",
+                column: "AddressId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_AvatarId",
+                table: "Users",
+                column: "AvatarId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -676,9 +727,6 @@ namespace Persistence.Migrations
                 name: "GroupPosts");
 
             migrationBuilder.DropTable(
-                name: "Images");
-
-            migrationBuilder.DropTable(
                 name: "Events");
 
             migrationBuilder.DropTable(
@@ -688,10 +736,16 @@ namespace Persistence.Migrations
                 name: "Groups");
 
             migrationBuilder.DropTable(
-                name: "Accounts");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Address");
+
+            migrationBuilder.DropTable(
+                name: "Images");
         }
     }
 }

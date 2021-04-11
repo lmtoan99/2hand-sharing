@@ -8,7 +8,7 @@ namespace Domain.Entities
     public class Item : BaseEntity
     {
         public string ItemName { get; set; }
-        public string ReceiveAddress { get; set; }
+        public int AddressId { get; set; }
         public int CategoryId { get; set; }
         public int DonateAccountId { get; set; }
         public DateTime PostTime { get; set; }
@@ -21,6 +21,9 @@ namespace Domain.Entities
         [ForeignKey("DonateAccountId")]
         [InverseProperty("DonateItems")]
         public virtual User DonateAccount { get; set; }
+        [ForeignKey("AddressId")]
+        [InverseProperty("DonateAddress")]
+        public virtual Address Address { get; set; }
         public virtual DonateEventInformation DonateEventInformation { get; set; }
         public virtual ICollection<ItemReport> ItemReports { get; set; }
         public virtual ICollection<ReceiveItemInformation> ReceiveItemInformations { get; set; }

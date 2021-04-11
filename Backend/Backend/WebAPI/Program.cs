@@ -1,3 +1,4 @@
+using Application.Interfaces.Repositories;
 using Identity.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -28,6 +29,9 @@ namespace WebAPI
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
                     await Identity.Seeds.DefaultRoles.SeedAsync(userManager, roleManager);
+
+                    var categoryRepository = services.GetRequiredService<ICategoryRepositoryAsync>();
+                    await Persistence.Seeds.DefaultCategory.SeedAsync(categoryRepository);
                 }
                 catch (Exception ex)
                 {

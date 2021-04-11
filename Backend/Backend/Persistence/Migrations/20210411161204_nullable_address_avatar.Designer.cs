@@ -9,8 +9,8 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210409162422_avatar")]
-    partial class avatar
+    [Migration("20210411161204_nullable_address_avatar")]
+    partial class nullable_address_avatar
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,6 +18,32 @@ namespace Persistence.Migrations
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.4");
+
+            modelBuilder.Entity("Domain.Entities.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Street")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("StreetNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WardId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Address");
+                });
 
             modelBuilder.Entity("Domain.Entities.Assignment", b =>
                 {
@@ -322,6 +348,9 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -340,13 +369,12 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("PostTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("ReceiveAddress")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("CategoryId");
 
@@ -491,8 +519,11 @@ namespace Persistence.Migrations
                     b.Property<string>("AccountId")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AvatarId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Dob")
                         .HasColumnType("datetime(6)");
@@ -500,15 +531,15 @@ namespace Persistence.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("ImageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId")
+                    b.HasIndex("AddressId")
+                        .IsUnique();
+
+                    b.HasIndex("AvatarId")
                         .IsUnique();
 
                     b.ToTable("Users");
@@ -675,6 +706,12 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Item", b =>
                 {
+                    b.HasOne("Domain.Entities.Address", "Address")
+                        .WithMany("DonateAddress")
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Category", "Category")
                         .WithMany("Items")
                         .HasForeignKey("CategoryId")
@@ -686,6 +723,8 @@ namespace Persistence.Migrations
                         .HasForeignKey("DonateAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Address");
 
                     b.Navigation("Category");
 
@@ -789,13 +828,24 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.HasOne("Domain.Entities.Image", "Image")
-                        .WithOne("User")
-                        .HasForeignKey("Domain.Entities.User", "ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Domain.Entities.Address", "Address")
+                        .WithOne("UserAddress")
+                        .HasForeignKey("Domain.Entities.User", "AddressId");
 
-                    b.Navigation("Image");
+                    b.HasOne("Domain.Entities.Image", "Avatar")
+                        .WithOne("UserAvatar")
+                        .HasForeignKey("Domain.Entities.User", "AvatarId");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Avatar");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Address", b =>
+                {
+                    b.Navigation("DonateAddress");
+
+                    b.Navigation("UserAddress");
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
@@ -837,7 +887,7 @@ namespace Persistence.Migrations
 
                     b.Navigation("ItemImageRelationship");
 
-                    b.Navigation("User");
+                    b.Navigation("UserAvatar");
                 });
 
             modelBuilder.Entity("Domain.Entities.Item", b =>

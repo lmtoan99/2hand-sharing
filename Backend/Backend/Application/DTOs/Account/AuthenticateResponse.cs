@@ -10,6 +10,5 @@ namespace Application.DTOs.Account
         public DateTime Expiration { get; set; }
         public string Roles { get; set; }
         public bool IsVerified { get; set; }
-        public string RefreshToken { get; set; }
     }
 }

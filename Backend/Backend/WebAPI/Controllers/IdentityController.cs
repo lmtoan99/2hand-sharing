@@ -21,20 +21,18 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromBody]RegisterRequest request)
         {
-            var origin = Request.Headers["Origin"];
-            return Ok(await _service.RegisterAsync(request,origin));
+            return Ok(await _service.RegisterAsync(request));
         }
 
         [HttpPost("authenticate")]
         public async Task<IActionResult> AuthenticateAsync([FromBody]AuthenticateRequest request)
         {
-            var origin = Request.Headers["origin"];
-            return Ok(await _service.AuthenticateAsync(request,origin));
+            return Ok(await _service.AuthenticateAsync(request));
         }
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
         {
-            await _service.ForgotPassword(model, Request.Headers["origin"]);
+            await _service.ForgotPassword(model);
             return Ok();
         }
 

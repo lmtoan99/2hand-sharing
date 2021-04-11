@@ -21,16 +21,17 @@ namespace Persistence.Extensions
                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
             #region Repositories
-            services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
-            services.AddTransient<IUserRepositoryAsync, UserRepositoryAsync>();
-            services.AddTransient<ICategoryRepositoryAsync, CategoryRepositoryAsync>();
-            services.AddTransient<IItemRepositoryAsync, ItemRepositoryAsync>();
-            services.AddTransient<IImageRepository, ImageRepository>();
-            services.AddTransient<IItemImageRelationshipRepositoryAsync, ItemImageRelationshipRepositoryAsync>();
+            services.AddScoped(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
+            services.AddScoped<IUserRepositoryAsync, UserRepositoryAsync>();
+            services.AddScoped<ICategoryRepositoryAsync, CategoryRepositoryAsync>();
+            services.AddScoped<IItemRepositoryAsync, ItemRepositoryAsync>();
+            services.AddScoped<IImageRepository, ImageRepository>();
+            services.AddScoped<IItemImageRelationshipRepositoryAsync, ItemImageRelationshipRepositoryAsync>();
+            services.AddScoped<IAddressRepositoryAsync, AddressRepositoryAsync>();
             #endregion
 
             #region ApplicationContext
-            services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             #endregion
         }
     }

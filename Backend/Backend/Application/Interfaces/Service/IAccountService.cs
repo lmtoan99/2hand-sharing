@@ -9,10 +9,10 @@ namespace Application.Interfaces.Service
 {
     public interface IAccountService
     {
-        Task<Response<AuthenticateResponse>> AuthenticateAsync(AuthenticateRequest request, string ipAddress);
-        Task<Response<string>> RegisterAsync(RegisterRequest request, string origin);
+        Task<Response<AuthenticateResponse>> AuthenticateAsync(AuthenticateRequest request);
+        Task<Response<string>> RegisterAsync(RegisterRequest request);
         Task<Response<string>> ConfirmEmailAsync(string userId, string code);
-        Task ForgotPassword(ForgotPasswordRequest model, string origin);
+        Task ForgotPassword(ForgotPasswordRequest model);
         Task<Response<string>> ResetPassword(ResetPasswordRequest model);
     }
 }

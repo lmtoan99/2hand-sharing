@@ -9,7 +9,7 @@ using Persistence.Context;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210321023324_initial")]
+    [Migration("20210411154207_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,36 +19,30 @@ namespace Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.4");
 
-            modelBuilder.Entity("Domain.Entities.Account", b =>
+            modelBuilder.Entity("Domain.Entities.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Street")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("Dob")
-                        .HasColumnType("datetime(6)");
+                    b.Property<int>("StreetNumber")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<int>("WardId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("Domain.Entities.Assignment", b =>
@@ -340,7 +334,7 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Url")
+                    b.Property<string>("FileName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
@@ -352,6 +346,9 @@ namespace Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("AddressId")
                         .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
@@ -372,13 +369,12 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("PostTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("ReceiveAddress")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("CategoryId");
 
@@ -514,15 +510,50 @@ namespace Persistence.Migrations
                     b.ToTable("ReportAccounts");
                 });
 
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("AccountId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AvatarId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique();
+
+                    b.HasIndex("AvatarId")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("Domain.Entities.Assignment", b =>
                 {
-                    b.HasOne("Domain.Entities.Account", "AssignByAccount")
+                    b.HasOne("Domain.Entities.User", "AssignByAccount")
                         .WithMany("AdminAssigns")
                         .HasForeignKey("AssignByAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Account", "AssignedMember")
+                    b.HasOne("Domain.Entities.User", "AssignedMember")
                         .WithMany("Assignments")
                         .HasForeignKey("AssignedMemberId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -543,7 +574,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Award", b =>
                 {
-                    b.HasOne("Domain.Entities.Account", "Account")
+                    b.HasOne("Domain.Entities.User", "Account")
                         .WithMany("Awards")
                         .HasForeignKey("AccountId");
 
@@ -552,7 +583,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Comment", b =>
                 {
-                    b.HasOne("Domain.Entities.Account", "PostByAccount")
+                    b.HasOne("Domain.Entities.User", "PostByAccount")
                         .WithMany("Comments")
                         .HasForeignKey("PostByAccountId");
 
@@ -599,7 +630,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.GroupAdminDetail", b =>
                 {
-                    b.HasOne("Domain.Entities.Account", "Admin")
+                    b.HasOne("Domain.Entities.User", "Admin")
                         .WithMany("GroupAdminDetails")
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -624,7 +655,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Account", "Member")
+                    b.HasOne("Domain.Entities.User", "Member")
                         .WithMany("GroupMemberDetails")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -643,7 +674,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Account", "PostByAccount")
+                    b.HasOne("Domain.Entities.User", "PostByAccount")
                         .WithMany("GroupPosts")
                         .HasForeignKey("PostByAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -675,17 +706,25 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Item", b =>
                 {
+                    b.HasOne("Domain.Entities.Address", "Address")
+                        .WithMany("DonateAddress")
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Category", "Category")
                         .WithMany("Items")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Account", "DonateAccount")
+                    b.HasOne("Domain.Entities.User", "DonateAccount")
                         .WithMany("DonateItems")
                         .HasForeignKey("DonateAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Address");
 
                     b.Navigation("Category");
 
@@ -713,7 +752,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.ItemReport", b =>
                 {
-                    b.HasOne("Domain.Entities.Account", "ReportFromAccount")
+                    b.HasOne("Domain.Entities.User", "ReportFromAccount")
                         .WithMany("ItemReports")
                         .HasForeignKey("ReportFromAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -732,13 +771,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
-                    b.HasOne("Domain.Entities.Account", "SendFromAccount")
+                    b.HasOne("Domain.Entities.User", "SendFromAccount")
                         .WithMany("MessageSends")
                         .HasForeignKey("SendFromAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Account", "SendToAccount")
+                    b.HasOne("Domain.Entities.User", "SendToAccount")
                         .WithMany("MessageReceives")
                         .HasForeignKey("SendToAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -757,7 +796,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Account", "Receiver")
+                    b.HasOne("Domain.Entities.User", "Receiver")
                         .WithMany("ReceiveItemInformations")
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -770,13 +809,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.ReportAccount", b =>
                 {
-                    b.HasOne("Domain.Entities.Account", "ReportFromAccount")
+                    b.HasOne("Domain.Entities.User", "ReportFromAccount")
                         .WithMany("ReportSends")
                         .HasForeignKey("ReportFromAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Account", "ReportToAccount")
+                    b.HasOne("Domain.Entities.User", "ReportToAccount")
                         .WithMany("ReportReceives")
                         .HasForeignKey("ReportToAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -787,35 +826,30 @@ namespace Persistence.Migrations
                     b.Navigation("ReportToAccount");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Account", b =>
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Navigation("AdminAssigns");
+                    b.HasOne("Domain.Entities.Address", "Address")
+                        .WithOne("UserAddress")
+                        .HasForeignKey("Domain.Entities.User", "AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Assignments");
+                    b.HasOne("Domain.Entities.Image", "Avatar")
+                        .WithOne("UserAvatar")
+                        .HasForeignKey("Domain.Entities.User", "AvatarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Awards");
+                    b.Navigation("Address");
 
-                    b.Navigation("Comments");
+                    b.Navigation("Avatar");
+                });
 
-                    b.Navigation("DonateItems");
+            modelBuilder.Entity("Domain.Entities.Address", b =>
+                {
+                    b.Navigation("DonateAddress");
 
-                    b.Navigation("GroupAdminDetails");
-
-                    b.Navigation("GroupMemberDetails");
-
-                    b.Navigation("GroupPosts");
-
-                    b.Navigation("ItemReports");
-
-                    b.Navigation("MessageReceives");
-
-                    b.Navigation("MessageSends");
-
-                    b.Navigation("ReceiveItemInformations");
-
-                    b.Navigation("ReportReceives");
-
-                    b.Navigation("ReportSends");
+                    b.Navigation("UserAddress");
                 });
 
             modelBuilder.Entity("Domain.Entities.Category", b =>
@@ -856,6 +890,8 @@ namespace Persistence.Migrations
                     b.Navigation("GroupPostImageRelationship");
 
                     b.Navigation("ItemImageRelationship");
+
+                    b.Navigation("UserAvatar");
                 });
 
             modelBuilder.Entity("Domain.Entities.Item", b =>
@@ -867,6 +903,37 @@ namespace Persistence.Migrations
                     b.Navigation("ItemReports");
 
                     b.Navigation("ReceiveItemInformations");
+                });
+
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.Navigation("AdminAssigns");
+
+                    b.Navigation("Assignments");
+
+                    b.Navigation("Awards");
+
+                    b.Navigation("Comments");
+
+                    b.Navigation("DonateItems");
+
+                    b.Navigation("GroupAdminDetails");
+
+                    b.Navigation("GroupMemberDetails");
+
+                    b.Navigation("GroupPosts");
+
+                    b.Navigation("ItemReports");
+
+                    b.Navigation("MessageReceives");
+
+                    b.Navigation("MessageSends");
+
+                    b.Navigation("ReceiveItemInformations");
+
+                    b.Navigation("ReportReceives");
+
+                    b.Navigation("ReportSends");
                 });
 #pragma warning restore 612, 618
         }

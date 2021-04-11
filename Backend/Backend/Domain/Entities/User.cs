@@ -1,16 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
     public class User : BaseEntity
     {
-        public string AccountId{get;set;}
+        public string AccountId { get; set; }
         public string FullName { get; set; }
         public DateTime Dob { get; set; }
         public string PhoneNumber { get; set; }
-        public string Address { get; set; }
+        public int? AvatarId { get; set; }
+        [ForeignKey("AvatarId")]
+        [InverseProperty("UserAvatar")]
+        public virtual Image Avatar { get; set; }
+        public int? AddressId { get; set; }
+        [ForeignKey("AddressId")]
+        [InverseProperty("UserAddress")]
+        public virtual Address Address { get; set; }
         public virtual ICollection<Message> MessageSends { get; set; }
         public virtual ICollection<Message> MessageReceives { get; set; }
         public virtual ICollection<ReportAccount> ReportSends { get; set; }
@@ -25,7 +33,5 @@ namespace Domain.Entities
         public virtual ICollection<GroupMemberDetail> GroupMemberDetails { get; set; }
         public virtual ICollection<Award> Awards { get; set; }
         public virtual ICollection<Item> DonateItems { get; set; }
-        public int ImageId { get; set; }
-        public virtual Image Image { get; set; }
     }
 }

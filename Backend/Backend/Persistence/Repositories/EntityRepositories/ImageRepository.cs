@@ -14,7 +14,7 @@ namespace Persistence.Repositories.EntityRepositories
     class ImageRepository : GenericRepositoryAsync<Image>, IImageRepository
     {
         private readonly DbSet<Image> _image;
-        private readonly string credentialFilePath = string.Format(@"{0}\twohandsharing-key.json", AppDomain.CurrentDomain.BaseDirectory);
+        private readonly string credentialFilePath = string.Format(@"{0}/twohandsharing-key.json", AppDomain.CurrentDomain.BaseDirectory);
         private readonly string bucketName = "twohandsharing.appspot.com";
         public ImageRepository(ApplicationDbContext dbContext) : base(dbContext)
         {

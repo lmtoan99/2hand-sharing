@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.DTOs.Address;
+using Application.Exceptions;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
@@ -32,9 +33,11 @@ namespace Application.Features.ItemFeatures.Queries
             public async Task<Response<GetItemByIdViewModel>> Handle(GetItemByIdQuery query, CancellationToken cancellationToken)
             {
                 var item = await _itemRepository.GetByIdAsync(query.Id);
+                Console.WriteLine(item.Address.Street);
                 if (item == null) throw new ApiException($"Item Not Found.");
 
                 var itemViewModel = _mapper.Map<GetItemByIdViewModel>(item);
+                itemViewModel.ReceiveAddress = _mapper.Map<AddressDTO>(item.Address);
 
                 for (int i = 0; i < itemViewModel.ImageUrl.Count; i++)
                 {
