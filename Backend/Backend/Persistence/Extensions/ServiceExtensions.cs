@@ -28,6 +28,7 @@ namespace Persistence.Extensions
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<IItemImageRelationshipRepositoryAsync, ItemImageRelationshipRepositoryAsync>();
             services.AddScoped<IAddressRepositoryAsync, AddressRepositoryAsync>();
+            services.AddScoped<IReceiveItemInformationRepositoryAsync, ReceveItemInformationRepositoryAsync>();
             #endregion
 
             #region ApplicationContext

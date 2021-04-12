@@ -1,6 +1,9 @@
-﻿using MediatR;
+﻿using Application.Exceptions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+
 namespace WebAPI.Controllers
 {
     [ApiController]
@@ -9,5 +12,15 @@ namespace WebAPI.Controllers
     {
         private IMediator _mediator;
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+        protected int GetUserId()
+        {
+            try
+            {
+                return int.Parse(HttpContext.User.FindFirst("uid").Value);
+            }catch (Exception ex)
+            {
+                throw new ApiException("Bad JWToken");
+            }
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace WebAPI.Controllers.v1
                 ItemName = item.ItemName,
                 ReceiveAddress = item.ReceiveAddress,
                 CategoryId = item.CategoryId,
-                DonateAccountId = int.Parse(HttpContext.User.FindFirst("uid").Value),
+                DonateAccountId = this.GetUserId(),
                 Description = item.Description,
                 ImageNumber = item.ImageNumber
                 });
@@ -40,6 +40,16 @@ namespace WebAPI.Controllers.v1
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
+        }
+        [HttpPost("receive")]
+        public async Task<IActionResult> CreateReceiveRequest([FromBody]ReceiveItemRequest request)
+        {
+            return Ok(await Mediator.Send(new CreateReceiveRequestCommand
+            {
+                ItemId = request.ItemId,
+                ReceiveReason = request.ReceiveReason,
+                ReveiverId = this.GetUserId()
+            }));
         }
     }
 }
