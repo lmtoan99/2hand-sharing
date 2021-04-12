@@ -22,8 +22,7 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<Address> findSameAddress(AddressDTO address)
         {
             return await _address
-                .Where(a => a.StreetNumber == address.StreetNumber &&
-                    a.Street.Equals(address.Street) &&
+                .Where(a => a.Street.Equals(address.Street) &&
                     a.WardId == address.WardId &&
                     a.DistrictId == address.DistrictId &&
                     a.CityId == address.CityId).FirstOrDefaultAsync();

@@ -33,7 +33,6 @@ namespace Application.Features.ItemFeatures.Queries
             public async Task<Response<GetItemByIdViewModel>> Handle(GetItemByIdQuery query, CancellationToken cancellationToken)
             {
                 var item = await _itemRepository.GetByIdAsync(query.Id);
-                Console.WriteLine(item.Address.Street);
                 if (item == null) throw new ApiException($"Item Not Found.");
 
                 var itemViewModel = _mapper.Map<GetItemByIdViewModel>(item);

@@ -6,7 +6,6 @@ namespace Application.DTOs.Address
 {
     public class AddressDTO
     {
-        public int StreetNumber { get; set; }
         public string Street { get; set; }
         public int WardId { get; set; }
         public int DistrictId { get; set; }

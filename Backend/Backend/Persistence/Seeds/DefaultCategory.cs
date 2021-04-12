@@ -11,21 +11,28 @@ namespace Persistence.Seeds
     {
         public static async Task SeedAsync(ICategoryRepositoryAsync categoryRepository)
         {
-            //Seed category
-            await categoryRepository.AddAsync(
-                new Category{ Id = 1, CategoryName = "Quần áo"});
-            await categoryRepository.AddAsync(
-                new Category { Id = 2, CategoryName = "Đồ gia dụng" });
-            await categoryRepository.AddAsync(
-                new Category { Id = 3, CategoryName = "Học tập" });
-            await categoryRepository.AddAsync(
-                new Category { Id = 4, CategoryName = "Thể thao" });
-            await categoryRepository.AddAsync(
-                new Category { Id = 5, CategoryName = "Điện tử" });
-            await categoryRepository.AddAsync(
-                new Category { Id = 6, CategoryName = "Nội thất" });
-            await categoryRepository.AddAsync(
-                new Category { Id = 7, CategoryName = "Khác" });
+            try
+            {
+                //Seed category
+                await categoryRepository.AddAsync(
+                    new Category { Id = 1, CategoryName = "Quần áo" });
+                await categoryRepository.AddAsync(
+                    new Category { Id = 2, CategoryName = "Đồ gia dụng" });
+                await categoryRepository.AddAsync(
+                    new Category { Id = 3, CategoryName = "Học tập" });
+                await categoryRepository.AddAsync(
+                    new Category { Id = 4, CategoryName = "Thể thao" });
+                await categoryRepository.AddAsync(
+                    new Category { Id = 5, CategoryName = "Điện tử" });
+                await categoryRepository.AddAsync(
+                    new Category { Id = 6, CategoryName = "Nội thất" });
+                await categoryRepository.AddAsync(
+                    new Category { Id = 7, CategoryName = "Khác" });
+            }catch (Exception e)
+            {
+                Console.WriteLine("Categories exists");
+            }
+            
         }
     }
 }

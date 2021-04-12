@@ -199,11 +199,11 @@ namespace Identity.Service
             if (account == null) throw new ApiException("Email is not registered");
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(account);
-            var route = "Identity/reset-password/";
-            var _enpointUri = new Uri($"{_host}/{route}&code={code}");
+            var route = "Identity/reset-password";
+            var _enpointUri = new Uri($"{_host}/{route}?code={code}");
             var emailRequest = new EmailRequest()
             {
-                Body = $"Email response for your reset password request. Please visit this URL to reset password ${_enpointUri} or provide this code: {code} for your mobile application.",
+                Body = $"Email response for your reset password request. Please visit this URL to reset password {_enpointUri}",
                 To = model.Email,
                 Subject = "Reset Password",
             };

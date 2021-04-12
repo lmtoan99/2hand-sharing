@@ -7,7 +7,6 @@ namespace Domain.Entities
 {
     public class Address : BaseEntity
     {
-        public int StreetNumber { get; set; }
         public string Street { get; set; }
         public int WardId { get; set; }
         public int DistrictId { get; set; }

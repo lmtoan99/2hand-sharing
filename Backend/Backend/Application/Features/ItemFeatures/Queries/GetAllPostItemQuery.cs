@@ -1,9 +1,11 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.DTOs.Address;
+using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,12 +33,14 @@ namespace Application.Features.ItemFeatures.Queries
         {
             var validFilter = _mapper.Map<GetAllItemsParameter>(request);
             var item = await _itemRepository.GetAllPostItemsAsync(validFilter.PageNumber, validFilter.PageSize);
-            var itemViewModel = _mapper.Map<List<GetAllItemViewModel>>(item);
-
-            itemViewModel.ForEach(item =>
+            List<GetAllItemViewModel> itemViewModel = new List<GetAllItemViewModel>();
+            for (int i = 0; i < item.Count; i++)
             {
-                item.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(item.ImageUrl);
-            });
+                GetAllItemViewModel viewItem = _mapper.Map<GetAllItemViewModel>(item.ElementAt(i));
+                viewItem.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(viewItem.ImageUrl);
+                viewItem.ReceiveAddress = _mapper.Map<AddressDTO>(item.ElementAt(i).Address);
+                itemViewModel.Add(viewItem);
+            }
 
             return new PagedResponse<IEnumerable<GetAllItemViewModel>>(itemViewModel, validFilter.PageNumber, validFilter.PageSize);
         }
