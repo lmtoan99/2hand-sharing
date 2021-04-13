@@ -36,7 +36,8 @@ namespace Identity.Extensions
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = true;
             })
-                .AddEntityFrameworkStores<IdentityDbContext>().AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<IdentityDbContext>()
+                .AddDefaultTokenProviders();
             #region Services
             services.AddScoped<IAccountService, AccountService>();
             #endregion

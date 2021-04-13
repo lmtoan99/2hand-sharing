@@ -60,7 +60,7 @@ namespace Identity.Service
             {
                 throw new ApiException($"Wrong username or password");
             }
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, isPersistent: false, lockoutOnFailure: false);
             if (!result.Succeeded)
             {
                 throw new ApiException($"Wrong username or password");

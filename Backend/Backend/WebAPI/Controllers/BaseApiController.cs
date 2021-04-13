@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
                 return int.Parse(HttpContext.User.FindFirst("uid").Value);
             }catch (Exception ex)
             {
-                throw new ApiException("Bad JWToken");
+                throw new UnauthorizedAccessException("Bad JWToken");
             }
         }
     }

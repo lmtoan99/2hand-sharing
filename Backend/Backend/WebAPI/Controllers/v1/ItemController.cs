@@ -18,7 +18,7 @@ namespace WebAPI.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter)
         {
-            if (filter==null)return Ok(await Mediator.Send(new GetAllPostItemQuery()));
+            if (filter==null) return Ok(await Mediator.Send(new GetAllPostItemQuery()));
             return Ok(await Mediator.Send(new GetAllPostItemQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
         }
         [HttpPost]
@@ -50,6 +50,11 @@ namespace WebAPI.Controllers.v1
                 ReceiveReason = request.ReceiveReason,
                 ReveiverId = this.GetUserId()
             }));
+        }
+        [HttpGet("{id}/receive-request")]
+        public async Task<IActionResult> GetListReceiveRequest(int id)
+        {
+            return Ok(await Mediator.Send(new GetListReceiveRequestQuery { ItemId = id, UserId = this.GetUserId()}));
         }
     }
 }

@@ -30,7 +30,8 @@ namespace Application.Features.ItemFeatures.Commands
         public async Task<Response<int>> Handle(CreateReceiveRequestCommand request, CancellationToken cancellationToken)
         {
             var item = await _itemRepository.GetByIdAsync(request.ItemId);
-            if (item.Status != (int)ItemStatus.NOT_YET) throw new ApiException("ItemId not found");
+            if (item == null) throw new KeyNotFoundException("ItemId not found");
+            if (item.Status != (int)ItemStatus.NOT_YET) throw new ApiException("Item is not able to receive");
 
             var newInfo = new Domain.Entities.ReceiveItemInformation
             {

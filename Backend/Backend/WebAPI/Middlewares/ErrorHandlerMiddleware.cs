@@ -44,6 +44,10 @@ namespace WebAPI.Middlewares
                         // not found error
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
+                    case UnauthorizedAccessException e:
+                        //unauthorized access exception
+                        response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        break;
                     default:
                         // unhandled error
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;

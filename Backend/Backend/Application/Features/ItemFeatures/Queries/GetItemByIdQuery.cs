@@ -16,35 +16,32 @@ namespace Application.Features.ItemFeatures.Queries
     public class GetItemByIdQuery : IRequest<Response<GetItemByIdViewModel>>
     {
         public int Id { get; set; }
-        
-        //private readonly IImageRepository _imageRepository;
-        
-        public class GetItemByIdQueryHandler : IRequestHandler<GetItemByIdQuery, Response<GetItemByIdViewModel>>
+    }
+    public class GetItemByIdQueryHandler : IRequestHandler<GetItemByIdQuery, Response<GetItemByIdViewModel>>
+    {
+        private readonly IItemRepositoryAsync _itemRepository;
+        private readonly IMapper _mapper;
+        private readonly IImageRepository _imageRepository;
+        public GetItemByIdQueryHandler(IItemRepositoryAsync itemRepository, IMapper mapper, IImageRepository imageRepository)
         {
-            private readonly IItemRepositoryAsync _itemRepository;
-            private readonly IMapper _mapper;
-            private readonly IImageRepository _imageRepository;
-            public GetItemByIdQueryHandler(IItemRepositoryAsync itemRepository, IMapper mapper,IImageRepository imageRepository)
+            _itemRepository = itemRepository;
+            _mapper = mapper;
+            _imageRepository = imageRepository;
+        }
+        public async Task<Response<GetItemByIdViewModel>> Handle(GetItemByIdQuery query, CancellationToken cancellationToken)
+        {
+            var item = await _itemRepository.GetByIdAsync(query.Id);
+            if (item == null) throw new KeyNotFoundException($"Item Not Found.");
+
+            var itemViewModel = _mapper.Map<GetItemByIdViewModel>(item);
+            itemViewModel.ReceiveAddress = _mapper.Map<AddressDTO>(item.Address);
+
+            for (int i = 0; i < itemViewModel.ImageUrl.Count; i++)
             {
-                _itemRepository = itemRepository;
-                _mapper = mapper;
-                _imageRepository = imageRepository;
+                itemViewModel.ImageUrl[i] = _imageRepository.GenerateV4SignedReadUrl(itemViewModel.ImageUrl[i]);
             }
-            public async Task<Response<GetItemByIdViewModel>> Handle(GetItemByIdQuery query, CancellationToken cancellationToken)
-            {
-                var item = await _itemRepository.GetByIdAsync(query.Id);
-                if (item == null) throw new ApiException($"Item Not Found.");
 
-                var itemViewModel = _mapper.Map<GetItemByIdViewModel>(item);
-                itemViewModel.ReceiveAddress = _mapper.Map<AddressDTO>(item.Address);
-
-                for (int i = 0; i < itemViewModel.ImageUrl.Count; i++)
-                {
-                    itemViewModel.ImageUrl[i] = _imageRepository.GenerateV4SignedReadUrl(itemViewModel.ImageUrl[i]);
-                }
-
-                return new Response<GetItemByIdViewModel>(itemViewModel);
-            }
+            return new Response<GetItemByIdViewModel>(itemViewModel);
         }
     }
 }

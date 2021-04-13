@@ -31,18 +31,7 @@ namespace Application.Features.UserFeature.Commands
         public async Task<Response<int>> Handle(UpdateUserAvatarCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(request.Id);
-
-            if (user == null)
-            {
-                throw new ApiException($"User Not Found.");
-            }
-            else
-            {
-                
-               
-
-                return new Response<int>(user.Id);
-            }
+            return new Response<int>(user.Id);
         }
     }
 }
