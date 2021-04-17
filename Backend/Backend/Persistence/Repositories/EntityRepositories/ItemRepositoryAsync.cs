@@ -25,6 +25,9 @@ namespace Persistence.Repositories.EntityRepositories
                 .Where(i => i.DonateType == (int)EDonateType.DONATE_POST)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Include(i => i.Address)
+                .Include(i => i.DonateAccount)
+                .Include(i => i.ItemImageRelationships)
                 .ToListAsync();
         }
 
@@ -35,6 +38,11 @@ namespace Persistence.Repositories.EntityRepositories
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<Item> GetItemWithReceiveRequestByIdAsync(int itemId)
+        {
+            return await _item.Where(i => i.Id == itemId).Include(i => i.ReceiveItemInformations).FirstAsync();
         }
     }
 }

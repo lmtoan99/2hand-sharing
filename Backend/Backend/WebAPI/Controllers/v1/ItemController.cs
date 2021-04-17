@@ -41,20 +41,25 @@ namespace WebAPI.Controllers.v1
         {
             return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
         }
-        [HttpPost("receive")]
-        public async Task<IActionResult> CreateReceiveRequest([FromBody]ReceiveItemRequest request)
+        [HttpPost("{itemId}/receive-request")]
+        public async Task<IActionResult> CreateReceiveRequest(int itemId, [FromBody]ReceiveItemRequest request)
         {
             return Ok(await Mediator.Send(new CreateReceiveRequestCommand
             {
-                ItemId = request.ItemId,
+                ItemId = itemId,
                 ReceiveReason = request.ReceiveReason,
-                ReveiverId = this.GetUserId()
+                ReceiverId = this.GetUserId()
             }));
         }
         [HttpGet("{id}/receive-request")]
         public async Task<IActionResult> GetListReceiveRequest(int id)
         {
             return Ok(await Mediator.Send(new GetListReceiveRequestQuery { ItemId = id, UserId = this.GetUserId()}));
+        }
+        [HttpPut("{itemId}/receive-request/{requestId}/accept")]
+        public async Task<IActionResult> AcceptReceiveRequest(int itemId, int requestId)
+        {
+            return Ok(await Mediator.Send(new AcceptReceiveRequestCommand { itemId = itemId, requestId = requestId, userId = GetUserId()}));
         }
     }
 }

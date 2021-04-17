@@ -5,6 +5,7 @@ using Persistence.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,6 +58,11 @@ namespace Persistence.Repositories
             return await _dbContext
                  .Set<T>()
                  .ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<T>> GetByConditionAsync(Expression<Func<T, bool>> predicate)
+        {
+            return  await _dbContext.Set<T>().Where(predicate).ToListAsync();
         }
     }
 }

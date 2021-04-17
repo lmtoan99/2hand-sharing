@@ -31,12 +31,11 @@ namespace Application.Features.ItemFeatures.Queries
         }
         public async Task<Response<IEnumerable<ReceiveRequestViewModel>>> Handle(GetListReceiveRequestQuery request, CancellationToken cancellationToken)
         {
-            var item = await _itemRepository.GetByIdAsync(request.ItemId);
+            var item = await _itemRepository.GetItemWithReceiveRequestByIdAsync(request.ItemId);
             if (item == null) throw new KeyNotFoundException("ItemId not found");
             if (item.DonateAccountId != request.UserId) throw new UnauthorizedAccessException();
             if (item.Status != (int)ItemStatus.NOT_YET) throw new ApiException("Item is not able to receive");
-            var result = await _receiveItemInformationRepository.GetAllByItemId(request.ItemId);
-            var response = _mapper.Map<IEnumerable<ReceiveRequestViewModel>>(result);
+            var response = _mapper.Map<IEnumerable<ReceiveRequestViewModel>>(item.ReceiveItemInformations);
             return new Response<IEnumerable<ReceiveRequestViewModel>>(response);
         }
     }
