@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Item;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
+using Application.Features.ReceiveItemInformationFeatures.Commands;
 using Application.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,8 +42,14 @@ namespace WebAPI.Controllers.v1
         {
             return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
         }
+<<<<<<< Updated upstream
         [HttpPost("{itemId}/receive-request")]
         public async Task<IActionResult> CreateReceiveRequest(int itemId, [FromBody]ReceiveItemRequest request)
+=======
+
+        [HttpPost("receive")]
+        public async Task<IActionResult> CreateReceiveRequest([FromBody]ReceiveItemRequest request)
+>>>>>>> Stashed changes
         {
             return Ok(await Mediator.Send(new CreateReceiveRequestCommand
             {
@@ -51,15 +58,30 @@ namespace WebAPI.Controllers.v1
                 ReceiverId = this.GetUserId()
             }));
         }
+
         [HttpGet("{id}/receive-request")]
         public async Task<IActionResult> GetListReceiveRequest(int id)
         {
             return Ok(await Mediator.Send(new GetListReceiveRequestQuery { ItemId = id, UserId = this.GetUserId()}));
         }
+<<<<<<< Updated upstream
         [HttpPut("{itemId}/receive-request/{requestId}/accept")]
         public async Task<IActionResult> AcceptReceiveRequest(int itemId, int requestId)
         {
             return Ok(await Mediator.Send(new AcceptReceiveRequestCommand { itemId = itemId, requestId = requestId, userId = GetUserId()}));
+=======
+
+        [HttpPut("{id}/confirm-send-item")]
+        public async Task<IActionResult> confirmSendItem(int id)
+        {
+            return Ok(await Mediator.Send(new UpdateStatusConfirmSendItemCommand { Id = id, UserId = this.GetUserId()}));
+        }
+
+        [HttpPut("{id}/confirm-receive-item")]
+        public async Task<IActionResult> ConfirmReceiveItem(int id)
+        {
+            return Ok(await Mediator.Send(new UpdateStatusConfirmReceiveItemCommand { Id = id, UserId = this.GetUserId()}));
+>>>>>>> Stashed changes
         }
     }
 }

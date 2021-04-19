@@ -22,5 +22,11 @@ namespace Persistence.Repositories.EntityRepositories
         {
             return await _receiveItemInformation.Where(e => e.ItemId == itemId).ToListAsync();
         }
+
+        public async Task<ReceiveItemInformation> GetItemConfirmReceiveByItemId(int itemId)
+        {
+            return await _receiveItemInformation.Where(e => e.ItemId == itemId && e.ReceiveStatus == 2).SingleOrDefaultAsync();
+        }
+
     }
 }
