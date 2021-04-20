@@ -43,12 +43,6 @@ namespace WebAPI.Controllers.v1
         {
             return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
         }
-        
-        [HttpPut("{itemId}/receive-request/{requestId}/accept")]
-        public async Task<IActionResult> AcceptReceiveRequest(int itemId, int requestId)
-        {
-            return Ok(await Mediator.Send(new AcceptReceiveRequestCommand { itemId = itemId, requestId = requestId, userId = GetUserId()}));
-=======
 
         [HttpPut("{id}/confirm-send-item")]
         public async Task<IActionResult> confirmSendItem(int id)
