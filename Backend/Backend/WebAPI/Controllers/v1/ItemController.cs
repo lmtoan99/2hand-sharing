@@ -22,6 +22,7 @@ namespace WebAPI.Controllers.v1
             if (filter==null) return Ok(await Mediator.Send(new GetAllPostItemQuery()));
             return Ok(await Mediator.Send(new GetAllPostItemQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
         }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PostItemRequest item)
         {
@@ -43,6 +44,11 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
         }
         
+        [HttpPut("{itemId}/receive-request/{requestId}/accept")]
+        public async Task<IActionResult> AcceptReceiveRequest(int itemId, int requestId)
+        {
+            return Ok(await Mediator.Send(new AcceptReceiveRequestCommand { itemId = itemId, requestId = requestId, userId = GetUserId()}));
+=======
 
         [HttpPut("{id}/confirm-send-item")]
         public async Task<IActionResult> confirmSendItem(int id)
