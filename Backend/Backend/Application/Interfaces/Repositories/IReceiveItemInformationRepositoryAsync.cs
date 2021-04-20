@@ -10,5 +10,6 @@ namespace Application.Interfaces.Repositories
     {
         Task<IReadOnlyList<ReceiveItemInformation>> GetAllByItemId(int itemId);
         Task<ReceiveItemInformation> GetItemConfirmReceiveByItemId(int itemId);
+        Task<ReceiveItemInformation> GetReceiveRequestWithItemInfoById(int requestId);
     }
 }
