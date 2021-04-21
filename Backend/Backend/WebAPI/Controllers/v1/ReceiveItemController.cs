@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Item;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
+using Application.Features.ReceiveItemInformationFeatures.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -34,6 +35,16 @@ namespace WebAPI.Controllers.v1
         public async Task<IActionResult> AcceptReceiveRequest(int requestId)
         {
             return Ok(await Mediator.Send(new AcceptReceiveRequestCommand {requestId = requestId, userId = GetUserId() }));
+        }
+        [HttpPut("{id}/confirm-send-item")]
+        public async Task<IActionResult> confirmSendItem(int id)
+        {
+            return Ok(await Mediator.Send(new UpdateStatusConfirmSendItemCommand { Id = id, UserId = this.GetUserId() }));
+        }
+        [HttpPut("{id}/confirm-receive-item")]
+        public async Task<IActionResult> ConfirmReceiveItem(int id)
+        {
+            return Ok(await Mediator.Send(new UpdateStatusConfirmReceiveItemCommand { Id = id, UserId = this.GetUserId() }));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.Enums;
+using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
@@ -25,7 +26,7 @@ namespace Persistence.Repositories.EntityRepositories
 
         public async Task<ReceiveItemInformation> GetItemConfirmReceiveByItemId(int itemId)
         {
-            return await _receiveItemInformation.Where(e => e.ItemId == itemId && e.ReceiveStatus == 2).SingleOrDefaultAsync();
+            return await _receiveItemInformation.Where(e => e.ItemId == itemId && e.ReceiveStatus == (int)ReceiveItemInformationStatus.RECEIVING).SingleOrDefaultAsync();
         }
 
         public async Task<ReceiveItemInformation> GetReceiveRequestWithItemInfoById(int requestId)

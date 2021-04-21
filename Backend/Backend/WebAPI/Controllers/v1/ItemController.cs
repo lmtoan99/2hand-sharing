@@ -43,17 +43,5 @@ namespace WebAPI.Controllers.v1
         {
             return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
         }
-
-        [HttpPut("{id}/confirm-send-item")]
-        public async Task<IActionResult> confirmSendItem(int id)
-        {
-            return Ok(await Mediator.Send(new UpdateStatusConfirmSendItemCommand { Id = id, UserId = this.GetUserId()}));
-        }
-
-        [HttpPut("{id}/confirm-receive-item")]
-        public async Task<IActionResult> ConfirmReceiveItem(int id)
-        {
-            return Ok(await Mediator.Send(new UpdateStatusConfirmReceiveItemCommand { Id = id, UserId = this.GetUserId()}));
-        }
     }
 }
