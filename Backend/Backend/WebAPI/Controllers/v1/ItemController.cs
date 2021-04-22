@@ -43,5 +43,17 @@ namespace WebAPI.Controllers.v1
         {
             return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
         }
+
+        [HttpGet("{itemId}/receive-request")]
+        public async Task<IActionResult> GetListReceiveRequest(int itemId)
+        {
+            return Ok(await Mediator.Send(new GetListReceiveRequestQuery { ItemId = itemId, UserId = this.GetUserId() }));
+        }
+
+        [HttpPut("{itemId}/confirm-send")]
+        public async Task<IActionResult> confirmSendItem(int itemId)
+        {
+            return Ok(await Mediator.Send(new UpdateStatusConfirmSendItemCommand { Id = itemId, UserId = this.GetUserId() }));
+        }
     }
 }
