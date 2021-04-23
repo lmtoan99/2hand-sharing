@@ -21,12 +21,10 @@ namespace Application.Features.ItemFeatures.Queries
     public class GetListReceiveRequestQueryHandler : IRequestHandler<GetListReceiveRequestQuery, Response<IEnumerable<ReceiveRequestViewModel>>>
     {
         private readonly IItemRepositoryAsync _itemRepository;
-        private readonly IReceiveItemInformationRepositoryAsync _receiveItemInformationRepository;
         private readonly IMapper _mapper;
-        public GetListReceiveRequestQueryHandler(IItemRepositoryAsync itemRepository, IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, IMapper mapper)
+        public GetListReceiveRequestQueryHandler(IItemRepositoryAsync itemRepository, IMapper mapper)
         {
             _itemRepository = itemRepository;
-            _receiveItemInformationRepository = receiveItemInformationRepository;
             _mapper = mapper;
         }
         public async Task<Response<IEnumerable<ReceiveRequestViewModel>>> Handle(GetListReceiveRequestQuery request, CancellationToken cancellationToken)

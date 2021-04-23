@@ -37,6 +37,14 @@ namespace Persistence.Repositories.EntityRepositories
                 .ToListAsync();
         }
 
+        public async Task<IReadOnlyCollection<Item>> GetItemByDonateAccountId(int accountId)
+        {
+            return await _item
+                .Where(i => i.DonateAccountId == accountId)
+                .Include(i => i.Address)
+                .ToListAsync();
+        }
+
         public async Task<Item> GetItemWithReceiveRequestByIdAsync(int itemId)
         {
             return await _item.Where(i => i.Id == itemId).Include(i => i.ReceiveItemInformations).FirstAsync();

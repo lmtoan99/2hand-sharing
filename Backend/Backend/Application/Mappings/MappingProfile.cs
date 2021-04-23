@@ -38,6 +38,8 @@ namespace Application.Mappings
                     source.DonateAccount.FullName));
             CreateMap<ReceiveItemInformation, ReceiveRequestViewModel>()
                 .ForMember(dest => dest.ReceiverName, o => o.MapFrom(source => source.Receiver.FullName));
+            CreateMap<Item, GetListMyItemDonateViewModel>()
+                .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName));
         }
     }
 }

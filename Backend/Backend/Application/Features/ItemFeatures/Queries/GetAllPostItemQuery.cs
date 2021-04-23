@@ -33,14 +33,11 @@ namespace Application.Features.ItemFeatures.Queries
         {
             var validFilter = _mapper.Map<GetAllItemsParameter>(request);
             var item = await _itemRepository.GetAllPostItemsAsync(validFilter.PageNumber, validFilter.PageSize);
-            List<GetAllItemViewModel> itemViewModel = new List<GetAllItemViewModel>();
-            for (int i = 0; i < item.Count; i++)
+            List<GetAllItemViewModel> itemViewModel = _mapper.Map< List<GetAllItemViewModel>>(item);
+            itemViewModel.ForEach(i =>
             {
-                GetAllItemViewModel viewItem = _mapper.Map<GetAllItemViewModel>(item.ElementAt(i));
-                viewItem.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(viewItem.ImageUrl);
-                viewItem.ReceiveAddress = _mapper.Map<AddressDTO>(item.ElementAt(i).Address);
-                itemViewModel.Add(viewItem);
-            }
+                i.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl);
+            });
 
             return new PagedResponse<IEnumerable<GetAllItemViewModel>>(itemViewModel, validFilter.PageNumber, validFilter.PageSize);
         }
