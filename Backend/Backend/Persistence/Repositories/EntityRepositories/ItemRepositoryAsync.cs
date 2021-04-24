@@ -25,9 +25,9 @@ namespace Persistence.Repositories.EntityRepositories
                 .Where(i => i.DonateType == (int)EDonateType.DONATE_POST)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Include(i => i.Address)
-                .Include(i => i.DonateAccount)
-                .Include(i => i.ItemImageRelationships)
+                //.Include(i => i.Address)
+                //.Include(i => i.DonateAccount)
+                //.Include(i => i.ItemImageRelationships)
                 .ToListAsync();
         }
 
