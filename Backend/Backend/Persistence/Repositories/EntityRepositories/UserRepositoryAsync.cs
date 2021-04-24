@@ -22,5 +22,14 @@ namespace Persistence.Repositories.EntityRepositories
         {
             return _user.Where(u => u.AccountId.Equals(accountId)).FirstOrDefaultAsync();
         }
+
+        public Task<User> GetUserInfoByUserId(string id)
+        {
+            return _user
+                .Where(u => u.AccountId.Equals(id))
+                .Include(u => u.Address)
+                .Include(u => u.Avatar)
+                .FirstOrDefaultAsync();
+        }
     }
 }

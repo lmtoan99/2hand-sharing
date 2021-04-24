@@ -37,13 +37,15 @@ namespace Identity.Service
         private readonly JWTSettings _jwtSettings;
         private readonly IUserRepositoryAsync _userRepository;
         private readonly string _host = "https://twohandsharing.appspot.com";
+        private readonly IMapper _mapper;
         //private readonly 
         public AccountService(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IOptions<JWTSettings> jwtSettings,
             SignInManager<ApplicationUser> signInManager,
             IEmailService emailService,
-            IUserRepositoryAsync userRepository)
+            IUserRepositoryAsync userRepository,
+            IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -51,6 +53,7 @@ namespace Identity.Service
             _signInManager = signInManager;
             this._emailService = emailService;
             this._userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public async Task<Response<AuthenticateResponse>> AuthenticateAsync(AuthenticateRequest request)
@@ -75,6 +78,7 @@ namespace Identity.Service
             var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
             response.Roles = rolesList.ToList().FirstOrDefault();
             response.IsVerified = user.EmailConfirmed;
+            response.UserInfo = _mapper.Map<UserInfoDTO>(await _userRepository.GetUserInfoByUserId(user.Id));
             return new Response<AuthenticateResponse>(response, $"Authenticated {user.UserName}");
         }
 
