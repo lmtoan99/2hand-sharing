@@ -1,0 +1,13 @@
+User(AccountID)
+
+ReceiveItemInformation(Status, Thanks, ReceiveReason, ItemID, ReceiverID)
+Status: 0pending, 1receive, 2success, 3cancel
+
+Items(ItemName, AddressId, CategoryID, DonateAccountID, Posttime,Status, Desciption)
+Status: 0not_yet, 1pending_for_receiver, 2success, 3delete
+
+
+người cho xóa: 
+*người nhận hủy nhận:
+
+người nhận 
