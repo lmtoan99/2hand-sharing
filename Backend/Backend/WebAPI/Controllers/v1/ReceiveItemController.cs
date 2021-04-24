@@ -37,5 +37,11 @@ namespace WebAPI.Controllers.v1
         {
             return Ok(await Mediator.Send(new UpdateStatusConfirmReceiveItemCommand { Id = requestId, UserId = this.GetUserId() }));
         }
+
+        [HttpPut("{requestId}/cancel-receive")]
+        public async Task<IActionResult> CancelReceiveItem(int requestId)
+        {
+            return Ok(await Mediator.Send(new UpdateStatusCancelReceiveItemCommand { Id = requestId, UserId = this.GetUserId() }));
+        }
     }
 }
