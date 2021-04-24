@@ -36,12 +36,6 @@ namespace Application.Features.CategoryFeatures.Commands
             var validFilter = _mapper.Map<GetAllItemsParameter>(request);
             var item = await _itemRepository.GetAllPostItemsByCategoryIdAsync(validFilter.PageNumber, validFilter.PageSize,request.CategoryId);
             var itemViewModel = _mapper.Map<List<GetAllItemViewModel>>(item);
-           
-            var address = item.Select(item => item.Address).ToArray();
-            for(int i=0;i<itemViewModel.Count;i++)
-            {
-                itemViewModel[i].ReceiveAddress = _mapper.Map<AddressDTO>(address[i]);
-            }
 
             itemViewModel.ForEach(item =>
             {
