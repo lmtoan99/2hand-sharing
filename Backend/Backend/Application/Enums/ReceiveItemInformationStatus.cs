@@ -8,6 +8,7 @@ namespace Application.Enums
     {
         PENDING,
         RECEIVING,
-        SUCCESS
+        SUCCESS,
+        CANCEL
     }
 }

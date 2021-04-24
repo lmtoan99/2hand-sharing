@@ -24,7 +24,10 @@ namespace Persistence.Repositories.EntityRepositories
             return await _item
                 .Where(i => i.DonateType == (int)EDonateType.DONATE_POST)
                 .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize).Include("Address")
+                .Take(pageSize)
+                //.Include(i => i.Address)
+                //.Include(i => i.DonateAccount)
+                //.Include(i => i.ItemImageRelationships)
                 .ToListAsync();
         }
 
@@ -33,7 +36,10 @@ namespace Persistence.Repositories.EntityRepositories
             return await _item
                 .Where(i => (i.DonateType == (int)EDonateType.DONATE_POST) && i.CategoryId==categoryId)
                 .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize).Include("Address")
+                .Take(pageSize)
+                .Include(i =>i.Address)
+                .Include(i=>i.DonateAccount)
+                .Include(i=> i.ItemImageRelationships)
                 .ToListAsync();
         }
 
