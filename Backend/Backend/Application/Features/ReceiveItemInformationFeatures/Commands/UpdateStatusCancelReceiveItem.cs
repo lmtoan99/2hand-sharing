@@ -19,13 +19,9 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
         public class UpdateStatusCancelItemCommandHandler : IRequestHandler<UpdateStatusCancelReceiveItemCommand, Response<int>>
         {
             private readonly IReceiveItemInformationRepositoryAsync _receiveItemInformationRepository;
-            private readonly IItemRepositoryAsync _itemRepositoryAsync;
-            private readonly IMapper _mapper;
-            public UpdateStatusCancelItemCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemRepository, IItemRepositoryAsync itemRepository, IMapper mapper)
+            public UpdateStatusCancelItemCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemRepository)
             {
                 _receiveItemInformationRepository = receiveItemRepository;
-                _itemRepositoryAsync = itemRepository;
-                _mapper = mapper;
             }
             public async Task<Response<int>> Handle(UpdateStatusCancelReceiveItemCommand command, CancellationToken cancellationToken)
             {
@@ -39,6 +35,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                     receiveItemInformation.ReceiveStatus = (int)ReceiveItemInformationStatus.CANCEL;
                     receiveItemInformation.Items.Status = (int)ItemStatus.NOT_YET;
                     await _receiveItemInformationRepository.UpdateAsync(receiveItemInformation);
+                    //await _receiveItemInformationRepository.DeleteAsync
                     return new Response<int>(receiveItemInformation.Id);
                 }
                 else throw new ApiException($"You cannot cancel receive item");
