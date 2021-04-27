@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Application.DTOs.Item
 {
-    public class ReceiveRequestViewModel
+    public class ReceiveRequestDonorViewModel
     {
         public int Id { get; set; }
         public string ReceiveReason { get; set; }

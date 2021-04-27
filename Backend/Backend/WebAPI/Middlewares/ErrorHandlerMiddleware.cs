@@ -27,6 +27,7 @@ namespace WebAPI.Middlewares
             }
             catch (Exception error)
             {
+                Console.WriteLine(error.Message);
                 Console.WriteLine(error.StackTrace);
                 var response = context.Response;
                 response.ContentType = "application/json";

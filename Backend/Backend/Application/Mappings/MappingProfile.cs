@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Account;
 using Application.DTOs.Address;
 using Application.DTOs.Item;
+using Application.DTOs.ReceiveRequest;
 using Application.Features.AccountFeatures.Commands;
 using Application.Features.CategoryFeatures.Commands;
 using Application.Features.CategoryFeatures.Queries.GetAllCategories;
@@ -36,12 +37,15 @@ namespace Application.Mappings
                  .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().Select(e=>e.Image.FileName)))
                  .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName));
-            CreateMap<ReceiveItemInformation, ReceiveRequestViewModel>()
+            CreateMap<ReceiveItemInformation, ReceiveRequestDonorViewModel>()
                 .ForMember(dest => dest.ReceiverName, o => o.MapFrom(source => source.Receiver.FullName));
             CreateMap<Item, GetListMyItemDonateViewModel>()
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName));
             CreateMap<User, UserInfoDTO>()
                 .ForMember(dest => dest.Avatar, o => o.MapFrom(source => source.Avatar.FileName));
+            CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>()
+                .ForMember(dest => dest.ItemName, o => o.MapFrom(source => source.Items.ItemName))
+                .ForMember(dest => dest.ItemImageUrl, o => o.MapFrom(source => source.Items.ItemImageRelationships.FirstOrDefault().Image.FileName));
         }
     }
 }

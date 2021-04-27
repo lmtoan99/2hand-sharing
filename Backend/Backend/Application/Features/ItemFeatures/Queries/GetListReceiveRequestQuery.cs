@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ItemFeatures.Queries
 {
-    public class GetListReceiveRequestQuery : IRequest<Response<IEnumerable<ReceiveRequestViewModel>>>
+    public class GetListReceiveRequestQuery : IRequest<Response<IEnumerable<ReceiveRequestDonorViewModel>>>
     {
         public int ItemId { get; set; }
         public int UserId { get; set; }
     }
-    public class GetListReceiveRequestQueryHandler : IRequestHandler<GetListReceiveRequestQuery, Response<IEnumerable<ReceiveRequestViewModel>>>
+    public class GetListReceiveRequestQueryHandler : IRequestHandler<GetListReceiveRequestQuery, Response<IEnumerable<ReceiveRequestDonorViewModel>>>
     {
         private readonly IItemRepositoryAsync _itemRepository;
         private readonly IMapper _mapper;
@@ -27,14 +27,14 @@ namespace Application.Features.ItemFeatures.Queries
             _itemRepository = itemRepository;
             _mapper = mapper;
         }
-        public async Task<Response<IEnumerable<ReceiveRequestViewModel>>> Handle(GetListReceiveRequestQuery request, CancellationToken cancellationToken)
+        public async Task<Response<IEnumerable<ReceiveRequestDonorViewModel>>> Handle(GetListReceiveRequestQuery request, CancellationToken cancellationToken)
         {
             var item = await _itemRepository.GetItemWithReceiveRequestByIdAsync(request.ItemId);
             if (item == null) throw new KeyNotFoundException("ItemId not found");
             if (item.DonateAccountId != request.UserId) throw new UnauthorizedAccessException();
             if (item.Status != (int)ItemStatus.NOT_YET) throw new ApiException("Item is not able to receive");
-            var response = _mapper.Map<IEnumerable<ReceiveRequestViewModel>>(item.ReceiveItemInformations);
-            return new Response<IEnumerable<ReceiveRequestViewModel>>(response);
+            var response = _mapper.Map<IEnumerable<ReceiveRequestDonorViewModel>>(item.ReceiveItemInformations);
+            return new Response<IEnumerable<ReceiveRequestDonorViewModel>>(response);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
 using Application.Features.ReceiveItemInformationFeatures.Commands;
+using Application.Features.ReceiveItemInformationFeatures.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -48,6 +49,18 @@ namespace WebAPI.Controllers.v1
         public async Task<IActionResult> Delete(int requestId)
         {
             return Ok(await Mediator.Send(new DeleteRequestReceiveByIdCommand { Id = requestId,UserId=this.GetUserId() }));
+        }
+
+        [HttpPut("{requestId}/send-thanks")]
+        public async Task<IActionResult> SendThanks(int requestId, [FromBody] SendThanksDTO thanks)
+        {
+            return Ok(await Mediator.Send(new SendThanksCommand { requestId = requestId,thanks = thanks.thanks, userId = GetUserId()}));
+        }
+
+        [HttpGet("my-request")]
+        public async Task<IActionResult> DoneeGetListReceiveRequest()
+        {
+            return Ok(await Mediator.Send(new DoneeGetListReceiveRequestQuery { UserId = GetUserId()}));
         }
     }
 }
