@@ -38,6 +38,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                     throw new UnauthorizedAccessException();
                 }
 
+
                 item.ReceiveStatus = (int)ReceiveItemInformationStatus.SUCCESS;
                 await _receiveItemInformationRepository.UpdateAsync(item);
                 return new Response<int>(item.Id);
