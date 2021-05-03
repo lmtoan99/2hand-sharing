@@ -36,7 +36,7 @@ namespace Identity.Service
         private readonly IEmailService _emailService;
         private readonly JWTSettings _jwtSettings;
         private readonly IUserRepositoryAsync _userRepository;
-        private readonly string _host = "https://twohandsharing.appspot.com";
+        private readonly string _host = "http://localhost:4200";
         private readonly IMapper _mapper;
         //private readonly 
         public AccountService(UserManager<ApplicationUser> userManager,
@@ -162,22 +162,22 @@ namespace Identity.Service
         {
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "Identity/confirm-email/";
-            var _enpointUri = new Uri(string.Concat($"{_host}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
+            var route = "auth/register/confirm";
+            var _enpointUri = new Uri($"{_host}/{route}");
+            var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userid", user.Id);
             verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
             //Email Service Call Here
             return verificationUri;
         }
 
-        public async Task<Response<string>> ConfirmEmailAsync(string userId, string code)
+        public async Task<Response<string>> ConfirmEmailAsync(ConfirmEmailRequest request)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            var user = await _userManager.FindByIdAsync(request.UserId);
+            request.Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
+            var result = await _userManager.ConfirmEmailAsync(user, request.Code);
             if (result.Succeeded)
             {
-                return new Response<string>(user.Id, message: $"Account Confirmed for {user.Email}. You can now use the /Identity/authenticate endpoint.");
+                return new Response<string>(user.Id, message: $"Account Confirmed for {user.Email}");
             }
             else
             {
@@ -203,7 +203,7 @@ namespace Identity.Service
             if (account == null) throw new ApiException("Email is not registered");
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(account);
-            var route = "Identity/reset-password";
+            var route = "auth/forgot-password/reset";
             var _enpointUri = new Uri($"{_host}/{route}?code={code}");
             var emailRequest = new EmailRequest()
             {

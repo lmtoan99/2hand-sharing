@@ -11,7 +11,7 @@ namespace Application.Interfaces.Service
     {
         Task<Response<AuthenticateResponse>> AuthenticateAsync(AuthenticateRequest request);
         Task<Response<string>> RegisterAsync(RegisterRequest request);
-        Task<Response<string>> ConfirmEmailAsync(string userId, string code);
+        Task<Response<string>> ConfirmEmailAsync(ConfirmEmailRequest request);
         Task ForgotPassword(ForgotPasswordRequest model);
         Task<Response<string>> ResetPassword(ResetPasswordRequest model);
     }

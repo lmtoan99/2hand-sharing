@@ -37,9 +37,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
+        public async Task<IActionResult> ConfirmEmailAsync([FromBody]ConfirmEmailRequest request)
         {
-            return Ok(await _service.ConfirmEmailAsync(userId, code));
+            return Ok(await _service.ConfirmEmailAsync(request));
         }
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
