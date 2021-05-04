@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-        [HttpGet("confirm-email")]
+        [HttpPost("confirm-email")]
         public async Task<IActionResult> ConfirmEmailAsync([FromBody]ConfirmEmailRequest request)
         {
             return Ok(await _service.ConfirmEmailAsync(request));
