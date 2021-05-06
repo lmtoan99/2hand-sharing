@@ -27,18 +27,15 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
             {
                 var receiveItemInformation = await _receiveItemInformationRepository.GetReceiveRequestWithItemInfoById(command.Id);
 
-                if (receiveItemInformation == null) throw new ApiException($"Receive Item Information Not Found.");
-                
+                if (receiveItemInformation == null) throw new ApiException($"Receive Item Information Not Found."); 
                 if (receiveItemInformation.ReceiverId != command.UserId) throw new UnauthorizedAccessException();
-
                 if (receiveItemInformation.ReceiveStatus == (int)ReceiveItemInformationStatus.RECEIVING){
                     receiveItemInformation.ReceiveStatus = (int)ReceiveItemInformationStatus.CANCEL;
                     receiveItemInformation.Items.Status = (int)ItemStatus.NOT_YET;
                     await _receiveItemInformationRepository.UpdateAsync(receiveItemInformation);
-                    //await _receiveItemInformationRepository.DeleteAsync
                     return new Response<int>(receiveItemInformation.Id);
                 }
-                else throw new ApiException($"You cannot cancel receive item");
+                throw new ApiException($"You cannot cancel receiving item");
             }
         }
     }

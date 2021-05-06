@@ -31,22 +31,16 @@ namespace Application.Features.ItemFeatures.Commands
             {
                 var item = await _itemRepository.GetByIdAsync(command.Id);
                 var itemConfirmReceived = await _receiveItemInformationRepository.GetItemConfirmReceiveByItemId(command.Id);
-                if (item == null)
+                if (item == null) throw new ApiException($"Item Not Found.");
+                if (item.DonateAccountId != command.UserId) throw new UnauthorizedAccessException();
+                if (itemConfirmReceived == null) throw new ApiException($"Waiting for the confirmed received.");
+                if (item.Status==(int)ItemStatus.PENDING_FOR_RECEIVER)
                 {
-                    throw new ApiException($"Item Not Found.");
+                    item.Status = (int)ItemStatus.SUCCESS;
+                    await _itemRepository.UpdateAsync(item);
+                    return new Response<int>(item.Id);
                 }
-                if (item.DonateAccountId != command.UserId)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-                if(itemConfirmReceived == null)
-                {
-                    throw new ApiException($"Waiting for the confirmed received.");
-                }
-                
-                item.Status = (int)ItemStatus.SUCCESS;
-                await _itemRepository.UpdateAsync(item);
-                return new Response<int>(item.Id);
+                throw new ApiException($"You can not confirmed receive if donee have not confirmed received yet.");
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.Enums;
+using Application.Exceptions;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using MediatR;
@@ -26,9 +27,11 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                 var receiveItemInformation = await _receiveItemInformationRepository.GetByIdAsync(command.Id);
                 if (receiveItemInformation == null) throw new ApiException($"Receive Item Information Not Found.");
                 if (receiveItemInformation.ReceiverId != command.UserId) throw new UnauthorizedAccessException();
-
-                await _receiveItemInformationRepository.DeleteAsync(receiveItemInformation);
-                return new Response<int>(receiveItemInformation.Id);
+                if (receiveItemInformation.ReceiveStatus == (int)ReceiveItemInformationStatus.PENDING){
+                    await _receiveItemInformationRepository.DeleteAsync(receiveItemInformation);
+                    return new Response<int>(receiveItemInformation.Id);
+                }
+                throw new ApiException($"You only can delete when donor have not accepted any request.");
             }
         }
 

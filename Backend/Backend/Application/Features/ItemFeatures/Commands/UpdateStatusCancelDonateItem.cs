@@ -38,12 +38,9 @@ namespace Application.Features.ItemFeatures.Commands
                 {
                     item.Status = (int)ItemStatus.CANCEL;
                     await _itemRepository.UpdateAsync(item);
+                    return new Response<int>(item.Id);
                 }
-                else
-                {
-                    throw new ApiException($"You only cancel when do not accept any receive information.");
-                }
-                return new Response<int>(item.Id);
+                throw new ApiException($"You only can cancel when do not accept any receive information."); 
             }
         }
     }

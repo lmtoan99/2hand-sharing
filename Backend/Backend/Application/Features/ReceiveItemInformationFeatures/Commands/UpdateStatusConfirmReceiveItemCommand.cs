@@ -19,29 +19,25 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
         public class UpdateStatusConfirmSendItemCommandHandler : IRequestHandler<UpdateStatusConfirmReceiveItemCommand, Response<int>>
         {
             private readonly IReceiveItemInformationRepositoryAsync _receiveItemInformationRepository;
-            private readonly IMapper _mapper;
             public UpdateStatusConfirmSendItemCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemRepository, IMapper mapper)
             {
                 _receiveItemInformationRepository = receiveItemRepository;
-                _mapper = mapper;
             }
             public async Task<Response<int>> Handle(UpdateStatusConfirmReceiveItemCommand command, CancellationToken cancellationToken)
             {
-                var item = await _receiveItemInformationRepository.GetByIdAsync(command.Id);
-                
-                if (item == null)
-                {
-                    throw new ApiException($"Receive Item Information Not Found.");
-                }
-                if (item.ReceiverId != command.UserId)
-                {
-                    throw new UnauthorizedAccessException();
-                }
+                var receiveItem = await _receiveItemInformationRepository.GetByIdAsync(command.Id);
 
+                if (receiveItem == null) throw new ApiException($"Receive Item Information Not Found.");
+ 
+                if (receiveItem.ReceiverId != command.UserId) throw new UnauthorizedAccessException();
 
-                item.ReceiveStatus = (int)ReceiveItemInformationStatus.SUCCESS;
-                await _receiveItemInformationRepository.UpdateAsync(item);
-                return new Response<int>(item.Id);
+                if (receiveItem.ReceiveStatus == (int)ReceiveItemInformationStatus.RECEIVING)
+                {
+                    receiveItem.ReceiveStatus = (int)ReceiveItemInformationStatus.SUCCESS;
+                    await _receiveItemInformationRepository.UpdateAsync(receiveItem);
+                    return new Response<int>(receiveItem.Id);
+                }
+                throw new ApiException($"You only can confirm received when you received item successfuly.");
             }
         }
     }
