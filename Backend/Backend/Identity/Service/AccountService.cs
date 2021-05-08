@@ -110,7 +110,7 @@ namespace Identity.Service
                 await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
                 var verificationUri = await SendVerificationEmail(user);
                 //TODO: Attach Email Service here and configure it via appsettings
-                await _emailService.SendAsync(new EmailRequest() {To = user.Email, Body = $"Tài khoản của bạn đã được đăng kí trên trang web {_host}. Hãy xác nhận tài khoản của bạn bằng cách click vào URL sau {verificationUri}", Subject = "Confirm Registration" });
+                await _emailService.SendAsync(new EmailRequest() {To = user.Email, Body = $"<div style='text-align: center;'>Tài khoản của bạn đã được đăng kí trên trang web {_host}. Hãy xác nhận tài khoản của bạn bằng cách click vào URL sau<br><a href='{verificationUri}'>CONFIRM ACCOUNT</a></div>", Subject = "Confirm Registration" });
                 return new Response<string>(user.Id, message: $"User Registered. Please confirm your account by checking your email");
             }
             else
@@ -204,10 +204,10 @@ namespace Identity.Service
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(account);
             var route = "auth/forgot-password/reset";
-            var _enpointUri = new Uri($"{_host}/{route}?code={code}");
+            var _enpointUri = new Uri($"{_host}/{route}?userid={account.Id}&code={code}");
             var emailRequest = new EmailRequest()
             {
-                Body = $"Email phản hồi với yêu cầu đặt lại mật khẩu của bạn. Mời đặt lại mật khẩu qua URL: {_enpointUri}",
+                Body = $"<div style='text-align: center;'>Email phản hồi với yêu cầu đặt lại mật khẩu của bạn. Mời đặt lại mật khẩu qua URL:<br><a href='{ _enpointUri }'>RESET PASSWORD</a></div>",
                 To = model.Email,
                 Subject = "Reset Password",
             };
@@ -216,12 +216,12 @@ namespace Identity.Service
 
         public async Task<Response<string>> ResetPassword(ResetPasswordRequest model)
         {
-            var account = await _userManager.FindByEmailAsync(model.Email);
-            if (account == null) throw new ApiException($"No Account Registered with {model.Email}.");
+            var account = await _userManager.FindByIdAsync(model.UserId);
+            if (account == null) throw new ApiException($"No Account Registered with {model.UserId}.");
             var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password);
             if (result.Succeeded)
             {
-                return new Response<string>(model.Email, message: $"Password Resetted.");
+                return new Response<string>(model.UserId, message: $"Password Resetted.");
             }
             else
             {
