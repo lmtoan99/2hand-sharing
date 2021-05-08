@@ -110,7 +110,7 @@ namespace Identity.Service
                 await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
                 var verificationUri = await SendVerificationEmail(user);
                 //TODO: Attach Email Service here and configure it via appsettings
-                await _emailService.SendAsync(new EmailRequest() {To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration" });
+                await _emailService.SendAsync(new EmailRequest() {To = user.Email, Body = $"Tài khoản của bạn đã được đăng kí trên trang web {_host}. Hãy xác nhận tài khoản của bạn bằng cách click vào URL sau {verificationUri}", Subject = "Confirm Registration" });
                 return new Response<string>(user.Id, message: $"User Registered. Please confirm your account by checking your email");
             }
             else
@@ -207,7 +207,7 @@ namespace Identity.Service
             var _enpointUri = new Uri($"{_host}/{route}?code={code}");
             var emailRequest = new EmailRequest()
             {
-                Body = $"Email response for your reset password request. Please visit this URL to reset password {_enpointUri}",
+                Body = $"Email phản hồi với yêu cầu đặt lại mật khẩu của bạn. Mời đặt lại mật khẩu qua URL: {_enpointUri}",
                 To = model.Email,
                 Subject = "Reset Password",
             };

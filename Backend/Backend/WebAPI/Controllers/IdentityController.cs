@@ -44,7 +44,6 @@ namespace WebAPI.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest model)
         {
-
             return Ok(await _service.ResetPassword(model));
         }
         private string GenerateIPAddress()
