@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +11,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.Extensions;
+using Persistence.Extensions;
+using Application.Extensions;
+using Identity.Extensions;
+using Domain.Settings;
+using Shared;
 
 namespace WebAPI
 {
     public class Startup
     {
+        private readonly string MyAllowSpecificOrigins = "MyPolicy";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,9 +32,28 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddCors(o => o.AddPolicy(MyAllowSpecificOrigins, builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
+            services.AddControllers().AddNewtonsoftJson(OptionsBuilderConfigurationExtensions =>
+            OptionsBuilderConfigurationExtensions.SerializerSettings.ReferenceLoopHandling=Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSwaggerExtension();
+
+            services.AddPersistenceInfrastructure(Configuration);
+
+            services.AddApplicationLayer();
+
+            services.AddIdentityInfrastructure(Configuration);
+
+            services.AddOptions();                                         // Kích hoạt Options
+
+            services.AddSharedInfrastructure(Configuration);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,10 +63,21 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
+
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseErrorHandlingMiddleware();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 

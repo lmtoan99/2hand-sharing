@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Entities
 {
-    class GroupPostImageRelationship : BaseEntity
+    public class GroupPostImageRelationship : BaseEntity
     {
-        private int ImageId;
-        private int PostId;
+        public int ImageId { get; set; }
+        public int PostId{get;set;}
+        [ForeignKey("ImageId")]
+        [InverseProperty("GroupPostImageRelationship")]
+        public virtual Image Image { get; set; }
+        [ForeignKey("PostId")]
+        [InverseProperty("GroupPostImageRelationships")]
+        public virtual GroupPost Post { get; set; }
     }
 }

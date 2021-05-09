@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Entities
 {
-    class Message : BaseEntity
+    public class Message : BaseEntity
     {
-        private string Content;
-        private int SendDate;
-        private int SendFrom;
-        private int SendTo;
+        public string Content { get; set; }
+        public int SendDate{get;set;}
+        public int SendFromAccountId { get; set; }
+        public int SendToAccountId{get;set;}
+        [ForeignKey("SendFromAccountId")]
+        [InverseProperty("MessageSends")]
+        public virtual User SendFromAccount { get; set; }
+        [ForeignKey("SendToAccountId")]
+        [InverseProperty("MessageReceives")]
+        public virtual User SendToAccount { get; set; }
     }
 }

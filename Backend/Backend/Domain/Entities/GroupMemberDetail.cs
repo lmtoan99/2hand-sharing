@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Entities
 {
-    class GroupMemberDetail : BaseEntity
+    public class GroupMemberDetail : BaseEntity
     {
-        private int AccountId;
-        private int GroupId;
-        private bool ReportStatus;
-        private DateTime JoinDate;
+        public int MemberId { get; set; }
+        public int GroupId{get;set;}
+        public bool ReportStatus{get;set;}
+        public DateTime JoinDate{get;set;}
+        [ForeignKey("MemberId")]
+        [InverseProperty("GroupMemberDetails")]
+        public virtual User Member { get; set; }
+        [ForeignKey("GroupId")]
+        [InverseProperty("GroupMemberDetails")]
+        public virtual Group Group { get; set; }
     }
 }

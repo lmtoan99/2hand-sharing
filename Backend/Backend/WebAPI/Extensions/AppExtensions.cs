@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using WebAPI.Middlewares;
 
 namespace WebAPI.Extensions
 {
@@ -9,8 +10,13 @@ namespace WebAPI.Extensions
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "OnionArchitecture");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "2HandSharing");
             });
+        }
+
+        public static void UseErrorHandlingMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ErrorHandlerMiddleware>();
         }
     }
 }

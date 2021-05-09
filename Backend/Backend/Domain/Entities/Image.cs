@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Entities
 {
-    class Image : BaseEntity
+    public class Image : BaseEntity
     {
-        private int PostId;
+        public string FileName { get; set; }
+        public virtual GroupPostImageRelationship GroupPostImageRelationship { get; set; }
+        public virtual ItemImageRelationship ItemImageRelationship { get; set; }
+        public virtual User UserAvatar { get; set; }
     }
 }

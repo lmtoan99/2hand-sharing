@@ -1,15 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Entities
 {
-    class GroupPost : BaseEntity
+    public class GroupPost : BaseEntity
     {
-        private string Content;
-        private DateTime PostTime;
-        private int GroupId;
-        private int PostBy;
-        private int Visibility;
+        public string Content { get; set; }
+        public DateTime PostTime{get;set;}
+        public int GroupId{get;set;}
+        public int PostByAccountId{get;set;}
+        public int Visibility{get;set;}
+        [ForeignKey("GroupId")]
+        [InverseProperty("GroupPosts")]
+        public virtual Group Group { get; set; }
+        [ForeignKey("PostByAccountId")]
+        [InverseProperty("GroupPosts")]
+        public virtual User PostByAccount { get; set; }
+        public virtual ICollection<GroupPostImageRelationship> GroupPostImageRelationships { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Entities
 {
-    class Comment : BaseEntity
+    public class Comment : BaseEntity
     {
-        private string Content;
-        private int PostBy;
-        private DateTime PostTime;
+        public string Content { get; set; }
+        public int PostByAccontId{get;set;}
+        public DateTime PostTime{get;set;}
+        public int PostId { get; set; }
+        [ForeignKey("PostByAccountId")]
+        [InverseProperty("Comments")]
+        public virtual User PostByAccount { get; set; }
+        [ForeignKey("PostId")]
+        [InverseProperty("Comments")]
+        public virtual GroupPost Post { get; set; }
     }
 }

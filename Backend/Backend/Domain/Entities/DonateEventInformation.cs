@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Entities
 {
-    class DonateEventInformation : BaseEntity
+    public class DonateEventInformation : BaseEntity
     {
-        private int EventId;
-        private int ItemId;
-        private string Note;
+        public int EventId { get; set; }
+        public int ItemId{get;set;}
+        public string Note{get;set;}
+        [ForeignKey("ItemId")]
+        [InverseProperty("DonateEventInformation")]
+        public virtual Item Item { get; set; }
+        [ForeignKey("EventId")]
+        [InverseProperty("DonateEventInformations")]
+        public virtual Event Event { get; set; }
+        public virtual ICollection<Assignment> Assignments { get; set; }
     }
 }
