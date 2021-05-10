@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Account;
 using Application.DTOs.Address;
+using Application.DTOs.Group;
 using Application.DTOs.Item;
 using Application.DTOs.ReceiveRequest;
 using Application.Features.AccountFeatures.Commands;
@@ -46,6 +47,7 @@ namespace Application.Mappings
             CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>()
                 .ForMember(dest => dest.ItemName, o => o.MapFrom(source => source.Items.ItemName))
                 .ForMember(dest => dest.ItemImageUrl, o => o.MapFrom(source => source.Items.ItemImageRelationships.FirstOrDefault().Image.FileName));
+            CreateMap<Group, GroupDTO>();
         }
     }
 }
