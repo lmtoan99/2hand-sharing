@@ -41,7 +41,7 @@ namespace WebAPI.Controllers.v1
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
+            return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id, UserId = GetUserId() }));
         }
 
         [HttpGet("{itemId}/receive-request")]

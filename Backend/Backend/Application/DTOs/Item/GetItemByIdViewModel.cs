@@ -14,6 +14,8 @@ namespace Application.Features.ItemFeatures.Queries
         public DateTime PostTime { get; set; }
         public string Description { get; set; }
         public List<string> ImageUrl { get; set; }
+        public int DonateAccountId { get;set; }
         public string DonateAccountName { get; set; }
+        public int UserRequestId { get; set; }
     }
 }
