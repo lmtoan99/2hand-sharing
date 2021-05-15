@@ -28,6 +28,12 @@ namespace WebAPI.Controllers.v1
             }));
         }
         
+        [HttpGet("{requestId}")]
+        public async Task<IActionResult> DoneeGetReceiveRequestById(int requestId)
+        {
+            return Ok(await Mediator.Send(new DoneeGetReceiveRequestByIdQuery {RequestId = requestId, UserId = GetUserId() }));
+        }
+
         [HttpPut("{requestId}/accept")]
         public async Task<IActionResult> AcceptReceiveRequest(int requestId)
         {

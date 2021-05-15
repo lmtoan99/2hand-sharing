@@ -8,8 +8,7 @@ namespace Application.DTOs.ReceiveRequest
     public class ReceiveRequestDoneeViewModel
     {
         public int Id { get; set; }
-        public int ItemId { get; set; }
-        public string ItemName { get; set; }
-        public string ItemImageUrl { get; set; }
+        public string ReceiveReason { get; set; }
+        public int ReceiveStatus { get; set; }
     }
 }
