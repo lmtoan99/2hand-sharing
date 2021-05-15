@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Features.ItemFeatures.Queries
+namespace Application.DTOs.Item
 {
     public class GetItemByIdViewModel
     {

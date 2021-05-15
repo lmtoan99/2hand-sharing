@@ -3,6 +3,7 @@ using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
 using Application.Features.ReceiveItemInformationFeatures.Commands;
 using Application.Features.ReceiveItemInformationFeatures.Queries;
+using Application.Filter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -58,9 +59,9 @@ namespace WebAPI.Controllers.v1
         }
 
         [HttpGet("my-request")]
-        public async Task<IActionResult> DoneeGetListReceiveRequest()
+        public async Task<IActionResult> DoneeGetListReceiveRequest([FromQuery]RequestParameter filter)
         {
-            return Ok(await Mediator.Send(new DoneeGetListReceiveRequestQuery { UserId = GetUserId()}));
+            return Ok(await Mediator.Send(new DoneeGetListReceiveRequestQuery { UserId = GetUserId(),PageNumber = filter.PageNumber, PageSize = filter.PageSize}));
         }
     }
 }

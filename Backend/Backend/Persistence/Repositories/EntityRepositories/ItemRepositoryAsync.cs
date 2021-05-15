@@ -19,6 +19,15 @@ namespace Persistence.Repositories.EntityRepositories
             _item = dbContext.Set<Item>();
         }
 
+        public async Task<IReadOnlyCollection<Item>> GetAllItemHaveRequestWithReceiverId(int receiverId, int pageNumber, int pageSize)
+        {
+            return await _item.Where(i => i.ReceiveItemInformations.Where(r => r.ReceiverId == receiverId).Count() > 0)
+                .OrderByDescending(i => i.PostTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public async Task<IReadOnlyList<Item>> GetAllPostItemsAsync(int pageNumber, int pageSize)
         {
             return await _item
