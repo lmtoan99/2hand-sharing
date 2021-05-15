@@ -24,14 +24,6 @@ namespace Persistence.Repositories.EntityRepositories
             return await _receiveItemInformation.Where(e => e.ItemId == itemId).ToListAsync();
         }
 
-        public async Task<IReadOnlyList<ReceiveItemInformation>> GetAllWithItemInfoByAccountId(int accountId)
-        {
-            return await _receiveItemInformation
-                .Where(r => r.ReceiverId == accountId)
-                .Include(r => r.Items)
-                .ToListAsync();
-        }
-
         public async Task<ReceiveItemInformation> GetItemConfirmReceiveByItemId(int itemId)
         {
             return await _receiveItemInformation.Where(e => e.ItemId == itemId && e.ReceiveStatus == (int)ReceiveItemInformationStatus.SUCCESS).SingleOrDefaultAsync();

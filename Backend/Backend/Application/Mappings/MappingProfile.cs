@@ -44,9 +44,8 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName));
             CreateMap<User, UserInfoDTO>()
                 .ForMember(dest => dest.Avatar, o => o.MapFrom(source => source.Avatar.FileName));
-            CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>()
-                .ForMember(dest => dest.ItemName, o => o.MapFrom(source => source.Items.ItemName))
-                .ForMember(dest => dest.ItemImageUrl, o => o.MapFrom(source => source.Items.ItemImageRelationships.FirstOrDefault().Image.FileName));
+            CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
+                .ForAllMembers(o => o.MapFrom(source => source.Items));
             CreateMap<Group, GroupDTO>();
         }
     }
