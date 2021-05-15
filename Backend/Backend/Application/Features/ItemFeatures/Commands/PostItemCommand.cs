@@ -44,12 +44,8 @@ namespace Application.Features.ItemFeatures.Commands
             item.DonateType = (int)EDonateType.DONATE_POST;
             item.Status = (int)ItemStatus.NOT_YET;
             item.PostTime = DateTime.Now;
-            var address = await _addressRepository.findSameAddress(request.ReceiveAddress);
-            if (address == null)
-            {
-                address = _mapper.Map<Address>(request.ReceiveAddress);
-                await _addressRepository.AddAsync(address);
-            }
+            var address = _mapper.Map<Address>(request.ReceiveAddress);
+            await _addressRepository.AddAsync(address);
             item.AddressId = address.Id;
             await _itemRepository.AddAsync(item);
 

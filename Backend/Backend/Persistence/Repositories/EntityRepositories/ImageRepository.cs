@@ -15,8 +15,8 @@ namespace Persistence.Repositories.EntityRepositories
     class ImageRepository : GenericRepositoryAsync<Image>, IImageRepository
     {
         private readonly DbSet<Image> _image;
-        private readonly string credentialFilePath = "./twohandsharing-key.json";
-        private readonly string bucketName = "twohandsharing.appspot.com";
+        private readonly string credentialFilePath = "./secondhandsharing-key.json";
+        private readonly string bucketName = "secondhandsharing.appspot.com";
         public ImageRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
             _image = dbContext.Set<Image>();
@@ -24,7 +24,6 @@ namespace Persistence.Repositories.EntityRepositories
 
         public string GenerateV4UploadSignedUrl(string fileName)
         {
-            Console.WriteLine(credentialFilePath + "   " + File.Exists(credentialFilePath));
             UrlSigner urlSigner = UrlSigner.FromServiceAccountPath(credentialFilePath);
             var contentHeaders = new Dictionary<string, IEnumerable<string>>
             {
