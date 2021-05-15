@@ -47,6 +47,7 @@ namespace Application.Mappings
             CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
                 .ForAllMembers(o => o.MapFrom(source => source.Items));
             CreateMap<Group, GroupDTO>();
+            CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>();
         }
     }
 }
