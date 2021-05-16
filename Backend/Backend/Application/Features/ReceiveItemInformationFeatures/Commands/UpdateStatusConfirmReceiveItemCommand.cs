@@ -33,7 +33,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
 
                 if (receiveItem.ReceiveStatus == (int)ReceiveItemInformationStatus.RECEIVING)
                 {
-                    receiveItem.ReceiveStatus = (int)ReceiveItemInformationStatus.SUCCESS;
+                    //receiveItem.ReceiveStatus = (int)ReceiveItemInformationStatus.SUCCESS;
                     await _receiveItemInformationRepository.UpdateAsync(receiveItem);
                     return new Response<int>(receiveItem.Id);
                 }

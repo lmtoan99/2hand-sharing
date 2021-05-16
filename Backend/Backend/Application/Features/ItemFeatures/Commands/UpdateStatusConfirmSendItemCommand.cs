@@ -30,10 +30,10 @@ namespace Application.Features.ItemFeatures.Commands
             public async Task<Response<int>> Handle(UpdateStatusConfirmSendItemCommand command, CancellationToken cancellationToken)
             {
                 var item = await _itemRepository.GetByIdAsync(command.Id);
-                var itemConfirmReceived = await _receiveItemInformationRepository.GetItemConfirmReceiveByItemId(command.Id);
+                //var itemConfirmReceived = await _receiveItemInformationRepository.GetItemConfirmReceiveByItemId(command.Id);
                 if (item == null) throw new ApiException($"Item Not Found.");
                 if (item.DonateAccountId != command.UserId) throw new UnauthorizedAccessException();
-                if (itemConfirmReceived == null) throw new ApiException($"Waiting for the confirmed received.");
+                //if (itemConfirmReceived == null) throw new ApiException($"Waiting for the confirmed received.");
                 if (item.Status==(int)ItemStatus.PENDING_FOR_RECEIVER)
                 {
                     item.Status = (int)ItemStatus.SUCCESS;

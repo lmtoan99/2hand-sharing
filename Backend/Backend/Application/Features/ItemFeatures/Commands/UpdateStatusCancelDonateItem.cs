@@ -36,7 +36,6 @@ namespace Application.Features.ItemFeatures.Commands
                 }
                 if (item.Status==(int)ItemStatus.NOT_YET)
                 {
-                    item.Status = (int)ItemStatus.CANCEL;
                     await _itemRepository.UpdateAsync(item);
                     return new Response<int>(item.Id);
                 }
