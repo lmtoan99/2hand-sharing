@@ -28,7 +28,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
             var receiveRequest = await _receiveItemRepository.GetByIdAsync(request.requestId);
             if (receiveRequest == null) throw new KeyNotFoundException("ReceiveId not found");
             if (receiveRequest.ReceiverId != request.userId) throw new UnauthorizedAccessException();
-            if (receiveRequest.ReceiveStatus != (int)ReceiveItemInformationStatus.SUCCESS) throw new ApiException("Receive request not success");
+            //if (receiveRequest.ReceiveStatus != (int)ReceiveItemInformationStatus.SUCCESS) throw new ApiException("Receive request not success");
 
             receiveRequest.Thanks = request.thanks;
             await _receiveItemRepository.UpdateAsync(receiveRequest);

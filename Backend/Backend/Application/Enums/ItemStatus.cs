@@ -9,6 +9,5 @@ namespace Application.Enums
         NOT_YET = 0,
         PENDING_FOR_RECEIVER = 1,
         SUCCESS = 2,
-        CANCEL = 3
     }
 }

@@ -31,7 +31,7 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<IReadOnlyList<Item>> GetAllPostItemsAsync(int pageNumber, int pageSize)
         {
             return await _item
-                .Where(i => i.DonateType == (int)EDonateType.DONATE_POST && i.Status != (int)ItemStatus.SUCCESS && i.Status != (int)ItemStatus.CANCEL)
+                //.Where(i => i.DonateType == (int)EDonateType.DONATE_POST && i.Status != (int)ItemStatus.SUCCESS && i.Status != (int)ItemStatus.CANCEL)
                 .OrderByDescending(i => i.PostTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)

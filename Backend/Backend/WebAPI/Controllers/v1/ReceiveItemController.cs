@@ -49,7 +49,7 @@ namespace WebAPI.Controllers.v1
         [HttpPut("{requestId}/cancel-receive")]
         public async Task<IActionResult> CancelReceiveItem(int requestId)
         {
-            return Ok(await Mediator.Send(new UpdateStatusCancelReceiveItemCommand { Id = requestId, UserId = this.GetUserId() }));
+            return Ok(await Mediator.Send(new CancelReceiveItemCommand { Id = requestId, UserId = this.GetUserId() }));
         }
 
         [HttpDelete("{requestId}/delete-receive")]
