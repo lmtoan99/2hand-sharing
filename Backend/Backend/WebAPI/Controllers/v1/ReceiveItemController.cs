@@ -40,28 +40,22 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new AcceptReceiveRequestCommand {requestId = requestId, userId = GetUserId() }));
         }
 
-        [HttpPut("{requestId}/confirm-receive")]
-        public async Task<IActionResult> ConfirmReceiveItem(int requestId)
-        {
-            return Ok(await Mediator.Send(new UpdateStatusConfirmReceiveItemCommand { Id = requestId, UserId = this.GetUserId() }));
-        }
-
         [HttpPut("{requestId}/cancel-receive")]
         public async Task<IActionResult> CancelReceiveItem(int requestId)
         {
             return Ok(await Mediator.Send(new CancelReceiveItemCommand { Id = requestId, UserId = this.GetUserId() }));
         }
 
-        [HttpDelete("{requestId}/delete-receive")]
+        [HttpPut("{requestId}/cancel-receiver")]
         public async Task<IActionResult> Delete(int requestId)
         {
-            return Ok(await Mediator.Send(new DeleteRequestReceiveByIdCommand { Id = requestId,UserId=this.GetUserId() }));
+            return Ok(await Mediator.Send(new CancelChooseReceiverByIdCommand { Id = requestId, UserId=this.GetUserId() }));
         }
 
         [HttpPut("{requestId}/send-thanks")]
         public async Task<IActionResult> SendThanks(int requestId, [FromBody] SendThanksDTO thanks)
         {
-            return Ok(await Mediator.Send(new SendThanksCommand { requestId = requestId,thanks = thanks.thanks, userId = GetUserId()}));
+            return Ok(await Mediator.Send(new SendThanksCommand { requestId = requestId, thanks = thanks.thanks, userId = GetUserId()}));
         }
 
         [HttpGet("my-request")]

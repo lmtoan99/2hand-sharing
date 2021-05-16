@@ -19,28 +19,23 @@ namespace Application.Features.ItemFeatures.Commands
         public class UpdateStatusConfirmSendItemCommandHandler : IRequestHandler<UpdateStatusConfirmSendItemCommand, Response<int>>
         {
             private readonly IItemRepositoryAsync _itemRepository;
-            private readonly IReceiveItemInformationRepositoryAsync _receiveItemInformationRepository;
-            private readonly IMapper _mapper;
-            public UpdateStatusConfirmSendItemCommandHandler(IItemRepositoryAsync itemRepository, IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, IMapper mapper)
+            public UpdateStatusConfirmSendItemCommandHandler(IItemRepositoryAsync itemRepository)
             {
                 _itemRepository = itemRepository;
-                _receiveItemInformationRepository = receiveItemInformationRepository;
-                _mapper = mapper;
             }
             public async Task<Response<int>> Handle(UpdateStatusConfirmSendItemCommand command, CancellationToken cancellationToken)
             {
                 var item = await _itemRepository.GetByIdAsync(command.Id);
-                //var itemConfirmReceived = await _receiveItemInformationRepository.GetItemConfirmReceiveByItemId(command.Id);
                 if (item == null) throw new ApiException($"Item Not Found.");
                 if (item.DonateAccountId != command.UserId) throw new UnauthorizedAccessException();
-                //if (itemConfirmReceived == null) throw new ApiException($"Waiting for the confirmed received.");
-                if (item.Status==(int)ItemStatus.PENDING_FOR_RECEIVER)
+
+                if (item.Status == (int)ItemStatus.PENDING_FOR_RECEIVER)
                 {
                     item.Status = (int)ItemStatus.SUCCESS;
                     await _itemRepository.UpdateAsync(item);
                     return new Response<int>(item.Id);
                 }
-                throw new ApiException($"You can not confirmed receive if donee have not confirmed received yet.");
+                throw new ApiException($"You can not confirm send.");
             }
         }
     }
