@@ -31,7 +31,7 @@ namespace Application.Features.ItemFeatures.Commands
         {
             var item = await _itemRepository.GetByIdAsync(request.ItemId);
             if (item == null) throw new KeyNotFoundException("ItemId not found");
-            if (item.Status != (int)ItemStatus.NOT_YET) throw new ApiException("Item is not able to create receive request");
+            if (item.Status == (int)ItemStatus.SUCCESS) throw new ApiException("Item is not able to create receive request");
             var checkCreated = await _receiveItemInformationRepository.GetByConditionAsync(i => i.ItemId == request.ItemId && i.ReceiverId == request.ReceiverId);
             if (checkCreated.Count > 0) throw new ApiException("User created a receive request on this item");
             if (request.ReceiverId == item.DonateAccountId) throw new ApiException("User can not create request on their item");

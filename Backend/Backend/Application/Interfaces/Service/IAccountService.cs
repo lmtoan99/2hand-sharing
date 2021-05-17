@@ -14,5 +14,6 @@ namespace Application.Interfaces.Service
         Task<Response<string>> ConfirmEmailAsync(ConfirmEmailRequest request);
         Task ForgotPassword(ForgotPasswordRequest model);
         Task<Response<string>> ResetPassword(ResetPasswordRequest model);
+        Task<string> GetEmailById(string accountId);
     }
 }

@@ -14,6 +14,7 @@ namespace Persistence.Repositories.EntityRepositories
     class ItemRepositoryAsync : GenericRepositoryAsync<Item>, IItemRepositoryAsync
     {
         private readonly DbSet<Item> _item;
+
         public ItemRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
             _item = dbContext.Set<Item>();
@@ -59,6 +60,11 @@ namespace Persistence.Repositories.EntityRepositories
                 .Where(i => i.DonateAccountId == accountId)
                 .Include(i => i.Address)
                 .ToListAsync();
+        }
+
+        public async Task<Item> GetItemContactByIdAsync(int itemId)
+        {
+            return await _item.Where(i => i.Id == itemId).Include(i => i.DonateAccount).FirstAsync();
         }
 
         public async Task<Item> GetItemWithReceiveRequestByIdAsync(int itemId)

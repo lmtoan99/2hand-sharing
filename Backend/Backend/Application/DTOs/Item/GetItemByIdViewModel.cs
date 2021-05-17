@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Address;
+using Application.Enums;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,6 @@ namespace Application.DTOs.Item
         public int DonateAccountId { get;set; }
         public string DonateAccountName { get; set; }
         public int UserRequestId { get; set; }
+        public ItemStatus Status { get; set; }
     }
 }

@@ -82,6 +82,8 @@ namespace Identity.Service
             return new Response<AuthenticateResponse>(response, $"Authenticated {user.UserName}");
         }
 
+
+
         public async Task<Response<string>> RegisterAsync(RegisterRequest request)
         {
             var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
@@ -227,6 +229,12 @@ namespace Identity.Service
             {
                 throw new ApiException($"Error occured while reseting the password.");
             }
+        }
+
+        public async Task<string> GetEmailById(string accountId)
+        {
+            var user = await _userManager.FindByIdAsync(accountId);
+            return user.Email;
         }
     }
 }
