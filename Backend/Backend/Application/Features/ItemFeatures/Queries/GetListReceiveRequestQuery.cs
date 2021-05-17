@@ -32,7 +32,7 @@ namespace Application.Features.ItemFeatures.Queries
             var item = await _itemRepository.GetItemWithReceiveRequestByIdAsync(request.ItemId);
             if (item == null) throw new KeyNotFoundException("ItemId not found");
             if (item.DonateAccountId != request.UserId) throw new UnauthorizedAccessException();
-            if (item.Status != (int)ItemStatus.NOT_YET) throw new ApiException("Item is not able to receive");
+            if (item.Status == (int)ItemStatus.SUCCESS) throw new ApiException("Item is not able to receive");
             var response = _mapper.Map<IEnumerable<ReceiveRequestDonorViewModel>>(item.ReceiveItemInformations);
             return new Response<IEnumerable<ReceiveRequestDonorViewModel>>(response);
         }
