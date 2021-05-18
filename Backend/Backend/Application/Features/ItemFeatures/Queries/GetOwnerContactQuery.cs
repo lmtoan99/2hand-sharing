@@ -24,13 +24,16 @@ namespace Application.Features.ItemFeatures.Queries
         private readonly IItemRepositoryAsync _itemRepository;
         private readonly IReceiveItemInformationRepositoryAsync _receiveRequestRepository;
         private readonly IAccountService _accountServices;
+        private readonly IUserRepositoryAsync _userRepository;
 
-        public GetOwnerContactHandler(IItemRepositoryAsync itemRepository, IMapper mapper, IAccountService accountServices, IReceiveItemInformationRepositoryAsync receiveRequestRepository)
+        public GetOwnerContactHandler(IItemRepositoryAsync itemRepository, IReceiveItemInformationRepositoryAsync receiveRequestRepository, IAccountService accountServices, IUserRepositoryAsync userRepository)
         {
             _itemRepository = itemRepository;
-            _accountServices = accountServices;
             _receiveRequestRepository = receiveRequestRepository;
+            _accountServices = accountServices;
+            _userRepository = userRepository;
         }
+
 
         public async Task<Response<GetOwnerContactResponse>> Handle(GetOwnerContactQuery request, CancellationToken cancellationToken)
         {
@@ -43,8 +46,9 @@ namespace Application.Features.ItemFeatures.Queries
             }
 
             var email = await _accountServices.GetEmailById(item.DonateAccount.AccountId);
-            if (email == null) throw new ApiException("User not found!");
-            var reponse = new GetOwnerContactResponse { PhoneNumber = null, Email = email };
+            var user = await _userRepository.GetByIdAsync(item.DonateAccount.Id);
+            if (email == null || user == null) throw new ApiException("User not found!");
+            var reponse = new GetOwnerContactResponse { PhoneNumber = user.PhoneNumber, Email = email };
             return new Response<GetOwnerContactResponse>(reponse);
         }
     }
