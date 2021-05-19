@@ -55,7 +55,6 @@ namespace Application.Features.UserFeature.Commands
                     user.Address.DistrictId = address.DistrictId;
                     user.Address.CityId = address.CityId;
                 }
-                
             }
             await _userRepository.UpdateAsync(user);
             return new Response<UserInfoDTO>(_mapper.Map<UserInfoDTO>(user));
