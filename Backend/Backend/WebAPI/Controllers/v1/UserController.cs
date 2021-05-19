@@ -1,4 +1,6 @@
-﻿using Application.Features.AccountsFeature.Queries;
+﻿using Application.DTOs.Account;
+using Application.Features.AccountsFeature.Queries;
+using Application.Features.UserFeature.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,6 +18,17 @@ namespace WebAPI.Controllers.v1
         public async Task<IActionResult> GetUserInfo()
         {
             return Ok(await Mediator.Send(new GetUserInfoQuery { UserId = GetUserId() }));
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserInfo(UpdateUserDTO request)
+        {
+            return Ok(await Mediator.Send(new UpdateUserInfoCommand {
+                UserId = GetUserId(),
+                FullName = request.FullName,
+                PhoneNumber = request.PhoneNumber,
+                Dob = request.Dob,
+                Address = request.Address
+            }));
         }
     }
 }
