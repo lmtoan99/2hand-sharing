@@ -42,8 +42,20 @@ namespace Application.Features.UserFeature.Commands
             if (request.PhoneNumber != null) user.PhoneNumber = request.PhoneNumber;
             if (request.Address != null)
             {
-                var address = await _addressRepository.AddAsync(_mapper.Map<Address>(request.Address));
-                user.AddressId = address.Id;
+                var address = _mapper.Map<Address>(request.Address);
+                if (user.AddressId == null)
+                {
+                    var newAddress = await _addressRepository.AddAsync(address);
+                    user.AddressId = newAddress.Id;
+                }
+                else
+                {
+                    user.Address.Street = address.Street;
+                    user.Address.WardId = address.WardId;
+                    user.Address.DistrictId = address.DistrictId;
+                    user.Address.CityId = address.CityId;
+                }
+                
             }
             await _userRepository.UpdateAsync(user);
             return new Response<UserInfoDTO>(_mapper.Map<UserInfoDTO>(user));
