@@ -79,6 +79,7 @@ namespace Identity.Service
             response.Roles = rolesList.ToList().FirstOrDefault();
             response.IsVerified = user.EmailConfirmed;
             response.UserInfo = _mapper.Map<UserInfoDTO>(await _userRepository.GetUserInfoByUserId(user.Id));
+            response.UserInfo.Email = request.Email;
             return new Response<AuthenticateResponse>(response, $"Authenticated {user.UserName}");
         }
 

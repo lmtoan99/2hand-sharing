@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Account;
 using Application.Exceptions;
 using Application.Interfaces.Repositories;
+using Application.Interfaces.Service;
 using Application.Wrappers;
 using AutoMapper;
 using MediatR;
@@ -19,17 +20,23 @@ namespace Application.Features.AccountsFeature.Queries
     public class GetUserInfoQueryHandler : IRequestHandler<GetUserInfoQuery, Response<UserInfoDTO>>
     {
         private readonly IUserRepositoryAsync _userRepository;
+        private readonly IAccountService _accountService;
+
         private readonly IMapper _mapper;
-        public GetUserInfoQueryHandler(IUserRepositoryAsync userRepository, IMapper mapper)
+        public GetUserInfoQueryHandler(IUserRepositoryAsync userRepository, IMapper mapper,IAccountService accountService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _accountService = accountService;
         }
         public async Task<Response<UserInfoDTO>> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserInfoById(request.UserId);
             if (user == null) throw new ApiException("User id not found");
-            return new Response<UserInfoDTO>(_mapper.Map<UserInfoDTO>(user));
+            var email = await _accountService.GetEmailById(user.AccountId);
+            var response = new Response<UserInfoDTO>(_mapper.Map<UserInfoDTO>(user));
+            response.Data.Email = email;
+            return response;
         }
     }
 }

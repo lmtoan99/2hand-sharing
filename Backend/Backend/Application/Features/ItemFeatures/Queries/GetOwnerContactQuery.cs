@@ -40,9 +40,12 @@ namespace Application.Features.ItemFeatures.Queries
             var receiveRequest = await _receiveRequestRepository.GetReceiveRequestByItemIdAndUserId(request.ItemId, request.UserId);
             var item = await _itemRepository.GetItemContactByIdAsync(request.ItemId);
             if (item == null) throw new ApiException("Item not found!");
-            if (receiveRequest == null || receiveRequest.ReceiveStatus != (int) ReceiveItemInformationStatus.RECEIVING)
+            if (request.UserId != item.DonateAccount.Id)
             {
-                throw new ApiException("Permission denied: User's request isn't accepted!");
+                if (receiveRequest == null || receiveRequest.ReceiveStatus != (int)ReceiveItemInformationStatus.RECEIVING)
+                {
+                    throw new ApiException("Permission denied: User's request isn't accepted!");
+                }
             }
 
             var email = await _accountServices.GetEmailById(item.DonateAccount.AccountId);

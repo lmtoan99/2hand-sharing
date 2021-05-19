@@ -12,5 +12,6 @@ namespace Application.Interfaces.Repositories
         Task<ReceiveItemInformation> GetReceiveRequestWithItemInfoById(int requestId);
 
         Task<ReceiveItemInformation> GetReceiveRequestByItemIdAndUserId(int itemId, int userId);
+        Task<ReceiveItemInformation> GetReceiveRequestByWithReceiverInfoById(int requestId);
     }
 }
