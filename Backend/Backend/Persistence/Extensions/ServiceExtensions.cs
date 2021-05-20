@@ -31,6 +31,7 @@ namespace Persistence.Extensions
             services.AddScoped<IReceiveItemInformationRepositoryAsync, ReceveItemInformationRepositoryAsync>();
             services.AddScoped<IGroupRepositoryAsync, GroupRepositoryAsync>();
             services.AddScoped<IGroupAdminDetailRepositoryAsync, GroupAdminDetailRepositoryAsync>();
+            services.AddScoped<IMessageRepositoryAsync, MessageRepositoryAsync>();
             #endregion
 
             #region ApplicationContext
