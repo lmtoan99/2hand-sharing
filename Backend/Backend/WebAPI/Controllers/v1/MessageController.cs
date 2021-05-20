@@ -1,4 +1,6 @@
-﻿using Application.Features.MessageFeatures.Queries;
+﻿using Application.DTOs.Message;
+using Application.Features.MessageFeatures.Commands;
+using Application.Features.MessageFeatures.Queries;
 using Application.Filter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +23,15 @@ namespace WebAPI.Controllers.v1
                 UserMessageWithId = userid,
                 PageNumber = filter.PageNumber,
                 PageSize = filter.PageSize
+            }));
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendMessage(SendMessageRequest request)
+        {
+            return Ok(await Mediator.Send(new SendMessageCommand {
+                Content = request.Content,
+                SendFromAccountId = GetUserId(),
+                SendToAccountId = request.SendToAccountId
             }));
         }
     }
