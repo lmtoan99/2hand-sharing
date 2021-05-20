@@ -37,13 +37,13 @@ namespace Application.Features.GroupFeatures.Commands
                 GroupName = request.GroupName,
                 Description = request.Description,
                 Rules = request.Rules,
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now.ToUniversalTime()
             };
             var result = await _groupRepository.AddAsync(group);
             await _groupAdminDetailRepository.AddAsync(new GroupAdminDetail { 
                 GroupId = result.Id,
                 AdminId = request.AdminId,
-                AppointDate = DateTime.Now
+                AppointDate = DateTime.Now.ToUniversalTime()
             });
             return new Response<GroupDTO>(_mapper.Map<GroupDTO>(result));
         }

@@ -43,7 +43,7 @@ namespace Application.Features.ItemFeatures.Commands
             var item = _mapper.Map<Item>(request);
             item.DonateType = (int)EDonateType.DONATE_POST;
             item.Status = (int)ItemStatus.NOT_YET;
-            item.PostTime = DateTime.Now;
+            item.PostTime = DateTime.Now.ToUniversalTime();
             var address = _mapper.Map<Address>(request.ReceiveAddress);
             await _addressRepository.AddAsync(address);
             item.AddressId = address.Id;
