@@ -50,11 +50,6 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetListReceiveRequestQuery { ItemId = itemId, UserId = this.GetUserId() }));
         }
 
-        [HttpGet("{itemId}/owner-contact")]
-        public async Task<IActionResult> GetItemContact(int itemId)
-        {
-            return Ok(await Mediator.Send(new GetOwnerContactQuery { ItemId = itemId, UserId = this.GetUserId() }));
-        }
 
         [HttpPut("{itemId}/confirm-send")]
         public async Task<IActionResult> confirmSendItem(int itemId)
