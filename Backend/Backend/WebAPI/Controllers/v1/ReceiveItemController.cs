@@ -64,11 +64,7 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new DoneeGetListReceiveRequestQuery { UserId = GetUserId(),PageNumber = filter.PageNumber, PageSize = filter.PageSize}));
         }
 
-        [HttpGet("{requestId}/receiver-info")]
-        public async Task<IActionResult> GetReceiverInfo(int requestId)
-        {
-            return Ok(await Mediator.Send(new GetReceiverInfoByIdQuery { ReceiverId = requestId }));
-        }
+
 
     }
 }
