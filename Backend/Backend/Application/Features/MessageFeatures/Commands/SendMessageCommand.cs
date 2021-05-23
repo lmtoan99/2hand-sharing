@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Message;
+﻿using Application.DTOs.Firebase;
+using Application.DTOs.Message;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Service;
 using Application.Wrappers;
@@ -22,27 +23,37 @@ namespace Application.Features.MessageFeatures.Commands
     {
         private readonly IMessageRepositoryAsync _messageRepository;
         private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
+        private readonly IUserRepositoryAsync _userRepository;
         private readonly IFirebaseSerivce _firebaseSerivce;
         private readonly IMapper _mapper;
-        public SendMessageCommandHandler(IMessageRepositoryAsync messageRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IFirebaseSerivce firebaseSerivce, IMapper mapper)
+        public SendMessageCommandHandler(IMessageRepositoryAsync messageRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IUserRepositoryAsync userRepository, IFirebaseSerivce firebaseSerivce, IMapper mapper)
         {
             _messageRepository = messageRepository;
             _firebaseTokenRepository = firebaseTokenRepository;
+            _userRepository = userRepository;
             _firebaseSerivce = firebaseSerivce;
             _mapper = mapper;
         }
         public async Task<Response<MessageDTO>> Handle(SendMessageCommand request, CancellationToken cancellationToken)
         {
-            var result = new Domain.Entities.Message {
+            var result = await _messageRepository.AddAsync(new Domain.Entities.Message {
                 Content = request.Content,
                 SendFromAccountId = request.SendFromAccountId,
                 SendToAccountId = request.SendToAccountId,
                 SendDate = DateTime.Now.ToUniversalTime()
-            };
-
-            var list_firebase = await _firebaseTokenRepository.GetListFirebaseToken(request.SendToAccountId);
+            });
             
-            _firebaseSerivce.SendMessage(list_firebase, request.Content);
+            var list_firebase = await _firebaseTokenRepository.GetListFirebaseToken(request.SendToAccountId);
+
+            string SenderName = await _userRepository.GetUserFullnameById(result.SendFromAccountId);
+            MessageNotiData message = new MessageNotiData
+            {
+                Content = result.Content,
+                SendDate = result.SendDate,
+                SendFromAccountId = result.SendFromAccountId,
+                SendFromAccountName = SenderName
+            };
+            await _firebaseSerivce.SendMessage(list_firebase, message);
 
             return new Response<MessageDTO>(_mapper.Map<MessageDTO>(result));
         }

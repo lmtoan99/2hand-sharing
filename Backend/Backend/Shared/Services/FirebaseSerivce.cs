@@ -1,11 +1,15 @@
-﻿using Application.Interfaces.Service;
+﻿using Application.DTOs.Firebase;
+using Application.Interfaces.Service;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
+using System.Threading.Tasks;
 
 namespace Shared.Services
 {
@@ -30,23 +34,29 @@ namespace Shared.Services
             }
             firebaseMessaging = FirebaseMessaging.GetMessaging(app);
         }
-        public async void SendMessage(IReadOnlyList<string> registration_ids, string messageValue)
+        public async Task<int> SendMessage(IReadOnlyList<string> registration_ids, MessageNotiData messageValue)
         {
+            var options = new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+                WriteIndented = true
+            };
+
             var message = new MulticastMessage()
             {
                 Data = new Dictionary<string, string>()
                 {
                     {"type",1.ToString() },
-                    { "message", messageValue}
+                    { "message", JsonSerializer.Serialize(messageValue,options)}
                 },
                 Tokens = registration_ids,
-                Notification = new Notification
-                {
-                    Title = "Title",
-                    Body = "Body"
+                Notification = new Notification{
+                    Title = messageValue.SendFromAccountName,
+                    Body = messageValue.Content
                 }
             };
-            await firebaseMessaging.SendMulticastAsync(message);
+            int rt = (await firebaseMessaging.SendMulticastAsync(message)).FailureCount;
+            return rt;
         }
     }
 }

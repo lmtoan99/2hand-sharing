@@ -13,5 +13,6 @@ namespace Application.Interfaces.Repositories
         public Task<User> GetUserByAccountId(string accountId);
         Task<User> GetUserInfoByUserId(string id);
         Task<User> GetUserInfoById(int id);
+        Task<string> GetUserFullnameById(int id);
     }
 }
