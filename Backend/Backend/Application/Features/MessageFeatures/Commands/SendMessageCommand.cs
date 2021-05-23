@@ -53,8 +53,16 @@ namespace Application.Features.MessageFeatures.Commands
                 SendFromAccountId = result.SendFromAccountId,
                 SendFromAccountName = SenderName
             };
-            await _firebaseSerivce.SendMessage(list_firebase, message);
-
+            var responses = await _firebaseSerivce.SendMessage(list_firebase, message);
+            for (int i = 0; i < responses.Count; i++)
+            {
+                var response = responses[i];
+                if (!response.IsSuccess)
+                {
+                    var results = await _firebaseTokenRepository.GetByConditionAsync(f => f.Token == list_firebase[i]);
+                    await _firebaseTokenRepository.DeleteAsync(results[0]);
+                }
+            }
             return new Response<MessageDTO>(_mapper.Map<MessageDTO>(result));
         }
     }

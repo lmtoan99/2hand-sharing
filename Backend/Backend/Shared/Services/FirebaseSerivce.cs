@@ -38,7 +38,7 @@ namespace Shared.Services
             firebaseMessaging = FirebaseMessaging.GetMessaging(app);
             //this._firebaseTokenRepository = firebaseTokenRepository;
         }
-        public async Task<int> SendMessage(IReadOnlyList<string> registration_ids, MessageNotiData messageValue)
+        public async Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_ids, MessageNotiData messageValue)
         {
             var options = new JsonSerializerOptions
             {
@@ -55,17 +55,7 @@ namespace Shared.Services
                 },
                 Tokens = registration_ids,
             };
-            var responses = (await firebaseMessaging.SendMulticastAsync(message)).Responses;
-            for(int i = 0; i < responses.Count; i++)
-            {
-                var response = responses[i];
-                if(!response.IsSuccess)
-                {
-                    //var result = await _firebaseTokenRepository.GetByConditionAsync(f => f.Token == registration_ids[i]);
-                    //await _firebaseTokenRepository.DeleteAsync(result[0]);
-                }
-            }
-            return 0;
+            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
         }
     }
 }

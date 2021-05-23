@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Firebase;
+using FirebaseAdmin.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Application.Interfaces.Service
 {
     public interface IFirebaseSerivce
     {
-        Task<int> SendMessage(IReadOnlyList<string> registration_id, MessageNotiData messageValue);
+        Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_id, MessageNotiData messageValue);
     }
 }
