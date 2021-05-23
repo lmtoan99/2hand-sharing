@@ -50,10 +50,6 @@ namespace Shared.Services
                     { "message", JsonSerializer.Serialize(messageValue,options)}
                 },
                 Tokens = registration_ids,
-                Notification = new Notification{
-                    Title = messageValue.SendFromAccountName,
-                    Body = messageValue.Content
-                }
             };
             int rt = (await firebaseMessaging.SendMulticastAsync(message)).FailureCount;
             return rt;
