@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Firebase;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Service;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
@@ -18,7 +19,9 @@ namespace Shared.Services
         private readonly string path;
         private readonly FirebaseApp app;
         private readonly FirebaseMessaging firebaseMessaging;
-        public FirebaseSerivce()
+        //private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
+
+        public FirebaseSerivce(/*IFirebaseTokenRepositoryAsync firebaseTokenRepository*/)
         {
             path = "firebase-admin.json";
             try
@@ -33,6 +36,7 @@ namespace Shared.Services
                 app = FirebaseApp.GetInstance("myApp");
             }
             firebaseMessaging = FirebaseMessaging.GetMessaging(app);
+            //this._firebaseTokenRepository = firebaseTokenRepository;
         }
         public async Task<int> SendMessage(IReadOnlyList<string> registration_ids, MessageNotiData messageValue)
         {
@@ -51,8 +55,17 @@ namespace Shared.Services
                 },
                 Tokens = registration_ids,
             };
-            int rt = (await firebaseMessaging.SendMulticastAsync(message)).FailureCount;
-            return rt;
+            var responses = (await firebaseMessaging.SendMulticastAsync(message)).Responses;
+            for(int i = 0; i < responses.Count; i++)
+            {
+                var response = responses[i];
+                if(!response.IsSuccess)
+                {
+                    //var result = await _firebaseTokenRepository.GetByConditionAsync(f => f.Token == registration_ids[i]);
+                    //await _firebaseTokenRepository.DeleteAsync(result[0]);
+                }
+            }
+            return 0;
         }
     }
 }
