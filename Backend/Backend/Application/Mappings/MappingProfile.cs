@@ -7,6 +7,7 @@ using Application.DTOs.ReceiveRequest;
 using Application.Features.AccountFeatures.Commands;
 using Application.Features.CategoryFeatures.Commands;
 using Application.Features.CategoryFeatures.Queries.GetAllCategories;
+using Application.Features.GroupFeatures.Queries;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
 using AutoMapper;
@@ -50,6 +51,10 @@ namespace Application.Mappings
             CreateMap<Group, GroupDTO>();
             CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>();
             CreateMap<Message, MessageDTO>();
+            CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
+            CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
+                .ForMember(dest => dest.FullName, o => o.MapFrom(source =>
+                    source.Member.FullName));
         }
     }
 }

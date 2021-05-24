@@ -30,5 +30,12 @@ namespace WebAPI.Controllers.v1
                 AdminId = GetUserId()
             }));
         }
+
+        [HttpGet("{groupid}/get-group-member")]
+        public async Task<IActionResult> GetAllMember([FromQuery] GetAllGroupMemberByGroupIdParameter filter, int groupid)
+        {
+            if (filter == null) return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery()));
+            return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupid }));
+        }
     }
 }
