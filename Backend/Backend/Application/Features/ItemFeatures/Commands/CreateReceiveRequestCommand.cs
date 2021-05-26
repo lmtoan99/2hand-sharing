@@ -1,6 +1,8 @@
-﻿using Application.Enums;
+﻿using Application.DTOs.Firebase;
+using Application.Enums;
 using Application.Exceptions;
 using Application.Interfaces.Repositories;
+using Application.Interfaces.Service;
 using Application.Wrappers;
 using MediatR;
 using System;
@@ -21,11 +23,18 @@ namespace Application.Features.ItemFeatures.Commands
     {
         private readonly IItemRepositoryAsync _itemRepository;
         private readonly IReceiveItemInformationRepositoryAsync _receiveItemInformationRepository;
-        public CreateReceiveRequestCommandHandle(IItemRepositoryAsync itemRepository,
-            IReceiveItemInformationRepositoryAsync receiveItemInformationRepository)
+        private readonly IFirebaseSerivce _firebaseSerivce;
+        private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
+        private readonly IUserRepositoryAsync _userRepository;
+
+        public CreateReceiveRequestCommandHandle(IFirebaseSerivce firebaseSerivce, IItemRepositoryAsync itemRepository,
+            IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IUserRepositoryAsync userRepository)
         {
             _itemRepository = itemRepository;
             _receiveItemInformationRepository = receiveItemInformationRepository;
+            _firebaseTokenRepository = firebaseTokenRepository;
+            _userRepository = userRepository;
+            _firebaseSerivce = firebaseSerivce;
         }
         public async Task<Response<int>> Handle(CreateReceiveRequestCommand request, CancellationToken cancellationToken)
         {
@@ -35,6 +44,7 @@ namespace Application.Features.ItemFeatures.Commands
             var checkCreated = await _receiveItemInformationRepository.GetByConditionAsync(i => i.ItemId == request.ItemId && i.ReceiverId == request.ReceiverId);
             if (checkCreated.Count > 0) throw new ApiException("User created a receive request on this item");
             if (request.ReceiverId == item.DonateAccountId) throw new ApiException("User can not create request on their item");
+            var receiverName = await _userRepository.GetUserFullnameById(request.ReceiverId);
             var newInfo = new Domain.Entities.ReceiveItemInformation
             {
                 ItemId = request.ItemId,
@@ -43,6 +53,18 @@ namespace Application.Features.ItemFeatures.Commands
                 ReceiveStatus = (int)ReceiveItemInformationStatus.PENDING
             };
             await _receiveItemInformationRepository.AddAsync(newInfo);
+            var tokens = await _firebaseTokenRepository.GetListFirebaseToken(item.DonateAccountId);
+            ReceiveRequestNotificationData data = new ReceiveRequestNotificationData
+            {
+                ReceiverId = request.ReceiverId,
+                ReceiverName = receiverName,
+                ItemId = request.ItemId,
+                ItemName = item.ItemName,
+                ReceiveReason = request.ReceiveReason
+            };
+            var responses = await _firebaseSerivce.SendReceiveRequestNotification(tokens, data);
+            _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
+
 
             return new Response<int>(newInfo.Id);
         }

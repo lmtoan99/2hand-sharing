@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Repositories;
 using Domain.Entities;
+using FirebaseAdmin.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using System.Collections.Generic;
@@ -16,11 +17,24 @@ namespace Persistence.Repositories.EntityRepositories
             _firebaseTokens = dbContext.Set<FirebaseToken>();
         }
 
+        public void CleanExpiredToken(IReadOnlyList<string> tokens, IReadOnlyList<SendResponse> responses)
+        {
+            for (int i = 0; i < responses.Count; i++)
+            {
+                var response = responses[i];
+                if (!response.IsSuccess)
+                {
+                    _firebaseTokens.Remove(_firebaseTokens.Where(f => f.Token == tokens[i]).FirstOrDefault());
+                }
+            }
+        }
+
         public async Task<IReadOnlyList<string>> GetListFirebaseToken(int userId)
         {
             return await _firebaseTokens.Where(f => f.UserId == userId)
                 .Select(f => f.Token)
                 .ToListAsync();
         }
+
     }
 }

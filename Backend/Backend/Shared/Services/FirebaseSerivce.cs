@@ -4,6 +4,8 @@ using Application.Interfaces.Service;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -40,10 +42,15 @@ namespace Shared.Services
         }
         public async Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_ids, MessageNotiData messageValue)
         {
-            var options = new JsonSerializerOptions
+            DefaultContractResolver contractResolver = new DefaultContractResolver
             {
-                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
-                WriteIndented = true
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
             };
 
             var message = new MulticastMessage()
@@ -51,11 +58,45 @@ namespace Shared.Services
                 Data = new Dictionary<string, string>()
                 {
                     {"type",1.ToString() },
-                    { "message", JsonSerializer.Serialize(messageValue,options)}
+                    { "message", JsonConvert.SerializeObject(messageValue,settings)}
                 },
                 Tokens = registration_ids,
+                Android = new AndroidConfig{ 
+                    Priority = Priority.High
+                },
             };
             return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
         }
+
+        public async Task<IReadOnlyList<SendResponse>> SendReceiveRequestNotification(IReadOnlyList<string> registration_ids, ReceiveRequestNotificationData receiveRequestData)
+        {
+            DefaultContractResolver contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
+            };
+            var message = new MulticastMessage()
+            {
+                Data = new Dictionary<string, string>()
+                {
+                    {"type",2.ToString() },
+                    { "message", JsonConvert.SerializeObject(receiveRequestData,settings)}
+
+                },
+                Tokens = registration_ids,
+                Android = new AndroidConfig
+                {
+                    Priority = Priority.High
+                },
+            };
+            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
+        }
+
+
     }
 }
