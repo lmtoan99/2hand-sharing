@@ -54,18 +54,20 @@ namespace Application.Features.ItemFeatures.Commands
             };
             await _receiveItemInformationRepository.AddAsync(newInfo);
             var tokens = await _firebaseTokenRepository.GetListFirebaseToken(item.DonateAccountId);
-            ReceiveRequestNotificationData data = new ReceiveRequestNotificationData
+            if (tokens.Count > 0)
             {
-                ReceiverId = request.ReceiverId,
-                ReceiverName = receiverName,
-                ItemId = request.ItemId,
-                ItemName = item.ItemName,
-                ReceiveReason = request.ReceiveReason
-            };
-            var responses = await _firebaseSerivce.SendReceiveRequestNotification(tokens, data);
-            _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
+                ReceiveRequestNotificationData data = new ReceiveRequestNotificationData
+                {
+                    ReceiverId = request.ReceiverId,
+                    ReceiverName = receiverName,
+                    ItemId = request.ItemId,
+                    ItemName = item.ItemName,
+                    ReceiveReason = request.ReceiveReason
+                };
+                var responses = await _firebaseSerivce.SendReceiveRequestNotification(tokens, data);
+                _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
 
-
+            }
             return new Response<int>(newInfo.Id);
         }
     }

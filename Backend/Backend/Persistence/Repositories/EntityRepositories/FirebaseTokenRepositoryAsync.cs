@@ -24,7 +24,7 @@ namespace Persistence.Repositories.EntityRepositories
                 var response = responses[i];
                 if (!response.IsSuccess)
                 {
-                    _firebaseTokens.Remove(_firebaseTokens.Where(f => f.Token == tokens[i]).FirstOrDefault());
+                    _firebaseTokens.Remove(_firebaseTokens.Where(f => f.Token.Equals(tokens[i])).FirstOrDefault());
                 }
             }
         }

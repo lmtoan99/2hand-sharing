@@ -44,17 +44,19 @@ namespace Application.Features.MessageFeatures.Commands
             });
             
             var tokens = await _firebaseTokenRepository.GetListFirebaseToken(request.SendToAccountId);
-
-            string SenderName = await _userRepository.GetUserFullnameById(result.SendFromAccountId);
-            MessageNotiData message = new MessageNotiData
+            if (tokens.Count > 0)
             {
-                Content = result.Content,
-                SendDate = result.SendDate,
-                SendFromAccountId = result.SendFromAccountId,
-                SendFromAccountName = SenderName
-            };
-            var responses = await _firebaseSerivce.SendMessage(tokens, message);
-            _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
+                string SenderName = await _userRepository.GetUserFullnameById(result.SendFromAccountId);
+                MessageNotiData message = new MessageNotiData
+                {
+                    Content = result.Content,
+                    SendDate = result.SendDate,
+                    SendFromAccountId = result.SendFromAccountId,
+                    SendFromAccountName = SenderName
+                };
+                var responses = await _firebaseSerivce.SendMessage(tokens, message);
+                _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
+            }
             return new Response<MessageDTO>(_mapper.Map<MessageDTO>(result));
         }
     }
