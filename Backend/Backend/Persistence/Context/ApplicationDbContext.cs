@@ -27,5 +27,6 @@ namespace Persistence.Context
         public DbSet<Message> Messages { get; set; }
         public DbSet<ReceiveItemInformation> ReceiveItemInformation { get; set; }
         public DbSet<ReportAccount> ReportAccounts { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using Application.Interfaces.Service;
 using Application.Wrappers;
 using Domain.Entities;
 using MediatR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,24 +28,30 @@ namespace Application.Features.ItemFeatures.Commands
         private readonly IFirebaseSerivce _firebaseSerivce;
         private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
         private readonly IUserRepositoryAsync _userRepository;
-
+        private readonly INotificationRepositoryAsync _notificationRepository;
         public CreateReceiveRequestCommandHandle(IFirebaseSerivce firebaseSerivce, IItemRepositoryAsync itemRepository,
-            IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IUserRepositoryAsync userRepository)
+            IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IUserRepositoryAsync userRepository, INotificationRepositoryAsync notificationRepository)
         {
             _itemRepository = itemRepository;
             _receiveItemInformationRepository = receiveItemInformationRepository;
             _firebaseTokenRepository = firebaseTokenRepository;
             _userRepository = userRepository;
             _firebaseSerivce = firebaseSerivce;
+            _notificationRepository = notificationRepository;
         }
         public async Task<Response<int>> Handle(CreateReceiveRequestCommand request, CancellationToken cancellationToken)
         {
             var item = await _itemRepository.GetByIdAsync(request.ItemId);
+
+            #region Handle exception
             if (item == null) throw new KeyNotFoundException("ItemId not found");
             if (item.Status == (int)ItemStatus.SUCCESS) throw new ApiException("Item is not able to create receive request");
             var checkCreated = await _receiveItemInformationRepository.GetByConditionAsync(i => i.ItemId == request.ItemId && i.ReceiverId == request.ReceiverId);
             if (checkCreated.Count > 0) throw new ApiException("User created a receive request on this item");
             if (request.ReceiverId == item.DonateAccountId) throw new ApiException("User can not create request on their item");
+            #endregion
+
+            #region CreateReceiveItemInformation
             var receiverName = await _userRepository.GetUserFullnameById(request.ReceiverId);
             var newInfo = new Domain.Entities.ReceiveItemInformation
             {
@@ -55,10 +62,9 @@ namespace Application.Features.ItemFeatures.Commands
                 CreateDate = DateTime.UtcNow
             };
             ReceiveItemInformation receiveItemInformation = await _receiveItemInformationRepository.AddAsync(newInfo);
-            var tokens = await _firebaseTokenRepository.GetListFirebaseToken(item.DonateAccountId);
-            if (tokens.Count > 0)
-            {
-                ReceiveRequestNotificationData data = new ReceiveRequestNotificationData
+            #endregion
+
+		ReceiveRequestNotificationData data = new ReceiveRequestNotificationData
                 {
                     Id = receiveItemInformation.Id,
                     ReceiverId = request.ReceiverId,
@@ -67,7 +73,18 @@ namespace Application.Features.ItemFeatures.Commands
                     ItemName = item.ItemName,
                     ReceiveReason = request.ReceiveReason
                 };
-                var responses = await _firebaseSerivce.SendReceiveRequestNotification(tokens, data);
+                await _notificationRepository.AddAsync(new Notification
+                {
+                    Type = "2",
+                    Data = JsonConvert.SerializeObject(data),
+                    UserId = item.DonateAccountId,
+                    CreateTime = DateTime.UtcNow
+                });
+            var tokens = await _firebaseTokenRepository.GetListFirebaseToken(item.DonateAccountId);
+            if (tokens.Count > 0)
+            {
+                
+                var responses = await _firebaseSerivce.SendReceiveRequestNotification(tokens,data);
                 _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
 
             }
