@@ -51,7 +51,8 @@ namespace Application.Features.ItemFeatures.Commands
                 ItemId = request.ItemId,
                 ReceiverId = request.ReceiverId,
                 ReceiveReason = request.ReceiveReason,
-                ReceiveStatus = (int)ReceiveItemInformationStatus.PENDING
+                ReceiveStatus = (int)ReceiveItemInformationStatus.PENDING,
+                CreateDate = DateTime.UtcNow
             };
             ReceiveItemInformation receiveItemInformation = await _receiveItemInformationRepository.AddAsync(newInfo);
             var tokens = await _firebaseTokenRepository.GetListFirebaseToken(item.DonateAccountId);
