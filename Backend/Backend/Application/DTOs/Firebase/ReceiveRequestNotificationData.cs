@@ -6,6 +6,7 @@ namespace Application.DTOs.Firebase
 {
     public class ReceiveRequestNotificationData
     {
+        public int Id;
         public int ReceiverId;
         public string ReceiverName;
         public int ItemId;

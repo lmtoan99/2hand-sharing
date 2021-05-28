@@ -4,6 +4,7 @@ using Application.Exceptions;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Service;
 using Application.Wrappers;
+using Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -52,12 +53,13 @@ namespace Application.Features.ItemFeatures.Commands
                 ReceiveReason = request.ReceiveReason,
                 ReceiveStatus = (int)ReceiveItemInformationStatus.PENDING
             };
-            await _receiveItemInformationRepository.AddAsync(newInfo);
+            ReceiveItemInformation receiveItemInformation = await _receiveItemInformationRepository.AddAsync(newInfo);
             var tokens = await _firebaseTokenRepository.GetListFirebaseToken(item.DonateAccountId);
             if (tokens.Count > 0)
             {
                 ReceiveRequestNotificationData data = new ReceiveRequestNotificationData
                 {
+                    Id = receiveItemInformation.Id,
                     ReceiverId = request.ReceiverId,
                     ReceiverName = receiverName,
                     ItemId = request.ItemId,

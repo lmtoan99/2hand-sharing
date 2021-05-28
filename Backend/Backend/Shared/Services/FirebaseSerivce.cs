@@ -97,6 +97,35 @@ namespace Shared.Services
             return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
         }
 
+        public async Task<IReadOnlyList<SendResponse>> SendCancelReceiveRequestNotification(IReadOnlyList<string> registration_ids, CancelReceiveRequestNotificationData cancelReceiveRequestData)
+        {
+            DefaultContractResolver contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
+            };
+            var message = new MulticastMessage()
+            {
+                Data = new Dictionary<string, string>()
+                {
+                    {"type",3.ToString() },
+                    { "message", JsonConvert.SerializeObject(cancelReceiveRequestData,settings)}
+
+                },
+                Tokens = registration_ids,
+                Android = new AndroidConfig
+                {
+                    Priority = Priority.High
+                },
+            };
+            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
+        }
+
 
     }
 }

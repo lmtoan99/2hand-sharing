@@ -1,6 +1,8 @@
-﻿using Application.Enums;
+﻿using Application.DTOs.Firebase;
+using Application.Enums;
 using Application.Exceptions;
 using Application.Interfaces.Repositories;
+using Application.Interfaces.Service;
 using Application.Wrappers;
 using AutoMapper;
 using MediatR;
@@ -20,10 +22,14 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
         {
             private readonly IReceiveItemInformationRepositoryAsync _receiveItemInformationRepository;
             private readonly IItemRepositoryAsync _itemRepository;
-            public UpdateStatusCancelItemCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemRepository, IItemRepositoryAsync itemRepository)
+            private readonly IFirebaseSerivce _firebaseSerivce;
+            private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
+            public UpdateStatusCancelItemCommandHandler(IFirebaseSerivce firebaseSerivce, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IReceiveItemInformationRepositoryAsync receiveItemRepository, IItemRepositoryAsync itemRepository)
             {
                 _receiveItemInformationRepository = receiveItemRepository;
                 _itemRepository = itemRepository;
+                _firebaseSerivce = firebaseSerivce;
+                _firebaseTokenRepository = firebaseTokenRepository;
             }
             public async Task<Response<string>> Handle(CancelReceiveItemCommand command, CancellationToken cancellationToken)
             {
@@ -34,15 +40,23 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                 if (receiveItemInformation.ReceiveStatus == (int)ReceiveItemInformationStatus.RECEIVING){
                     receiveItemInformation.Items.Status = (int)ItemStatus.NOT_YET;
                     await _itemRepository.UpdateAsync(receiveItemInformation.Items);
-                    await _receiveItemInformationRepository.DeleteAsync(receiveItemInformation);
-                    return new Response<string>($"Cancel success.");
                 }
-                if (receiveItemInformation.ReceiveStatus == (int)ReceiveItemInformationStatus.PENDING)
+                await _receiveItemInformationRepository.DeleteAsync(receiveItemInformation);
+
+                var tokens = await _firebaseTokenRepository.GetListFirebaseToken(receiveItemInformation.Items.DonateAccountId);
+                if (tokens.Count > 0)
                 {
-                    await _receiveItemInformationRepository.DeleteAsync(receiveItemInformation);
-                    return new Response<string>($"Cancel success.");
+                    CancelReceiveRequestNotificationData data = new CancelReceiveRequestNotificationData
+                    {
+                        RequestId = receiveItemInformation.Id,
+                        ItemId = receiveItemInformation.ItemId
+                    };
+                    var responses = await _firebaseSerivce.SendCancelReceiveRequestNotification(tokens, data);
+                    _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
+
                 }
-                throw new ApiException($"You can not cancel receive item.");
+                return new Response<string>($"Cancel success.");
+
             }
         }
     }
