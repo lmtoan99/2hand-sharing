@@ -63,6 +63,12 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetListItemDonateByDonorIdQuery{userId = GetUserId() }));
         }
 
+        [HttpGet("{itemId}/received-user")]
+        public async Task<IActionResult> GetReceivedUserInfo(int itemId)
+        {
+            return Ok(await Mediator.Send(new GetReceivedUserInfoQuery { itemId = itemId }));
+        }
+
         [HttpPut("{itemId}/cancel-donate")]
         public async Task<IActionResult> cancelDonateItem(int itemId)
         {
