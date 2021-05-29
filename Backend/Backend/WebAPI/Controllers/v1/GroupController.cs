@@ -37,5 +37,16 @@ namespace WebAPI.Controllers.v1
             if (filter == null) return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery()));
             return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupid }));
         }
+
+        [HttpPost("add-member")]
+        public async Task<IActionResult> AddMember([FromBody] AddMemberRequest request)
+        {
+            return Ok(await Mediator.Send(new AddMemberCommand
+            {
+                GroupId = request.GroupId,
+                Email = request.Email,
+                AdminId = GetUserId()
+            }));
+        }
     }
 }
