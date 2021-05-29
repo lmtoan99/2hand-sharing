@@ -53,6 +53,7 @@ namespace Application.Mappings
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
                 .ForMember(dest => dest.FullName, o => o.MapFrom(source =>
                     source.Member.FullName));
+            CreateMap<GroupMemberDetail, GroupMemberDTO>();
         }
     }
 }

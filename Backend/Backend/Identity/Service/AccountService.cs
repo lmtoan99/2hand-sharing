@@ -237,5 +237,15 @@ namespace Identity.Service
             var user = await _userManager.FindByIdAsync(accountId);
             return user.Email;
         }
+
+        public async Task<string> GetAcccountIdByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user == null)
+            {
+                return null;
+            }
+            return user.Id;
+        }
     }
 }
