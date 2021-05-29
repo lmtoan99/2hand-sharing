@@ -11,7 +11,7 @@ namespace Application.Interfaces.Repositories
         Task<IReadOnlyList<Item>> GetAllPostItemsAsync(int pageNumber, int pageSize);
         Task<IReadOnlyList<Item>> GetAllPostItemsByCategoryIdAsync(int pageNumber, int pageSize, int categoryId);
         Task<Item> GetItemWithReceiveRequestByIdAsync(int itemId);
-        Task<IReadOnlyCollection<Item>> GetItemByDonateAccountId(int accountId);
+        Task<IReadOnlyCollection<Item>> GetItemByDonateAccountId(int accountId, int pageNumber, int pageSize);
         Task<IReadOnlyCollection<Item>> GetAllItemHaveRequestWithReceiverId(int receiverId, int pageNumber, int pageSize);
         Task<Item> GetItemContactByIdAsync(int itemId);
     }

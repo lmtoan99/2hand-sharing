@@ -5,7 +5,10 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Service;
 using Application.Wrappers;
 using AutoMapper;
+using Domain.Entities;
 using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,12 +27,14 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
             private readonly IItemRepositoryAsync _itemRepository;
             private readonly IFirebaseSerivce _firebaseSerivce;
             private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
-            public UpdateStatusCancelItemCommandHandler(IFirebaseSerivce firebaseSerivce, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IReceiveItemInformationRepositoryAsync receiveItemRepository, IItemRepositoryAsync itemRepository)
+            private readonly INotificationRepositoryAsync _notificationRepository;
+            public UpdateStatusCancelItemCommandHandler(IFirebaseSerivce firebaseSerivce, INotificationRepositoryAsync notificationRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IReceiveItemInformationRepositoryAsync receiveItemRepository, IItemRepositoryAsync itemRepository)
             {
                 _receiveItemInformationRepository = receiveItemRepository;
                 _itemRepository = itemRepository;
                 _firebaseSerivce = firebaseSerivce;
                 _firebaseTokenRepository = firebaseTokenRepository;
+                _notificationRepository = notificationRepository;
             }
             public async Task<Response<string>> Handle(CancelReceiveItemCommand command, CancellationToken cancellationToken)
             {
@@ -42,7 +47,6 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                     await _itemRepository.UpdateAsync(receiveItemInformation.Items);
                 }
                 await _receiveItemInformationRepository.DeleteAsync(receiveItemInformation);
-
                 var tokens = await _firebaseTokenRepository.GetListFirebaseToken(receiveItemInformation.Items.DonateAccountId);
                 if (tokens.Count > 0)
                 {
@@ -51,7 +55,25 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                         RequestId = receiveItemInformation.Id,
                         ItemId = receiveItemInformation.ItemId
                     };
-                    var responses = await _firebaseSerivce.SendCancelReceiveRequestNotification(tokens, data);
+                    DefaultContractResolver contractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy()
+                    };
+
+                    var settings = new JsonSerializerSettings
+                    {
+                        ContractResolver = contractResolver,
+                        Formatting = Formatting.Indented
+                    };
+                    var cancelReceiveItemData = JsonConvert.SerializeObject(data, settings);
+                    await _notificationRepository.AddAsync(new Notification
+                    {
+                        Type = "3",
+                        Data = cancelReceiveItemData,
+                        UserId = receiveItemInformation.Items.Id,
+                        CreateTime = DateTime.UtcNow
+                    });
+                    var responses = await _firebaseSerivce.SendCancelReceiveRequestNotification(tokens, cancelReceiveItemData);
                     _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
 
                 }

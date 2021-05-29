@@ -7,6 +7,7 @@ using Application.Wrappers;
 using Domain.Entities;
 using MediatR;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -63,31 +64,47 @@ namespace Application.Features.ItemFeatures.Commands
             };
             ReceiveItemInformation receiveItemInformation = await _receiveItemInformationRepository.AddAsync(newInfo);
             #endregion
+            #region SaveNotification
+            DefaultContractResolver contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
 
-		ReceiveRequestNotificationData data = new ReceiveRequestNotificationData
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
+            };
+
+            ReceiveRequestNotificationData data = new ReceiveRequestNotificationData
                 {
                     Id = receiveItemInformation.Id,
                     ReceiverId = request.ReceiverId,
                     ReceiverName = receiverName,
                     ItemId = request.ItemId,
                     ItemName = item.ItemName,
-                    ReceiveReason = request.ReceiveReason
+                    ReceiveReason = request.ReceiveReason,
+                    CreateDate = receiveItemInformation.CreateDate
                 };
-                await _notificationRepository.AddAsync(new Notification
+            var messageData = JsonConvert.SerializeObject(data, settings);
+            await _notificationRepository.AddAsync(new Notification
                 {
                     Type = "2",
-                    Data = JsonConvert.SerializeObject(data),
+                    Data = messageData,
                     UserId = item.DonateAccountId,
                     CreateTime = DateTime.UtcNow
                 });
+            #endregion
+            #region SendNotification
             var tokens = await _firebaseTokenRepository.GetListFirebaseToken(item.DonateAccountId);
             if (tokens.Count > 0)
             {
                 
-                var responses = await _firebaseSerivce.SendReceiveRequestNotification(tokens,data);
+                var responses = await _firebaseSerivce.SendReceiveRequestNotification(tokens, messageData);
                 _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
 
             }
+            #endregion
             return new Response<int>(newInfo.Id);
         }
     }

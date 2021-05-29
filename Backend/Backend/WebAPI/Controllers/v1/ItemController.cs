@@ -2,6 +2,7 @@
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
 using Application.Features.ReceiveItemInformationFeatures.Commands;
+using Application.Filter;
 using Application.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,15 +53,15 @@ namespace WebAPI.Controllers.v1
 
 
         [HttpPut("{itemId}/confirm-send")]
-        public async Task<IActionResult> confirmSendItem(int itemId)
+        public async Task<IActionResult> ConfirmSendItem(int itemId)
         {
             return Ok(await Mediator.Send(new UpdateStatusConfirmSendItemCommand { Id = itemId, UserId = this.GetUserId() }));
         }
 
-        [HttpGet("my-donate")]
-        public async Task<IActionResult> DonorGetListItemDonate()
+        [HttpGet("{userId}/donations")]
+        public async Task<IActionResult> DonorGetListItemDonate([FromQuery] RequestParameter filter, int userId)
         {
-            return Ok(await Mediator.Send(new GetListItemDonateByDonorIdQuery{userId = GetUserId() }));
+            return Ok(await Mediator.Send(new GetListItemDonateByDonorIdQuery{userId = userId, PageNumber = filter.PageNumber, PageSize = filter.PageSize }));
         }
 
         [HttpGet("{itemId}/received-user")]
@@ -70,7 +71,7 @@ namespace WebAPI.Controllers.v1
         }
 
         [HttpPut("{itemId}/cancel-donate")]
-        public async Task<IActionResult> cancelDonateItem(int itemId)
+        public async Task<IActionResult> CancelDonateItem(int itemId)
         {
             return Ok(await Mediator.Send(new UpdateStatusCancelDonateItemCommand { Id = itemId, UserId = this.GetUserId() }));
         }

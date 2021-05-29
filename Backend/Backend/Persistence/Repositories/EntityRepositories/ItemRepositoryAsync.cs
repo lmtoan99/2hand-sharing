@@ -51,14 +51,18 @@ namespace Persistence.Repositories.EntityRepositories
                 .Include(i =>i.Address)
                 .Include(i=>i.DonateAccount)
                 .Include(i=> i.ItemImageRelationships)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<Item>> GetItemByDonateAccountId(int accountId)
+        public async Task<IReadOnlyCollection<Item>> GetItemByDonateAccountId(int accountId, int pageNumber, int pageSize)
         {
             return await _item
                 .Where(i => i.DonateAccountId == accountId)
                 .Include(i => i.Address)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
 

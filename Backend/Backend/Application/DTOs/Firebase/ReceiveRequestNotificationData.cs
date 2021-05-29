@@ -12,5 +12,6 @@ namespace Application.DTOs.Firebase
         public int ItemId;
         public string ItemName;
         public string ReceiveReason;
+        public DateTime CreateDate;
     }
 }

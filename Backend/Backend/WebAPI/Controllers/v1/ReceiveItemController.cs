@@ -58,10 +58,10 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new SendThanksCommand { requestId = requestId, thanks = thanks.thanks, userId = GetUserId()}));
         }
 
-        [HttpGet("my-request")]
-        public async Task<IActionResult> DoneeGetListReceiveRequest([FromQuery]RequestParameter filter)
+        [HttpGet("{userId}/requests")]
+        public async Task<IActionResult> DoneeGetListReceiveRequest([FromQuery]RequestParameter filter, int userId)
         {
-            return Ok(await Mediator.Send(new DoneeGetListReceiveRequestQuery { UserId = GetUserId(),PageNumber = filter.PageNumber, PageSize = filter.PageSize}));
+            return Ok(await Mediator.Send(new DoneeGetListReceiveRequestQuery { UserId = userId, PageNumber = filter.PageNumber, PageSize = filter.PageSize}));
         }
 
 

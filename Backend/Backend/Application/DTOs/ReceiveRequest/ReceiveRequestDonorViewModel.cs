@@ -13,5 +13,7 @@ namespace Application.DTOs.Item
         public string ReceiverName { get; set; }
 
         public ReceiveItemInformationStatus ReceiveStatus { get; set; }
+
+        public DateTime CreateDate { get; set; }
     }
 }

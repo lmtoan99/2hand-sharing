@@ -34,7 +34,7 @@ namespace Application.Features.ItemFeatures.Queries
         {
             var item = await _itemRepository.GetByIdAsync(request.itemId);
             if (item == null) throw new ApiException("Item not existed");
-            if (item.Status != (int)ItemStatus.SUCCESS) throw new ApiException("Item not existed");
+            if (item.Status != (int)ItemStatus.SUCCESS) throw new ApiException("Item isn't given for anyone");
 
             var requests = await _receiveRequestRepository.GetAllByItemId(request.itemId);
             for (int i = 0; i < requests.Count; i++)

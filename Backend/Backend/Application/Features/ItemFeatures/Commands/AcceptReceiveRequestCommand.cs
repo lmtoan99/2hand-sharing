@@ -1,8 +1,13 @@
-﻿using Application.Enums;
+﻿using Application.DTOs.Firebase;
+using Application.Enums;
 using Application.Exceptions;
 using Application.Interfaces.Repositories;
+using Application.Interfaces.Service;
 using Application.Wrappers;
+using Domain.Entities;
 using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,13 +23,19 @@ namespace Application.Features.ItemFeatures.Commands
     }
     public class AcceptReceiveRequestCommandHandle : IRequestHandler<AcceptReceiveRequestCommand, Response<int>>
     {
-        private readonly IItemRepositoryAsync _itemRepositoryAsync;
-        private readonly IReceiveItemInformationRepositoryAsync _receiveItemInformationRepositoryAsync;
-        public AcceptReceiveRequestCommandHandle(IItemRepositoryAsync itemRepositoryAsync, IReceiveItemInformationRepositoryAsync receiveItemInformationRepositoryAsync)
+        private readonly IReceiveItemInformationRepositoryAsync _receiveItemInformationRepositoryAsync; 
+        private readonly IFirebaseSerivce _firebaseSerivce;
+        private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
+        private readonly INotificationRepositoryAsync _notificationRepository;
+
+        public AcceptReceiveRequestCommandHandle(IReceiveItemInformationRepositoryAsync receiveItemInformationRepositoryAsync, IFirebaseSerivce firebaseSerivce, IFirebaseTokenRepositoryAsync firebaseTokenRepository, INotificationRepositoryAsync notificationRepository)
         {
-            _itemRepositoryAsync = itemRepositoryAsync;
             _receiveItemInformationRepositoryAsync = receiveItemInformationRepositoryAsync;
+            _firebaseSerivce = firebaseSerivce;
+            _firebaseTokenRepository = firebaseTokenRepository;
+            _notificationRepository = notificationRepository;
         }
+
         public async Task<Response<int>> Handle(AcceptReceiveRequestCommand request, CancellationToken cancellationToken)
         {
             var receiveRequest = await _receiveItemInformationRepositoryAsync.GetReceiveRequestWithItemInfoById(request.requestId);
@@ -37,6 +48,41 @@ namespace Application.Features.ItemFeatures.Commands
             //await _itemRepositoryAsync.UpdateAsync(item);
             receiveRequest.ReceiveStatus = (int)ReceiveItemInformationStatus.RECEIVING;
             await _receiveItemInformationRepositoryAsync.UpdateAsync(receiveRequest);
+            DefaultContractResolver contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
+            };
+
+            RequestStatusNotificationData data = new RequestStatusNotificationData
+            {
+                ItemId = receiveRequest.ItemId,
+                ItemName = receiveRequest.Items.ItemName,
+                RequestId = receiveRequest.Id,
+                RequestStatus = ReceiveItemInformationStatus.RECEIVING,
+            };
+            var messageData = JsonConvert.SerializeObject(data, settings);
+
+            await _notificationRepository.AddAsync(new Notification
+            {
+                Type = "4",
+                Data = messageData,
+                UserId = receiveRequest.ReceiverId,
+                CreateTime = DateTime.UtcNow
+            });
+            var tokens = await _firebaseTokenRepository.GetListFirebaseToken(receiveRequest.ReceiverId);
+            if (tokens.Count > 0)
+            {
+
+                var responses = await _firebaseSerivce.SendReceiveRequestStatusNotification(tokens, messageData);
+                _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
+
+            }
             return new Response<int>(receiveRequest.Id);
         }
     }

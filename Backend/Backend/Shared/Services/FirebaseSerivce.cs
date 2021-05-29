@@ -68,24 +68,14 @@ namespace Shared.Services
             return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
         }
 
-        public async Task<IReadOnlyList<SendResponse>> SendReceiveRequestNotification(IReadOnlyList<string> registration_ids, ReceiveRequestNotificationData receiveRequestData)
+        public async Task<IReadOnlyList<SendResponse>> SendReceiveRequestNotification(IReadOnlyList<string> registration_ids, string receiveRequestData)
         {
-            DefaultContractResolver contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            };
-
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = contractResolver,
-                Formatting = Formatting.Indented
-            };
             var message = new MulticastMessage()
             {
                 Data = new Dictionary<string, string>()
                 {
                     {"type",2.ToString() },
-                    { "message", JsonConvert.SerializeObject(receiveRequestData,settings)}
+                    { "message", receiveRequestData}
 
                 },
                 Tokens = registration_ids,
@@ -97,24 +87,14 @@ namespace Shared.Services
             return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
         }
 
-        public async Task<IReadOnlyList<SendResponse>> SendCancelReceiveRequestNotification(IReadOnlyList<string> registration_ids, CancelReceiveRequestNotificationData cancelReceiveRequestData)
+        public async Task<IReadOnlyList<SendResponse>> SendCancelReceiveRequestNotification(IReadOnlyList<string> registration_ids, string cancelReceiveRequestData)
         {
-            DefaultContractResolver contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            };
-
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = contractResolver,
-                Formatting = Formatting.Indented
-            };
             var message = new MulticastMessage()
             {
                 Data = new Dictionary<string, string>()
                 {
                     {"type",3.ToString() },
-                    { "message", JsonConvert.SerializeObject(cancelReceiveRequestData,settings)}
+                    { "message", cancelReceiveRequestData}
 
                 },
                 Tokens = registration_ids,
@@ -126,6 +106,23 @@ namespace Shared.Services
             return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
         }
 
+        public async Task<IReadOnlyList<SendResponse>> SendReceiveRequestStatusNotification(IReadOnlyList<string> registration_ids, string receiveRequestAcceptedData)
+        {
+            var message = new MulticastMessage()
+            {
+                Data = new Dictionary<string, string>()
+                {
+                    {"type", 4.ToString() },
+                    { "message", receiveRequestAcceptedData}
 
+                },
+                Tokens = registration_ids,
+                Android = new AndroidConfig
+                {
+                    Priority = Priority.High
+                },
+            };
+            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
+        }
     }
 }
