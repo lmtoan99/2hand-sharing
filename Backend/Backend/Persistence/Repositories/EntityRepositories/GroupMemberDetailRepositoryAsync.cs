@@ -12,16 +12,16 @@ namespace Persistence.Repositories.EntityRepositories
 {
     public class GroupMemberDetailRepositoryAsync : GenericRepositoryAsync<GroupMemberDetail>, IGroupMemberDetailRepositoryAsync
     {
-        private readonly DbSet<GroupMemberDetail> _item;
+        private readonly DbSet<GroupMemberDetail> _groupMemberDetails;
 
         public GroupMemberDetailRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _item = dbContext.Set<GroupMemberDetail>();
+            _groupMemberDetails = dbContext.Set<GroupMemberDetail>();
         }
 
         public async Task<IReadOnlyList<GroupMemberDetail>> GetAllGroupMemberByGroupIdAsync(int pageNumber, int pageSize, int groupId)
         {
-            return await _item
+            return await _groupMemberDetails
                 .Where(i => ( i.GroupId == groupId))
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
