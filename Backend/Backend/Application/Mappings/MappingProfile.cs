@@ -3,6 +3,7 @@ using Application.DTOs.Address;
 using Application.DTOs.Group;
 using Application.DTOs.Item;
 using Application.DTOs.Message;
+using Application.DTOs.Notification;
 using Application.DTOs.ReceiveRequest;
 using Application.Features.AccountFeatures.Commands;
 using Application.Features.CategoryFeatures.Commands;
@@ -49,6 +50,7 @@ namespace Application.Mappings
             CreateMap<Group, GroupDTO>();
             CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>();
             CreateMap<Message, MessageDTO>();
+            CreateMap<Notification, NotificationDTO>();
             CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
                 .ForMember(dest => dest.FullName, o => o.MapFrom(source =>

@@ -27,6 +27,7 @@ namespace Application.Interfaces.Contexts
         public DbSet<ItemImageRelationship> ItemImageRelationships { get; set; }
         public DbSet<ItemReport> ItemReports { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<ReceiveItemInformation> ReceiveItemInformation { get; set; }
         public DbSet<ReportAccount> ReportAccounts { get; set; }
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
