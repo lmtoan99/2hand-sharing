@@ -38,27 +38,17 @@ namespace Shared.Services
                 app = FirebaseApp.GetInstance("myApp");
             }
             firebaseMessaging = FirebaseMessaging.GetMessaging(app);
+
             //this._firebaseTokenRepository = firebaseTokenRepository;
         }
-        public async Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_ids, MessageNotiData messageValue)
+        public async Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_ids, string messageValue)
         {
-            DefaultContractResolver contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            };
-
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = contractResolver,
-                Formatting = Formatting.Indented
-            };
-
             var message = new MulticastMessage()
             {
                 Data = new Dictionary<string, string>()
                 {
                     {"type",1.ToString() },
-                    { "message", JsonConvert.SerializeObject(messageValue,settings)}
+                    { "message", messageValue}
                 },
                 Tokens = registration_ids,
                 Android = new AndroidConfig{ 
@@ -115,6 +105,24 @@ namespace Shared.Services
                     {"type", 4.ToString() },
                     { "message", receiveRequestAcceptedData}
 
+                },
+                Tokens = registration_ids,
+                Android = new AndroidConfig
+                {
+                    Priority = Priority.High
+                },
+            };
+            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
+        }
+
+        public async Task<IReadOnlyList<SendResponse>> SendThanksMessage(IReadOnlyList<string> registration_ids, string messageValue)
+        {
+            var message = new MulticastMessage()
+            {
+                Data = new Dictionary<string, string>()
+                {
+                    {"type",5.ToString() },
+                    { "message", messageValue}
                 },
                 Tokens = registration_ids,
                 Android = new AndroidConfig

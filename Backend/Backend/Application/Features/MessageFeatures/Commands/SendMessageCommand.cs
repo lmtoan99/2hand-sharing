@@ -5,6 +5,8 @@ using Application.Interfaces.Service;
 using Application.Wrappers;
 using AutoMapper;
 using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -54,7 +56,16 @@ namespace Application.Features.MessageFeatures.Commands
                     SendFromAccountId = result.SendFromAccountId,
                     SendFromAccountName = SenderName
                 };
-                var responses = await _firebaseSerivce.SendMessage(tokens, message);
+                DefaultContractResolver contractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                };
+                var settings = new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented
+                };
+                var responses = await _firebaseSerivce.SendMessage(tokens, JsonConvert.SerializeObject(message, settings));
                 _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
             }
             return new Response<MessageDTO>(_mapper.Map<MessageDTO>(result));

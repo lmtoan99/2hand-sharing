@@ -9,7 +9,8 @@ namespace Application.Interfaces.Service
 {
     public interface IFirebaseSerivce
     {
-        Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_ids, MessageNotiData messageValue);
+        Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_ids, string messageValue);
+        Task<IReadOnlyList<SendResponse>> SendThanksMessage(IReadOnlyList<string> registration_ids, string messageValue);
         Task<IReadOnlyList<SendResponse>> SendReceiveRequestNotification(IReadOnlyList<string> registration_ids, string receiveRequestData);
         Task<IReadOnlyList<SendResponse>> SendCancelReceiveRequestNotification(IReadOnlyList<string> registration_ids, string cancelReceiveRequestData);
         Task<IReadOnlyList<SendResponse>> SendReceiveRequestStatusNotification(IReadOnlyList<string> registration_ids, string cancelReceiveRequestData);
