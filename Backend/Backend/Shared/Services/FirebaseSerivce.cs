@@ -132,5 +132,23 @@ namespace Shared.Services
             };
             return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
         }
+
+        public async Task<IReadOnlyList<SendResponse>> SendConfirmSentNotification(IReadOnlyList<string> registration_ids, string confirmSentData)
+        {
+            var message = new MulticastMessage()
+            {
+                Data = new Dictionary<string, string>()
+                {
+                    {"type",6.ToString() },
+                    { "message", confirmSentData}
+                },
+                Tokens = registration_ids,
+                Android = new AndroidConfig
+                {
+                    Priority = Priority.High
+                },
+            };
+            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
+        }
     }
 }

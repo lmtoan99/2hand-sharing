@@ -14,6 +14,7 @@ namespace Application.Interfaces.Service
         Task<IReadOnlyList<SendResponse>> SendReceiveRequestNotification(IReadOnlyList<string> registration_ids, string receiveRequestData);
         Task<IReadOnlyList<SendResponse>> SendCancelReceiveRequestNotification(IReadOnlyList<string> registration_ids, string cancelReceiveRequestData);
         Task<IReadOnlyList<SendResponse>> SendReceiveRequestStatusNotification(IReadOnlyList<string> registration_ids, string cancelReceiveRequestData);
+        Task<IReadOnlyList<SendResponse>> SendConfirmSentNotification(IReadOnlyList<string> registration_ids, string confirmSentData);
 
 
     }
