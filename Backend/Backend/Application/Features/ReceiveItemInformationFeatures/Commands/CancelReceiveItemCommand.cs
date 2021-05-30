@@ -70,7 +70,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                     {
                         Type = "3",
                         Data = cancelReceiveItemData,
-                        UserId = receiveItemInformation.Items.Id,
+                        UserId = receiveItemInformation.Items.DonateAccountId,
                         CreateTime = DateTime.UtcNow
                     });
                     var responses = await _firebaseSerivce.SendCancelReceiveRequestNotification(tokens, cancelReceiveItemData);
