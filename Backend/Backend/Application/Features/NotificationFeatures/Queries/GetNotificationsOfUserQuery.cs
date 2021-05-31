@@ -1,8 +1,12 @@
-﻿using Application.DTOs.Notification;
+﻿using Application.DTOs.Firebase;
+using Application.DTOs.Notification;
+using Application.Enums;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
 using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,7 +35,8 @@ namespace Application.Features.NotificationFeatures.Queries
 
         public async Task<PagedResponse<IReadOnlyCollection<NotificationDTO>>> Handle(GetNotificationsOfUserQuery request, CancellationToken cancellationToken)
         {
-            var notifications = await _notificationRepositoryAsync.GetNotificationsOfUser(request.UserId, request.PageNumber, request.PageSize);
+            var list = await _notificationRepositoryAsync.GetNotificationsOfUser(request.UserId, request.PageNumber, request.PageSize * 2);
+            var notifications = _mapper.Map<List<NotificationDTO>>(list);
             return new PagedResponse<IReadOnlyCollection<NotificationDTO>>(_mapper.Map<IReadOnlyCollection<NotificationDTO>>(notifications), request.PageNumber, request.PageSize);
         }
     }

@@ -6,6 +6,7 @@ namespace Application.Enums
 {
     public enum NotificationType
     {
+        NONE,
         MESSAGE,
         RECEIVE_REQUEST,
         CANCEL_RECEIVE_REQUEST,

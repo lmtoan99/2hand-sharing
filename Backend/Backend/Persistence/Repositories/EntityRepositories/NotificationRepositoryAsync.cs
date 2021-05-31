@@ -17,7 +17,8 @@ namespace Persistence.Repositories.EntityRepositories
             _notifications = dbContext.Set<Notification>();
         }
 
-        public async Task<IReadOnlyCollection<Notification>> GetNotificationsOfUser(int userId, int pageNumber, int pageSize)
+
+        public async Task<IReadOnlyList<Notification>> GetNotificationsOfUser(int userId, int pageNumber, int pageSize)
         {
             return await _notifications
             .Where(n => n.UserId == userId)
