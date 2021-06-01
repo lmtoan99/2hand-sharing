@@ -4,6 +4,7 @@ using Application.Exceptions;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Service;
 using Application.Wrappers;
+using Domain.Entities;
 using MediatR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -23,18 +24,20 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
     public class SendThanksCommandHandler : IRequestHandler<SendThanksCommand, Response<int>>
     {
         private readonly IReceiveItemInformationRepositoryAsync _receiveItemRepository;
+        private readonly INotificationRepositoryAsync _notificationRepository;
         private readonly IMessageRepositoryAsync _messageRepository;
         private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
         private readonly IUserRepositoryAsync _userRepository;
         private readonly IFirebaseSerivce _firebaseSerivce;
 
-        public SendThanksCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemRepository, IMessageRepositoryAsync messageRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IUserRepositoryAsync userRepository, IFirebaseSerivce firebaseSerivce)
+        public SendThanksCommandHandler(INotificationRepositoryAsync notificationRepository,IReceiveItemInformationRepositoryAsync receiveItemRepository, IMessageRepositoryAsync messageRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IUserRepositoryAsync userRepository, IFirebaseSerivce firebaseSerivce)
         {
             _receiveItemRepository = receiveItemRepository;
             _messageRepository = messageRepository;
             _firebaseTokenRepository = firebaseTokenRepository;
             _userRepository = userRepository;
             _firebaseSerivce = firebaseSerivce;
+            _notificationRepository = notificationRepository;
         }
 
         public async Task<Response<int>> Handle(SendThanksCommand request, CancellationToken cancellationToken)
@@ -51,29 +54,41 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                 SendDate = DateTime.Now.ToUniversalTime()
             });
             var tokens = await _firebaseTokenRepository.GetListFirebaseToken(receiveRequest.Items.DonateAccountId);
+            string SenderName = await _userRepository.GetUserFullnameById(result.SendFromAccountId);
+            MessageNotiData message = new MessageNotiData
+            {
+                Content = result.Content,
+                SendDate = result.SendDate,
+                SendFromAccountId = result.SendFromAccountId,
+                SendFromAccountName = SenderName
+            };
+            DefaultContractResolver contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
+            };
+            var data = JsonConvert.SerializeObject(message, settings);
             if (tokens.Count > 0)
             {
-                string SenderName = await _userRepository.GetUserFullnameById(result.SendFromAccountId);
-                MessageNotiData message = new MessageNotiData
-                {
-                    Content = result.Content,
-                    SendDate = result.SendDate,
-                    SendFromAccountId = result.SendFromAccountId,
-                    SendFromAccountName = SenderName
-                };
-                DefaultContractResolver contractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                };
-                var settings = new JsonSerializerSettings
-                {
-                    ContractResolver = contractResolver,
-                    Formatting = Formatting.Indented
-                };
-                var responses = await _firebaseSerivce.SendThanksMessage(tokens, JsonConvert.SerializeObject(message, settings));
+
+
+                var responses = await _firebaseSerivce.SendThanksMessage(tokens, data);
+
                 _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
             }
+            await _notificationRepository.AddAsync(new Notification
+            {
+                Type = "5",
+                Data = data,
+                UserId = result.SendToAccountId,
+                CreateTime = DateTime.UtcNow
+            });
             receiveRequest.Thanks = request.thanks;
+
             await _receiveItemRepository.UpdateAsync(receiveRequest);
             return new Response<int>("Update successfully");
         }
