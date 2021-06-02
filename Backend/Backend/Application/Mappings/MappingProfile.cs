@@ -50,6 +50,7 @@ namespace Application.Mappings
             CreateMap<Group, GroupDTO>();
             CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>();
             CreateMap<Message, MessageDTO>();
+            CreateMap<Message, RecentMessagesDTO>().ForMember(dest => dest.SendFromAccountName, o => o.MapFrom(source => source.SendFromAccount.FullName));
             CreateMap<Notification, NotificationDTO>();
             CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()

@@ -25,6 +25,18 @@ namespace WebAPI.Controllers.v1
                 PageSize = filter.PageSize
             }));
         }
+
+        [HttpGet("recent-messages")]
+        public async Task<IActionResult> GetRecentMessages([FromQuery] RequestParameter filter)
+        {
+            return Ok(await Mediator.Send(new GetRecentMessagesQuery
+            {
+                UserId = GetUserId(),
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize
+            }));
+        }
+
         [HttpPost]
         public async Task<IActionResult> SendMessage(SendMessageRequest request)
         {

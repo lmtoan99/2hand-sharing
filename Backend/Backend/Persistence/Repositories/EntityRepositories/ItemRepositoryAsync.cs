@@ -66,9 +66,13 @@ namespace Persistence.Repositories.EntityRepositories
                 .ToListAsync();
         }
 
-        public async Task<Item> GetItemContactByIdAsync(int itemId)
+        public async Task<Item> GetItemDetailByIdAsync(int itemId)
         {
-            return await _item.Where(i => i.Id == itemId).Include(i => i.DonateAccount).FirstAsync();
+            return await _item.Where(i => i.Id == itemId)
+                .Include(i => i.Address)
+                .Include(i => i.DonateAccount)
+                .Include(i => i.ItemImageRelationships)
+                .FirstAsync();
         }
 
         public async Task<Item> GetItemWithReceiveRequestByIdAsync(int itemId)

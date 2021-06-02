@@ -26,5 +26,19 @@ namespace Persistence.Repositories.EntityRepositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+
+        public async Task<IReadOnlyCollection<Message>> GetRecentMessages(int userId, int pageNumber, int pageSize)
+        {
+            var group = _message
+                .GroupBy(m => m.SendFromAccountId)
+                .Select(group => new { SendFromAccountId = group.Key, Max = group.Max(m => m.SendDate) });
+            return await _message
+                .Where(m => group.Where(group => group.SendFromAccountId == m.SendFromAccountId).First().Max == m.SendDate)
+                .Include(m => m.SendFromAccount)
+                .OrderByDescending(m => m.SendDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(); ;
+        }
     }
 }
