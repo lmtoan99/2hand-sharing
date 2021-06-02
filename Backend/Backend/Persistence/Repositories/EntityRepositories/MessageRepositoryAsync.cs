@@ -30,6 +30,7 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<IReadOnlyCollection<Message>> GetRecentMessages(int userId, int pageNumber, int pageSize)
         {
             var group = _message
+                .Where(m => m.SendToAccountId == userId)
                 .GroupBy(m => m.SendFromAccountId)
                 .Select(group => new { SendFromAccountId = group.Key, Max = group.Max(m => m.SendDate) });
             return await _message
