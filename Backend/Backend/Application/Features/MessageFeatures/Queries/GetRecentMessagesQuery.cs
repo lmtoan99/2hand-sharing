@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace Application.Features.MessageFeatures.Queries
 {
-    public class GetRecentMessagesQuery : IRequest<PagedResponse<IReadOnlyCollection<RecentMessagesDTO>>>
+    public class GetRecentMessagesQuery : IRequest<PagedResponse<IReadOnlyList<RecentMessagesDTO>>>
     {
         public int UserId { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
     }
-    public class GetRecentMessagesQueryHandler : IRequestHandler<GetRecentMessagesQuery, PagedResponse<IReadOnlyCollection<RecentMessagesDTO>>>
+    public class GetRecentMessagesQueryHandler : IRequestHandler<GetRecentMessagesQuery, PagedResponse<IReadOnlyList<RecentMessagesDTO>>>
     {
         private readonly IMessageRepositoryAsync _messageRepository;
         private readonly IMapper _mapper;
@@ -27,10 +27,25 @@ namespace Application.Features.MessageFeatures.Queries
             _mapper = mapper;
         }
 
-        public async Task<PagedResponse<IReadOnlyCollection<RecentMessagesDTO>>> Handle(GetRecentMessagesQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IReadOnlyList<RecentMessagesDTO>>> Handle(GetRecentMessagesQuery request, CancellationToken cancellationToken)
         {
-            var messages = await _messageRepository.GetRecentMessages(request.UserId, request.PageNumber, request.PageSize);
-            return new PagedResponse<IReadOnlyCollection<RecentMessagesDTO>>(_mapper.Map<IReadOnlyCollection<RecentMessagesDTO>>(messages), request.PageNumber, request.PageSize);
+            var messages = await _messageRepository.GetRecentMessages(request.UserId, request.PageNumber, request.PageSize * 2);
+            var messagesDTOs = _mapper.Map<IReadOnlyList<RecentMessagesDTO>>(messages);
+            var results = new List<RecentMessagesDTO>();
+            for (int i = 0; i < messagesDTOs.Count; i++)
+            {
+                for(int j = i + 1; j < messagesDTOs.Count - 1; j++)
+                {
+                    if(messagesDTOs[i].SendFromAccountId == messagesDTOs[j].SendToAccountId && messagesDTOs[i].SendToAccountId == messagesDTOs[j].SendFromAccountId)
+                    {
+                        if(messagesDTOs[i].SendDate > messagesDTOs[j].SendDate)
+                        {
+                            results.Add(messagesDTOs[i]);
+                        }
+                    }
+                }
+            }
+            return new PagedResponse<IReadOnlyList<RecentMessagesDTO>>(results, request.PageNumber, request.PageSize);
         }
     }
 }
