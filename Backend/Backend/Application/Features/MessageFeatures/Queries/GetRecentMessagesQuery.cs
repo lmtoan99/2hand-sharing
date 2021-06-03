@@ -44,6 +44,7 @@ namespace Application.Features.MessageFeatures.Queries
                         else
                         {
                             messagesDTOs.RemoveAt(i);
+                            i--;
                         }
                         break;
                     }
