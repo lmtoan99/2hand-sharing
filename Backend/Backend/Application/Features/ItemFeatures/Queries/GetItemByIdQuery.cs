@@ -33,7 +33,7 @@ namespace Application.Features.ItemFeatures.Queries
         }
         public async Task<Response<GetItemByIdViewModel>> Handle(GetItemByIdQuery query, CancellationToken cancellationToken)
         {
-            var item = await _itemRepository.GetByIdAsync(query.Id);
+            var item = await _itemRepository.GetItemDetailByIdAsync(query.Id);
             if (item == null) throw new KeyNotFoundException($"Item Not Found.");
 
             var itemViewModel = _mapper.Map<GetItemByIdViewModel>(item);

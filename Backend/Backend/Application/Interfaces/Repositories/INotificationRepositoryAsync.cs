@@ -8,6 +8,6 @@ namespace Application.Interfaces.Repositories
 {
     public interface INotificationRepositoryAsync : IGenericRepositoryAsync<Notification>
     {
-        Task<IReadOnlyCollection<Notification>> GetNotificationsOfUser(int userId, int pageNumber, int pageSize);
+        Task<IReadOnlyList<Notification>> GetNotificationsOfUser(int userId, int pageNumber, int pageSize);
     }
 }

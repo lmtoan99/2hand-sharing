@@ -55,16 +55,9 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                         RequestId = receiveItemInformation.Id,
                         ItemId = receiveItemInformation.ItemId
                     };
-                    DefaultContractResolver contractResolver = new DefaultContractResolver
-                    {
-                        NamingStrategy = new CamelCaseNamingStrategy()
-                    };
+                    DefaultContractResolver contractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() };
 
-                    var settings = new JsonSerializerSettings
-                    {
-                        ContractResolver = contractResolver,
-                        Formatting = Formatting.Indented
-                    };
+                    var settings = new JsonSerializerSettings { ContractResolver = contractResolver, Formatting = Formatting.Indented };
                     var cancelReceiveItemData = JsonConvert.SerializeObject(data, settings);
                     await _notificationRepository.AddAsync(new Notification
                     {
