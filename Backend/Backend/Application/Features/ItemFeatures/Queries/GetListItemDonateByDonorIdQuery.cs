@@ -36,6 +36,7 @@ namespace Application.Features.ItemFeatures.Queries
             res.ForEach(i =>
             {
                 i.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl);
+                i.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrl);
             });
             return new Response<IEnumerable<GetAllItemViewModel>>(res);
         }

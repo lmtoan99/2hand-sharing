@@ -46,7 +46,7 @@ namespace Application.Mappings
             CreateMap<ReceiveItemInformation, ReceiveRequestDonorViewModel>()
                 .ForMember(dest => dest.ReceiverName, o => o.MapFrom(source => source.Receiver.FullName));
             CreateMap<User, UserInfoDTO>()
-                .ForMember(dest => dest.Avatar, o => o.MapFrom(source => source.Avatar.FileName));
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
                 .ForAllMembers(o => o.MapFrom(source => source.Items));
             CreateMap<Group, GroupDTO>();
