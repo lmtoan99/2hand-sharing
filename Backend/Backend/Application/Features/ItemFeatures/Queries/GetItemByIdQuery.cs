@@ -38,7 +38,7 @@ namespace Application.Features.ItemFeatures.Queries
 
             var itemViewModel = _mapper.Map<GetItemByIdViewModel>(item);
             itemViewModel.ReceiveAddress = _mapper.Map<AddressDTO>(item.Address);
-
+            itemViewModel.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(itemViewModel.AvatarUrl);
             for (int i = 0; i < itemViewModel.ImageUrl.Count; i++)
             {
                 itemViewModel.ImageUrl[i] = _imageRepository.GenerateV4SignedReadUrl(itemViewModel.ImageUrl[i]);

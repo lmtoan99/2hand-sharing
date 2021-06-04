@@ -36,5 +36,14 @@ namespace WebAPI.Controllers.v1
         {
             return Ok(await Mediator.Send(new GetUserInfoByIdQuery { UserId = userId }));
         }
+
+        [HttpPut("updateAvatar")]
+        public async Task<IActionResult> UpdateUserAvatar()
+        {
+            return Ok(await Mediator.Send(new UpdateUserAvatarCommand
+            {
+                UserId = GetUserId()
+            }));
+        }
     }
 }
