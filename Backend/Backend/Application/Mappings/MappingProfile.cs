@@ -44,7 +44,8 @@ namespace Application.Mappings
                     source.DonateAccount.FullName))
                  .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<ReceiveItemInformation, ReceiveRequestDonorViewModel>()
-                .ForMember(dest => dest.ReceiverName, o => o.MapFrom(source => source.Receiver.FullName));
+                .ForMember(dest => dest.ReceiverName, o => o.MapFrom(source => source.Receiver.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Receiver.Avatar.FileName));
             CreateMap<User, UserInfoDTO>()
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
@@ -58,7 +59,9 @@ namespace Application.Mappings
             CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
                 .ForMember(dest => dest.FullName, o => o.MapFrom(source =>
-                    source.Member.FullName));
+                    source.Member.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
+
             CreateMap<GroupMemberDetail, GroupMemberDTO>();
         }
     }
