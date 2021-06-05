@@ -21,13 +21,14 @@ namespace Application.Features.AccountsFeature.Queries
     {
         private readonly IUserRepositoryAsync _userRepository;
         private readonly IAccountService _accountService;
-
+        private readonly IImageRepository _imageRepository;
         private readonly IMapper _mapper;
-        public GetUserInfoQueryHandler(IUserRepositoryAsync userRepository, IMapper mapper,IAccountService accountService)
+        public GetUserInfoQueryHandler(IUserRepositoryAsync userRepository, IMapper mapper,IAccountService accountService, IImageRepository imageRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _accountService = accountService;
+            _imageRepository = imageRepository;
         }
         public async Task<Response<UserInfoDTO>> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
         {
@@ -36,6 +37,7 @@ namespace Application.Features.AccountsFeature.Queries
             var email = await _accountService.GetEmailById(user.AccountId);
             var response = new Response<UserInfoDTO>(_mapper.Map<UserInfoDTO>(user));
             response.Data.Email = email;
+            response.Data.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(response.Data.AvatarUrl);
             return response;
         }
     }

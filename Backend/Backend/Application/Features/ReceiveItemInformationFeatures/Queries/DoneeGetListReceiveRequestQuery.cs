@@ -36,6 +36,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Queries
 
             result.ForEach(i => {
                 i.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl);
+                i.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrl);
             });
             return new PagedResponse<IReadOnlyCollection<GetAllItemViewModel>>(result, request.PageNumber, request.PageSize);
         }

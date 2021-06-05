@@ -33,18 +33,21 @@ namespace Application.Mappings
             CreateMap<Item, GetAllItemViewModel>()
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
-                    source.DonateAccount.FullName));
+                    source.DonateAccount.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<PostItemCommand, Item>();
             CreateMap<GetAllItemByCategoryIdQuery, GetAllItemsParameter>();
             CreateMap<AddressDTO, Address>().ReverseMap();
             CreateMap<Item, GetItemByIdViewModel>()
-                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().Select(e=>e.Image.FileName)))
+                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().Select(e => e.Image.FileName)))
                  .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
-                    source.DonateAccount.FullName));
+                    source.DonateAccount.FullName))
+                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<ReceiveItemInformation, ReceiveRequestDonorViewModel>()
-                .ForMember(dest => dest.ReceiverName, o => o.MapFrom(source => source.Receiver.FullName));
+                .ForMember(dest => dest.ReceiverName, o => o.MapFrom(source => source.Receiver.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Receiver.Avatar.FileName));
             CreateMap<User, UserInfoDTO>()
-                .ForMember(dest => dest.Avatar, o => o.MapFrom(source => source.Avatar.FileName));
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
                 .ForAllMembers(o => o.MapFrom(source => source.Items));
             CreateMap<Group, GroupDTO>();
@@ -56,7 +59,9 @@ namespace Application.Mappings
             CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
                 .ForMember(dest => dest.FullName, o => o.MapFrom(source =>
-                    source.Member.FullName));
+                    source.Member.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
+
             CreateMap<GroupMemberDetail, GroupMemberDTO>();
         }
     }

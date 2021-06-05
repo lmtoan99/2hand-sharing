@@ -22,6 +22,7 @@ namespace Application.Features.ItemFeatures.Queries
         IReceiveItemInformationRepositoryAsync _receiveRequestRepository;
         IItemRepositoryAsync _itemRepository;
         IUserRepositoryAsync _userRepository;
+        IImageRepository _imageRepository;
 
         public GetReceivedUserInfoQueryHandler(IReceiveItemInformationRepositoryAsync receiveRequestRepository, IMapper mapper, IItemRepositoryAsync itemRepository, IUserRepositoryAsync userRepository)
         {

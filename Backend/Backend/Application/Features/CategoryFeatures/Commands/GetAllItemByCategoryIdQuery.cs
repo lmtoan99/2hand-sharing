@@ -41,6 +41,7 @@ namespace Application.Features.CategoryFeatures.Commands
             itemViewModel.ForEach(item =>
             {
                 item.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(item.ImageUrl);
+                item.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(item.AvatarUrl);
             });
 
             return new PagedResponse<IEnumerable<GetAllItemViewModel>>(itemViewModel, validFilter.PageNumber, validFilter.PageSize);
