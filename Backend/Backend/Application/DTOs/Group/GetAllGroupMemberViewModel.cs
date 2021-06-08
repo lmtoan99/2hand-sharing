@@ -9,6 +9,7 @@ namespace Application.DTOs.Group
         public int Id { get; set; }
         public string FullName { get; set; }
         public DateTime JoinDate { get; set; }
+        public string AvatarUrl { get; set; }
     }
 
 }

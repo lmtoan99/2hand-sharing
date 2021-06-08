@@ -15,5 +15,6 @@ namespace Application.DTOs.Item
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public string DonateAccountName { get; set; }
+        public string AvatarUrl { get; set; }
     }
 }

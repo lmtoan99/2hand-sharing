@@ -44,6 +44,10 @@ namespace Persistence.Repositories.EntityRepositories
         }
         public string GenerateV4SignedReadUrl(string fileName)
         {
+            if (fileName == null)
+            {
+                return null;
+            }
             string url = string.Format(@"https://storage.googleapis.com/{0}/{1}",bucketName, fileName);
             return url;
         }

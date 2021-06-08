@@ -22,10 +22,12 @@ namespace Application.Features.GroupFeatures.Queries
     {
         private readonly IGroupMemberDetailRepositoryAsync _groupMemberDetailRepository;
         private readonly IMapper _mapper;
-        public GetAllGroupMemberByGroupIdQueryHandler(IGroupMemberDetailRepositoryAsync groupMemberDetailRepository, IMapper mapper)
+        private readonly IImageRepository _imageRepository;
+        public GetAllGroupMemberByGroupIdQueryHandler(IGroupMemberDetailRepositoryAsync groupMemberDetailRepository, IMapper mapper, IImageRepository imageRepository)
         {
             _groupMemberDetailRepository = groupMemberDetailRepository;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
 
         public async Task<PagedResponse<IEnumerable<GetAllGroupMemberViewModel>>> Handle(GetAllGroupMemberByGroupIdQuery request, CancellationToken cancellationToken)
@@ -33,7 +35,7 @@ namespace Application.Features.GroupFeatures.Queries
             var validFilter = _mapper.Map<GetAllGroupMemberByGroupIdParameter>(request);
             var groupMember = await _groupMemberDetailRepository.GetAllGroupMemberByGroupIdAsync(validFilter.PageNumber, validFilter.PageSize, request.GroupId);
             var groupMemberViewModel = _mapper.Map<List<GetAllGroupMemberViewModel>>(groupMember);
-
+            groupMemberViewModel.ForEach(i => i.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrl));
             return new PagedResponse<IEnumerable<GetAllGroupMemberViewModel>>(groupMemberViewModel, validFilter.PageNumber, validFilter.PageSize);
         }
     }

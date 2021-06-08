@@ -11,7 +11,9 @@ namespace Application.DTOs.Message
         public DateTime SendDate { get; set; }
         public int SendFromAccountId { get; set; }
         public string SendFromAccountName { get; set; }
+        public string AvatarUrlSendFromAccount { get; set; }
         public int SendToAccountId { get; set; }
         public string SendToAccountName { get; set; }
+        public string AvatarUrlSendToAccount { get; set; }
     }
 }

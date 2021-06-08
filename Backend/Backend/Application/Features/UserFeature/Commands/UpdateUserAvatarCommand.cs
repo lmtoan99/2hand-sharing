@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.DTOs.Account;
+using Application.Exceptions;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
@@ -12,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.UserFeature.Commands
 {
-    public partial class UpdateUserAvatarCommand:IRequest<Response<int>>
+    public partial class UpdateUserAvatarCommand:IRequest<Response<UpdateAvatarResponse>>
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
     }
 
-    public class UpdateUserAvatarCommandHandler:IRequestHandler<UpdateUserAvatarCommand,Response<int>>
+    public class UpdateUserAvatarCommandHandler:IRequestHandler<UpdateUserAvatarCommand,Response<UpdateAvatarResponse>>
     {
         private readonly IUserRepositoryAsync _userRepository;
         private readonly IImageRepository _imageRepository;
@@ -28,10 +29,31 @@ namespace Application.Features.UserFeature.Commands
             _imageRepository = imageRepository;
             _mapper = mapper;
         }
-        public async Task<Response<int>> Handle(UpdateUserAvatarCommand request, CancellationToken cancellationToken)
+        public async Task<Response<UpdateAvatarResponse>> Handle(UpdateUserAvatarCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(request.Id);
-            return new Response<int>(user.Id);
+            var user = await _userRepository.GetByIdAsync(request.UserId);
+            string fileName = Guid.NewGuid().ToString();
+            var image = new Image { FileName = fileName };
+            string signUrl = _imageRepository.GenerateV4UploadSignedUrl(fileName);
+            var response = new UpdateAvatarResponse();
+            response.ImageUploads = new UpdateAvatarResponse.ImageUpload { ImageName = fileName, PresignUrl = signUrl };
+
+            if (user.AvatarId == null)
+            {   
+                await _imageRepository.AddAsync(image);
+                user.AvatarId = image.Id;
+                await _userRepository.UpdateAsync(user);
+            }
+            else
+            {
+                var userAvatar = await _imageRepository.GetByIdAsync(user.AvatarId.GetValueOrDefault());
+                userAvatar.FileName = fileName;
+                await _imageRepository.UpdateAsync(userAvatar);
+                user.AvatarId=userAvatar.Id;
+                await _userRepository.UpdateAsync(user);
+            }
+
+            return new Response<UpdateAvatarResponse>(response);
         }
     }
 }
