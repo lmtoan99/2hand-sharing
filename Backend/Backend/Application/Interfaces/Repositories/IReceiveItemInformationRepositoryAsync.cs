@@ -10,7 +10,6 @@ namespace Application.Interfaces.Repositories
     {
         Task<IReadOnlyList<ReceiveItemInformation>> GetAllByItemId(int itemId);
         Task<ReceiveItemInformation> GetReceiveRequestWithItemInfoById(int requestId);
-
         Task<ReceiveItemInformation> GetReceiveRequestByItemIdAndUserId(int itemId, int userId);
         Task<ReceiveItemInformation> GetReceiveRequestByWithReceiverInfoById(int requestId);
     }

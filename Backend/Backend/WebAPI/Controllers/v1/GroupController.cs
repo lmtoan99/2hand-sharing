@@ -48,5 +48,11 @@ namespace WebAPI.Controllers.v1
                 AdminId = GetUserId()
             }));
         }
+
+        [HttpGet("get-joined-group")]
+        public async Task<IActionResult> GetAllGroupJoined()
+        {
+            return Ok(await Mediator.Send(new GetAllGroupJoinedQuery { UserId = this.GetUserId() }));
+        }
     }
 }

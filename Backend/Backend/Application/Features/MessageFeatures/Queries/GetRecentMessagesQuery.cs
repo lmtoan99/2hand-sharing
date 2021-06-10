@@ -34,7 +34,7 @@ namespace Application.Features.MessageFeatures.Queries
             var messages = await _messageRepository.GetRecentMessages(request.UserId, request.PageNumber, request.PageSize * 2);
             var messagesDTOs = _mapper.Map<List<RecentMessagesDTO>>(messages);
 
-            foreach(var i in messagesDTOs)
+            foreach (var i in messagesDTOs)
             {
                 i.AvatarUrlSendFromAccount = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrlSendFromAccount);
                 i.AvatarUrlSendToAccount = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrlSendToAccount);

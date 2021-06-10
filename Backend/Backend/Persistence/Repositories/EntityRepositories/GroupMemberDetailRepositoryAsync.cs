@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.DTOs.Group;
+using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
@@ -26,6 +27,20 @@ namespace Persistence.Repositories.EntityRepositories
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<Group>> GetAllGroupJoinedByUserIdAsync(int userId)
+        {
+            return await _groupMemberDetails
+                .Where(i=> (i.MemberId==userId))
+                .Select(i=> new Group {Id=i.Group.Id, GroupName=i.Group.GroupName})
+                .ToListAsync();
+        }
+
+        public async Task<GroupMemberDetail> GetMemberGroup(int groupId, int userId)
+        {
+            return await _groupMemberDetails
+                .Where(i => (i.MemberId == userId && i.GroupId == groupId)).FirstOrDefaultAsync();
         }
     }
 }
