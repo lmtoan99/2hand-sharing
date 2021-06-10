@@ -30,8 +30,13 @@ namespace Application.Features.ItemFeatures.Commands
         private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
         private readonly IUserRepositoryAsync _userRepository;
         private readonly INotificationRepositoryAsync _notificationRepository;
+        private readonly IImageRepository _imageRepository; 
         public CreateReceiveRequestCommandHandle(IFirebaseSerivce firebaseSerivce, IItemRepositoryAsync itemRepository,
-            IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IUserRepositoryAsync userRepository, INotificationRepositoryAsync notificationRepository)
+            IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, 
+            IFirebaseTokenRepositoryAsync firebaseTokenRepository, 
+            IUserRepositoryAsync userRepository, 
+            INotificationRepositoryAsync notificationRepository,
+            IImageRepository imageRepository)
         {
             _itemRepository = itemRepository;
             _receiveItemInformationRepository = receiveItemInformationRepository;
@@ -39,6 +44,7 @@ namespace Application.Features.ItemFeatures.Commands
             _userRepository = userRepository;
             _firebaseSerivce = firebaseSerivce;
             _notificationRepository = notificationRepository;
+            _imageRepository = imageRepository;
         }
         public async Task<Response<int>> Handle(CreateReceiveRequestCommand request, CancellationToken cancellationToken)
         {
@@ -53,7 +59,7 @@ namespace Application.Features.ItemFeatures.Commands
             #endregion
 
             #region CreateReceiveItemInformation
-            var receiverName = await _userRepository.GetUserFullnameById(request.ReceiverId);
+            var receiver = await _userRepository.GetUserInfoById(request.ReceiverId);
             var newInfo = new Domain.Entities.ReceiveItemInformation
             {
                 ItemId = request.ItemId,
@@ -80,7 +86,8 @@ namespace Application.Features.ItemFeatures.Commands
                 {
                     Id = receiveItemInformation.Id,
                     ReceiverId = request.ReceiverId,
-                    ReceiverName = receiverName,
+                    ReceiverName = receiver.FullName,
+                    ReceiverAvatarUrl=_imageRepository.GenerateV4SignedReadUrl(receiver.Avatar.FileName),
                     ItemId = request.ItemId,
                     ItemName = item.ItemName,
                     ReceiveReason = request.ReceiveReason,

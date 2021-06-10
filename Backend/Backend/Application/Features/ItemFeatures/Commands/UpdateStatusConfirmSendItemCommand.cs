@@ -28,14 +28,20 @@ namespace Application.Features.ItemFeatures.Commands
             private readonly IFirebaseSerivce _firebaseSerivce;
             private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
             private readonly INotificationRepositoryAsync _notificationRepository;
-
-            public UpdateStatusConfirmSendItemCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, IItemRepositoryAsync itemRepository, IFirebaseSerivce firebaseSerivce, IFirebaseTokenRepositoryAsync firebaseTokenRepository, INotificationRepositoryAsync notificationRepository)
+            private readonly IImageRepository _imageRepository;
+            public UpdateStatusConfirmSendItemCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, 
+                IItemRepositoryAsync itemRepository, 
+                IFirebaseSerivce firebaseSerivce, 
+                IFirebaseTokenRepositoryAsync firebaseTokenRepository, 
+                INotificationRepositoryAsync notificationRepository,
+                IImageRepository imageRepository)
             {
                 _receiveItemInformationRepository = receiveItemInformationRepository;
                 _itemRepository = itemRepository;
                 _firebaseSerivce = firebaseSerivce;
                 _firebaseTokenRepository = firebaseTokenRepository;
                 _notificationRepository = notificationRepository;
+                _imageRepository = imageRepository;
             }
 
             public async Task<Response<int>> Handle(UpdateStatusConfirmSendItemCommand command, CancellationToken cancellationToken)
@@ -65,7 +71,8 @@ namespace Application.Features.ItemFeatures.Commands
                     ItemId = item.Id,
                     ItemName = item.ItemName,
                     ReceiverId = acceptedRequest.ReceiverId,
-                    ReceiverName = acceptedRequest.Receiver.FullName
+                    ReceiverName = acceptedRequest.Receiver.FullName,
+                    ReceiverAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(acceptedRequest.Receiver.Avatar.FileName),
                 };
                 DefaultContractResolver contractResolver = new DefaultContractResolver
                 {

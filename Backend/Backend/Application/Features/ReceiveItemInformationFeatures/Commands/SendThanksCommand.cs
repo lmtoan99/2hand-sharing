@@ -29,8 +29,15 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
         private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
         private readonly IUserRepositoryAsync _userRepository;
         private readonly IFirebaseSerivce _firebaseSerivce;
+        private readonly IImageRepository _imageRepository;
 
-        public SendThanksCommandHandler(INotificationRepositoryAsync notificationRepository,IReceiveItemInformationRepositoryAsync receiveItemRepository, IMessageRepositoryAsync messageRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IUserRepositoryAsync userRepository, IFirebaseSerivce firebaseSerivce)
+        public SendThanksCommandHandler(INotificationRepositoryAsync notificationRepository, 
+            IReceiveItemInformationRepositoryAsync receiveItemRepository, 
+            IMessageRepositoryAsync messageRepository, 
+            IFirebaseTokenRepositoryAsync firebaseTokenRepository, 
+            IUserRepositoryAsync userRepository, 
+            IFirebaseSerivce firebaseSerivce,
+            IImageRepository imageRepository)
         {
             _receiveItemRepository = receiveItemRepository;
             _messageRepository = messageRepository;
@@ -38,6 +45,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
             _userRepository = userRepository;
             _firebaseSerivce = firebaseSerivce;
             _notificationRepository = notificationRepository;
+            _imageRepository = imageRepository;
         }
 
         public async Task<Response<int>> Handle(SendThanksCommand request, CancellationToken cancellationToken)
@@ -54,13 +62,14 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                 SendDate = DateTime.Now.ToUniversalTime()
             });
             var tokens = await _firebaseTokenRepository.GetListFirebaseToken(receiveRequest.Items.DonateAccountId);
-            string SenderName = await _userRepository.GetUserFullnameById(result.SendFromAccountId);
+            var userSend = await _userRepository.GetUserInfoById(result.SendFromAccountId);
             MessageNotiData message = new MessageNotiData
             {
                 Content = result.Content,
                 SendDate = result.SendDate,
                 SendFromAccountId = result.SendFromAccountId,
-                SendFromAccountName = SenderName
+                SendFromAccountName = userSend.FullName,
+                SendFromAccountAvatarUrl=_imageRepository.GenerateV4SignedReadUrl(userSend.Avatar.FileName)
             };
             DefaultContractResolver contractResolver = new DefaultContractResolver
             {
