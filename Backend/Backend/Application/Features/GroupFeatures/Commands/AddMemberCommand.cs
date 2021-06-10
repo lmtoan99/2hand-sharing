@@ -50,16 +50,24 @@ namespace Application.Features.GroupFeatures.Commands
             {
                 throw new ApiException("You are not admin of this group.");
             }
-
-            GroupMemberDetail groupMember = new GroupMemberDetail
+            var checkMemberInGroup = await _groupMemberDetailRepository.GetMemberGroup(request.GroupId, user.Id);
+            if (checkMemberInGroup==null)
             {
-                MemberId = user.Id,
-                GroupId = request.GroupId,
-                ReportStatus = true,
-                JoinDate = DateTime.Now.ToUniversalTime()
-            };
-            var result = await _groupMemberDetailRepository.AddAsync(groupMember);
-            return new Response<GroupMemberDTO>(_mapper.Map<GroupMemberDTO>(result));
+                GroupMemberDetail groupMember = new GroupMemberDetail
+                {
+                    MemberId = user.Id,
+                    GroupId = request.GroupId,
+                    ReportStatus = true,
+                    JoinDate = DateTime.Now.ToUniversalTime()
+                };
+
+                var result = await _groupMemberDetailRepository.AddAsync(groupMember);
+                return new Response<GroupMemberDTO>(_mapper.Map<GroupMemberDTO>(result));
+            }
+            else
+            {
+                throw new ApiException("Member exist in group.");
+            }
         }
     }
 }
