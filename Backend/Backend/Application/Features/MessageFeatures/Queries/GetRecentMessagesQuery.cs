@@ -36,8 +36,8 @@ namespace Application.Features.MessageFeatures.Queries
 
             foreach (var i in messagesDTOs)
             {
-                i.AvatarUrlSendFromAccount = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrlSendFromAccount);
-                i.AvatarUrlSendToAccount = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrlSendToAccount);
+                i.SendFromAccountAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.SendFromAccountAvatarUrl);
+                i.SendToAccountAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.SendToAccountAvatarUrl);
             }
             for (int i = 0; i < messagesDTOs.Count - 1; i++)
             {
