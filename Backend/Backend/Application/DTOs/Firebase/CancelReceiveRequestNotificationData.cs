@@ -6,7 +6,7 @@ namespace Application.DTOs.Firebase
 {
     public class CancelReceiveRequestNotificationData
     {
-        public int RequestId;
-        public int ItemId;
+        public int RequestId { get; set; }
+        public int ItemId { get; set; }
     }
 }

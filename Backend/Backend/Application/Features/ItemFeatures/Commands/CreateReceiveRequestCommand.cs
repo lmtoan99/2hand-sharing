@@ -99,8 +99,8 @@ namespace Application.Features.ItemFeatures.Commands
                     Type = "2",
                     Data = messageData,
                     UserId = item.DonateAccountId,
-                    CreateTime = DateTime.UtcNow
-                });
+                    CreateTime = receiveItemInformation.CreateDate
+            });
             #endregion
             #region SendNotification
             var tokens = await _firebaseTokenRepository.GetListFirebaseToken(item.DonateAccountId);

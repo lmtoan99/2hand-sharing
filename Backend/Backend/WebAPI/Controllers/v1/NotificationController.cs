@@ -15,7 +15,7 @@ namespace WebAPI.Controllers.v1
     public class NotificationController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> RegisterFirebase([FromQuery] RequestParameter filter)
+        public async Task<IActionResult> GetNotifications([FromQuery] RequestParameter filter)
         {
             return Ok(await Mediator.Send(new GetNotificationsOfUserQuery { UserId = GetUserId(), PageNumber = filter.PageNumber, PageSize = filter.PageSize }));
         }
