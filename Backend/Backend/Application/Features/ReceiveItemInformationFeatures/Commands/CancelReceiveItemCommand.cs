@@ -53,19 +53,17 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                     CancelReceiveRequestNotificationData data = new CancelReceiveRequestNotificationData
                     {
                         RequestId = receiveItemInformation.Id,
-                        ItemId = receiveItemInformation.ItemId
+                        ItemId = receiveItemInformation.ItemId,
                     };
                     DefaultContractResolver contractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() };
 
                     var settings = new JsonSerializerSettings { ContractResolver = contractResolver, Formatting = Formatting.Indented };
                     var cancelReceiveItemData = JsonConvert.SerializeObject(data, settings);
-                    await _notificationRepository.AddAsync(new Notification
+                    var notifications = await _notificationRepository.GetByConditionAsync(n => n.UserId == receiveItemInformation.Items.DonateAccountId && receiveItemInformation.CreateDate.CompareTo(n.CreateTime) == 0);
+                    if (notifications.Count > 0)
                     {
-                        Type = "3",
-                        Data = cancelReceiveItemData,
-                        UserId = receiveItemInformation.Items.DonateAccountId,
-                        CreateTime = DateTime.UtcNow
-                    });
+                        await _notificationRepository.DeleteAsync(notifications[0]);
+                    }
                     var responses = await _firebaseSerivce.SendCancelReceiveRequestNotification(tokens, cancelReceiveItemData);
                     _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
 

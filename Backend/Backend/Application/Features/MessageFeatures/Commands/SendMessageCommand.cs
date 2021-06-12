@@ -28,13 +28,20 @@ namespace Application.Features.MessageFeatures.Commands
         private readonly IUserRepositoryAsync _userRepository;
         private readonly IFirebaseSerivce _firebaseSerivce;
         private readonly IMapper _mapper;
-        public SendMessageCommandHandler(IMessageRepositoryAsync messageRepository, IFirebaseTokenRepositoryAsync firebaseTokenRepository, IUserRepositoryAsync userRepository, IFirebaseSerivce firebaseSerivce, IMapper mapper)
+        private readonly IImageRepository _imageRepository;
+        public SendMessageCommandHandler(IMessageRepositoryAsync messageRepository, 
+            IFirebaseTokenRepositoryAsync firebaseTokenRepository, 
+            IUserRepositoryAsync userRepository, 
+            IFirebaseSerivce firebaseSerivce, 
+            IMapper mapper,
+            IImageRepository imageRepository)
         {
             _messageRepository = messageRepository;
             _firebaseTokenRepository = firebaseTokenRepository;
             _userRepository = userRepository;
             _firebaseSerivce = firebaseSerivce;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
         public async Task<Response<MessageDTO>> Handle(SendMessageCommand request, CancellationToken cancellationToken)
         {
@@ -48,13 +55,14 @@ namespace Application.Features.MessageFeatures.Commands
             var tokens = await _firebaseTokenRepository.GetListFirebaseToken(request.SendToAccountId);
             if (tokens.Count > 0)
             {
-                string SenderName = await _userRepository.GetUserFullnameById(result.SendFromAccountId);
+                var user = await _userRepository.GetUserInfoById(result.SendFromAccountId);
                 MessageNotiData message = new MessageNotiData
                 {
                     Content = result.Content,
                     SendDate = result.SendDate,
                     SendFromAccountId = result.SendFromAccountId,
-                    SendFromAccountName = SenderName
+                    SendFromAccountName = user.FullName,
+                    SendFromAccountAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(user.Avatar.FileName)
                 };
                 DefaultContractResolver contractResolver = new DefaultContractResolver
                 {

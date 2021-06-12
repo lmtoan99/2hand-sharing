@@ -10,5 +10,6 @@ namespace Application.DTOs.Firebase
         public DateTime SendDate { get; set; }
         public int SendFromAccountId { get; set; }
         public string SendFromAccountName { get; set; }
+        public string SendFromAccountAvatarUrl { get; set; }
     }
 }

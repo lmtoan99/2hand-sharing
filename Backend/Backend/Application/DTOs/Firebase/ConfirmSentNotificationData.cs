@@ -10,5 +10,6 @@ namespace Application.DTOs.Firebase
         public string ItemName;
         public int ReceiverId;
         public string ReceiverName;
+        public string ReceiverAvatarUrl;
     }
 }
