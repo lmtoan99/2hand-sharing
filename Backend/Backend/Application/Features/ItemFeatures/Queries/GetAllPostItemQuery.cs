@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Address;
+using Application.DTOs.Item;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
@@ -37,6 +38,7 @@ namespace Application.Features.ItemFeatures.Queries
             itemViewModel.ForEach(i =>
             {
                 i.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl);
+                i.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrl);
             });
 
             return new PagedResponse<IEnumerable<GetAllItemViewModel>>(itemViewModel, validFilter.PageNumber, validFilter.PageSize);

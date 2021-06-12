@@ -1,9 +1,14 @@
-﻿using Application.Enums;
+﻿using Application.DTOs.Firebase;
+using Application.Enums;
 using Application.Exceptions;
 using Application.Interfaces.Repositories;
+using Application.Interfaces.Service;
 using Application.Wrappers;
 using AutoMapper;
+using Domain.Entities;
 using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,29 +23,96 @@ namespace Application.Features.ItemFeatures.Commands
         public int UserId { get; set; }
         public class UpdateStatusConfirmSendItemCommandHandler : IRequestHandler<UpdateStatusConfirmSendItemCommand, Response<int>>
         {
-            private readonly IItemRepositoryAsync _itemRepository;
             private readonly IReceiveItemInformationRepositoryAsync _receiveItemInformationRepository;
-            private readonly IMapper _mapper;
-            public UpdateStatusConfirmSendItemCommandHandler(IItemRepositoryAsync itemRepository, IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, IMapper mapper)
+            private readonly IItemRepositoryAsync _itemRepository;
+            private readonly IFirebaseSerivce _firebaseSerivce;
+            private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
+            private readonly INotificationRepositoryAsync _notificationRepository;
+            private readonly IImageRepository _imageRepository;
+            public UpdateStatusConfirmSendItemCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, 
+                IItemRepositoryAsync itemRepository, 
+                IFirebaseSerivce firebaseSerivce, 
+                IFirebaseTokenRepositoryAsync firebaseTokenRepository, 
+                INotificationRepositoryAsync notificationRepository,
+                IImageRepository imageRepository)
             {
-                _itemRepository = itemRepository;
                 _receiveItemInformationRepository = receiveItemInformationRepository;
-                _mapper = mapper;
+                _itemRepository = itemRepository;
+                _firebaseSerivce = firebaseSerivce;
+                _firebaseTokenRepository = firebaseTokenRepository;
+                _notificationRepository = notificationRepository;
+                _imageRepository = imageRepository;
             }
+
             public async Task<Response<int>> Handle(UpdateStatusConfirmSendItemCommand command, CancellationToken cancellationToken)
             {
+                #region Validate
                 var item = await _itemRepository.GetByIdAsync(command.Id);
-                var itemConfirmReceived = await _receiveItemInformationRepository.GetItemConfirmReceiveByItemId(command.Id);
                 if (item == null) throw new ApiException($"Item Not Found.");
                 if (item.DonateAccountId != command.UserId) throw new UnauthorizedAccessException();
-                if (itemConfirmReceived == null) throw new ApiException($"Waiting for the confirmed received.");
-                if (item.Status==(int)ItemStatus.PENDING_FOR_RECEIVER)
+                #endregion
+                #region FindAcceptedRequestAndUserTokens
+                ReceiveItemInformation acceptedRequest = null;
+                var requests = await _receiveItemInformationRepository.GetAllByItemId(command.Id);
+                List<string> sendTokens = new List<string>();
+                for(int i = 0; i < requests.Count; i++)
+                {
+                    if(requests[i].ReceiveStatus == (int) ReceiveItemInformationStatus.RECEIVING)
+                    {
+                        acceptedRequest = requests[i];
+                    }
+                    var tokens = await _firebaseTokenRepository.GetListFirebaseToken(requests[i].ReceiverId);
+                    sendTokens.AddRange(tokens);
+                }
+                #endregion
+                #region SendNotification
+                ConfirmSentNotificationData data = new ConfirmSentNotificationData
+                {
+                    ItemId = item.Id,
+                    ItemName = item.ItemName,
+                    ReceiverId = acceptedRequest.ReceiverId,
+                    ReceiverName = acceptedRequest.Receiver.FullName,
+                    ReceiverAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(acceptedRequest.Receiver.Avatar.FileName),
+                };
+                DefaultContractResolver contractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                };
+
+                var settings = new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented
+                };
+                var confirmSentNotificationData = JsonConvert.SerializeObject(data, settings);
+                if (sendTokens.Count > 0)
+                {
+                    var responses = await _firebaseSerivce.SendConfirmSentNotification(sendTokens, confirmSentNotificationData);
+                    _firebaseTokenRepository.CleanExpiredToken(sendTokens, responses);
+                }
+                #endregion
+                #region SaveNotification
+                for (int i = 0; i < requests.Count; i++)
+                {
+                    await _notificationRepository.AddAsync(new Notification
+                    {
+                        Type = "6",
+                        Data = confirmSentNotificationData,
+                        UserId = requests[i].ReceiverId,
+                        CreateTime = DateTime.UtcNow
+                    });
+                }
+
+                #endregion
+                #region UpdateItem
+                if (item.Status == (int)ItemStatus.PENDING_FOR_RECEIVER)
                 {
                     item.Status = (int)ItemStatus.SUCCESS;
                     await _itemRepository.UpdateAsync(item);
                     return new Response<int>(item.Id);
                 }
-                throw new ApiException($"You can not confirmed receive if donee have not confirmed received yet.");
+                throw new ApiException($"You can not confirm send.");
+                #endregion
             }
         }
     }

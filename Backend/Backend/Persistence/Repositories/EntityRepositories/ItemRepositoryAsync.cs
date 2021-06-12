@@ -14,15 +14,26 @@ namespace Persistence.Repositories.EntityRepositories
     class ItemRepositoryAsync : GenericRepositoryAsync<Item>, IItemRepositoryAsync
     {
         private readonly DbSet<Item> _item;
+
         public ItemRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
             _item = dbContext.Set<Item>();
         }
 
+        public async Task<IReadOnlyCollection<Item>> GetAllItemHaveRequestWithReceiverId(int receiverId, int pageNumber, int pageSize)
+        {
+            return await _item.Where(i => i.ReceiveItemInformations.Where(r => r.ReceiverId == receiverId).Count() > 0)
+                .OrderByDescending(i => i.PostTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public async Task<IReadOnlyList<Item>> GetAllPostItemsAsync(int pageNumber, int pageSize)
         {
             return await _item
-                .Where(i => i.DonateType == (int)EDonateType.DONATE_POST)
+                //.Where(i => i.DonateType == (int)EDonateType.DONATE_POST && i.Status != (int)ItemStatus.SUCCESS && i.Status != (int)ItemStatus.CANCEL)
+                .OrderByDescending(i => i.PostTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Include(i => i.Address)
@@ -40,15 +51,28 @@ namespace Persistence.Repositories.EntityRepositories
                 .Include(i =>i.Address)
                 .Include(i=>i.DonateAccount)
                 .Include(i=> i.ItemImageRelationships)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<Item>> GetItemByDonateAccountId(int accountId)
+        public async Task<IReadOnlyCollection<Item>> GetItemByDonateAccountId(int accountId, int pageNumber, int pageSize)
         {
             return await _item
                 .Where(i => i.DonateAccountId == accountId)
                 .Include(i => i.Address)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<Item> GetItemDetailByIdAsync(int itemId)
+        {
+            return await _item.Where(i => i.Id == itemId)
+                .Include(i => i.Address)
+                .Include(i => i.DonateAccount)
+                .Include(i => i.ItemImageRelationships)
+                .FirstAsync();
         }
 
         public async Task<Item> GetItemWithReceiveRequestByIdAsync(int itemId)

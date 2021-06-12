@@ -1,4 +1,5 @@
-﻿using Application.DTOs.ReceiveRequest;
+﻿using Application.DTOs.Item;
+using Application.DTOs.ReceiveRequest;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
@@ -11,30 +12,33 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ReceiveItemInformationFeatures.Queries
 {
-    public class DoneeGetListReceiveRequestQuery : IRequest<Response<IReadOnlyCollection<ReceiveRequestDoneeViewModel>>>
+    public class DoneeGetListReceiveRequestQuery : IRequest<PagedResponse<IReadOnlyCollection<GetAllItemViewModel>>>
     {
         public int UserId { get; set; }
+        public int PageSize { get; set; }
+        public int PageNumber { get; set; }
     }
-    public class DoneeGetListReceiveRequestQueryHandler : IRequestHandler<DoneeGetListReceiveRequestQuery, Response<IReadOnlyCollection<ReceiveRequestDoneeViewModel>>>
+    public class DoneeGetListReceiveRequestQueryHandler : IRequestHandler<DoneeGetListReceiveRequestQuery, PagedResponse<IReadOnlyCollection<GetAllItemViewModel>>>
     {
-        private readonly IReceiveItemInformationRepositoryAsync _receiveItemRepository;
+        private readonly IItemRepositoryAsync _itemRepository;
         private readonly IImageRepository _imageRepository;
         private readonly IMapper _mapper;
-        public DoneeGetListReceiveRequestQueryHandler(IReceiveItemInformationRepositoryAsync receiveItemRepository, IImageRepository imageRepository, IMapper mapper)
+        public DoneeGetListReceiveRequestQueryHandler(IItemRepositoryAsync itemRepository, IImageRepository imageRepository, IMapper mapper)
         {
-            _receiveItemRepository = receiveItemRepository;
+            _itemRepository = itemRepository;
             _imageRepository = imageRepository;
             _mapper = mapper;
         }
-        public async Task<Response<IReadOnlyCollection<ReceiveRequestDoneeViewModel>>> Handle(DoneeGetListReceiveRequestQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IReadOnlyCollection<GetAllItemViewModel>>> Handle(DoneeGetListReceiveRequestQuery request, CancellationToken cancellationToken)
         {
-            var list = await _receiveItemRepository.GetAllWithItemInfoByAccountId(request.UserId);
-            var result = _mapper.Map<List<ReceiveRequestDoneeViewModel>>(list);
+            var list = await _itemRepository.GetAllItemHaveRequestWithReceiverId(request.UserId, request.PageNumber, request.PageSize);
+            var result = _mapper.Map<List<GetAllItemViewModel>>(list);
 
             result.ForEach(i => {
-                i.ItemImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ItemImageUrl);
+                i.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl);
+                i.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrl);
             });
-            return new Response<IReadOnlyCollection<ReceiveRequestDoneeViewModel>>(result);
+            return new PagedResponse<IReadOnlyCollection<GetAllItemViewModel>>(result, request.PageNumber, request.PageSize);
         }
     }
 }

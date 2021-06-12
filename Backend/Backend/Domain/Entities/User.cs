@@ -16,6 +16,7 @@ namespace Domain.Entities
         [InverseProperty("UserAvatar")]
         public virtual Image Avatar { get; set; }
         public int? AddressId { get; set; }
+        public virtual ICollection<FirebaseToken> FirebaseToken { get; set; }
         [ForeignKey("AddressId")]
         [InverseProperty("UserAddress")]
         public virtual Address Address { get; set; }

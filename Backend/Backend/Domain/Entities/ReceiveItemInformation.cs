@@ -12,6 +12,7 @@ namespace Domain.Entities
         public string ReceiveReason { get; set; }
         public int ItemId { get; set; }
         public int ReceiverId { get; set; }
+        public DateTime CreateDate { get; set; }
         [ForeignKey("ItemId")]
         [InverseProperty("ReceiveItemInformations")]
         public virtual Item Items { get; set; }

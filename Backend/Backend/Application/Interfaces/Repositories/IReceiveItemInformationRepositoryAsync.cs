@@ -9,8 +9,8 @@ namespace Application.Interfaces.Repositories
     public interface IReceiveItemInformationRepositoryAsync : IGenericRepositoryAsync<ReceiveItemInformation>
     {
         Task<IReadOnlyList<ReceiveItemInformation>> GetAllByItemId(int itemId);
-        Task<ReceiveItemInformation> GetItemConfirmReceiveByItemId(int itemId);
         Task<ReceiveItemInformation> GetReceiveRequestWithItemInfoById(int requestId);
-        Task<IReadOnlyList<ReceiveItemInformation>> GetAllWithItemInfoByAccountId(int accountId);
+        Task<ReceiveItemInformation> GetReceiveRequestByItemIdAndUserId(int itemId, int userId);
+        Task<ReceiveItemInformation> GetReceiveRequestByWithReceiverInfoById(int requestId);
     }
 }

@@ -10,12 +10,14 @@
 
   <ItemGroup>
     <Folder Include="Features\AccountsFeature\Queries\" />
-    <Folder Include="Features\UserFeature\Queries\" />
+    <Folder Include="Features\NotificationFeatures\Commands\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="FirebaseAdmin" Version="2.1.0" />
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
   </ItemGroup>
 
 </Project>

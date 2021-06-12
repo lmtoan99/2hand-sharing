@@ -38,6 +38,7 @@ namespace Identity.Service
         private readonly IUserRepositoryAsync _userRepository;
         private readonly string _host = "http://localhost:4200";
         private readonly IMapper _mapper;
+        private readonly IImageRepository _imageRepository;
         //private readonly 
         public AccountService(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
@@ -45,7 +46,8 @@ namespace Identity.Service
             SignInManager<ApplicationUser> signInManager,
             IEmailService emailService,
             IUserRepositoryAsync userRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IImageRepository imageRepository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -54,6 +56,7 @@ namespace Identity.Service
             this._emailService = emailService;
             this._userRepository = userRepository;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
 
         public async Task<Response<AuthenticateResponse>> AuthenticateAsync(AuthenticateRequest request)
@@ -79,8 +82,12 @@ namespace Identity.Service
             response.Roles = rolesList.ToList().FirstOrDefault();
             response.IsVerified = user.EmailConfirmed;
             response.UserInfo = _mapper.Map<UserInfoDTO>(await _userRepository.GetUserInfoByUserId(user.Id));
+            response.UserInfo.Email = request.Email;
+            response.UserInfo.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(response.UserInfo.AvatarUrl);
             return new Response<AuthenticateResponse>(response, $"Authenticated {user.UserName}");
         }
+
+
 
         public async Task<Response<string>> RegisterAsync(RegisterRequest request)
         {
@@ -227,6 +234,22 @@ namespace Identity.Service
             {
                 throw new ApiException($"Error occured while reseting the password.");
             }
+        }
+
+        public async Task<string> GetEmailById(string accountId)
+        {
+            var user = await _userManager.FindByIdAsync(accountId);
+            return user.Email;
+        }
+
+        public async Task<string> GetAcccountIdByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user == null)
+            {
+                return null;
+            }
+            return user.Id;
         }
     }
 }

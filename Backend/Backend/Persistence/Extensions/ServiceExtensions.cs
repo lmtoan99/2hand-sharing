@@ -29,6 +29,13 @@ namespace Persistence.Extensions
             services.AddScoped<IItemImageRelationshipRepositoryAsync, ItemImageRelationshipRepositoryAsync>();
             services.AddScoped<IAddressRepositoryAsync, AddressRepositoryAsync>();
             services.AddScoped<IReceiveItemInformationRepositoryAsync, ReceveItemInformationRepositoryAsync>();
+            services.AddScoped<IGroupRepositoryAsync, GroupRepositoryAsync>();
+            services.AddScoped<IGroupAdminDetailRepositoryAsync, GroupAdminDetailRepositoryAsync>();
+            services.AddScoped<IMessageRepositoryAsync, MessageRepositoryAsync>();
+            services.AddScoped<IFirebaseTokenRepositoryAsync, FirebaseTokenRepositoryAsync>();
+           services.AddScoped<IGroupMemberDetailRepositoryAsync, GroupMemberDetailRepositoryAsync>();
+
+            services.AddScoped<INotificationRepositoryAsync, NotificationRepositoryAsync>();
             #endregion
 
             #region ApplicationContext

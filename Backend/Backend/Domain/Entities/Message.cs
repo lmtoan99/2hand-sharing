@@ -8,7 +8,7 @@ namespace Domain.Entities
     public class Message : BaseEntity
     {
         public string Content { get; set; }
-        public int SendDate{get;set;}
+        public DateTime SendDate{get;set;}
         public int SendFromAccountId { get; set; }
         public int SendToAccountId{get;set;}
         [ForeignKey("SendFromAccountId")]

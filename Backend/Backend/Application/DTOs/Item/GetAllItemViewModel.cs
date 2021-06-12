@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Features.ItemFeatures.Queries
+namespace Application.DTOs.Item
 {
     public class GetAllItemViewModel
     {
@@ -15,5 +15,6 @@ namespace Application.Features.ItemFeatures.Queries
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public string DonateAccountName { get; set; }
+        public string AvatarUrl { get; set; }
     }
 }

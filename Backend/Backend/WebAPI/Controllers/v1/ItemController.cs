@@ -2,6 +2,7 @@
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
 using Application.Features.ReceiveItemInformationFeatures.Commands;
+using Application.Filter;
 using Application.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ namespace WebAPI.Controllers.v1
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id }));
+            return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id, UserId = GetUserId()}));
         }
 
         [HttpGet("{itemId}/receive-request")]
@@ -50,20 +51,27 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetListReceiveRequestQuery { ItemId = itemId, UserId = this.GetUserId() }));
         }
 
+
         [HttpPut("{itemId}/confirm-send")]
-        public async Task<IActionResult> confirmSendItem(int itemId)
+        public async Task<IActionResult> ConfirmSendItem(int itemId)
         {
             return Ok(await Mediator.Send(new UpdateStatusConfirmSendItemCommand { Id = itemId, UserId = this.GetUserId() }));
         }
 
-        [HttpGet("my-donate")]
-        public async Task<IActionResult> DonorGetListItemDonate()
+        [HttpGet("{userId}/donations")]
+        public async Task<IActionResult> DonorGetListItemDonate([FromQuery] RequestParameter filter, int userId)
         {
-            return Ok(await Mediator.Send(new GetListItemDonateByDonorIdQuery{userId = GetUserId() }));
+            return Ok(await Mediator.Send(new GetListItemDonateByDonorIdQuery{userId = userId, PageNumber = filter.PageNumber, PageSize = filter.PageSize }));
+        }
+
+        [HttpGet("{itemId}/received-user")]
+        public async Task<IActionResult> GetReceivedUserInfo(int itemId)
+        {
+            return Ok(await Mediator.Send(new GetReceivedUserInfoQuery { itemId = itemId }));
         }
 
         [HttpPut("{itemId}/cancel-donate")]
-        public async Task<IActionResult> cancelDonateItem(int itemId)
+        public async Task<IActionResult> CancelDonateItem(int itemId)
         {
             return Ok(await Mediator.Send(new UpdateStatusCancelDonateItemCommand { Id = itemId, UserId = this.GetUserId() }));
         }
