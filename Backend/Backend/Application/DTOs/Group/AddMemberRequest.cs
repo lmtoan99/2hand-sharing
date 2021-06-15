@@ -9,8 +9,6 @@ namespace Application.DTOs.Group
     {
         [Required]
         public string Email { get; set; }
-        [Required]
-        public int GroupId { get; set; }
 
     }
 }
