@@ -69,7 +69,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                 SendDate = result.SendDate,
                 SendFromAccountId = result.SendFromAccountId,
                 SendFromAccountName = userSend.FullName,
-                SendFromAccountAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(userSend.Avatar.FileName)
+                SendFromAccountAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(userSend.Avatar?.FileName)
             };
             DefaultContractResolver contractResolver = new DefaultContractResolver
             {
