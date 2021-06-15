@@ -34,7 +34,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName))
-                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar == null ? null : source.DonateAccount.Avatar.FileName));
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<PostItemCommand, Item>();
             CreateMap<GetAllItemByCategoryIdQuery, GetAllItemsParameter>();
             CreateMap<AddressDTO, Address>().ReverseMap();
@@ -42,12 +42,12 @@ namespace Application.Mappings
                  .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().Select(e => e.Image.FileName)))
                  .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName))
-                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar == null ? null : source.DonateAccount.Avatar.FileName));
+                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<ReceiveItemInformation, ReceiveRequestDonorViewModel>()
                 .ForMember(dest => dest.ReceiverName, o => o.MapFrom(source => source.Receiver.FullName))
-                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Receiver.Avatar == null ? null : source.Receiver.Avatar.FileName));
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Receiver.Avatar.FileName));
             CreateMap<User, UserInfoDTO>()
-                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Avatar == null ? null : source.Avatar.FileName));
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
                 .ForAllMembers(o => o.MapFrom(source => source.Items));
             CreateMap<Group, GroupDTO>();
@@ -56,14 +56,14 @@ namespace Application.Mappings
             CreateMap<Message, MessageDTO>();
             CreateMap<Message, RecentMessagesDTO>().ForMember(dest => dest.SendFromAccountName, o => o.MapFrom(source => source.SendFromAccount.FullName))
                 .ForMember(dest => dest.SendToAccountName, o => o.MapFrom(source => source.SendToAccount.FullName))
-                .ForMember(dest => dest.SendFromAccountAvatarUrl, o => o.MapFrom(source => source.SendFromAccount.Avatar == null ? null : source.SendFromAccount.Avatar.FileName))
-                .ForMember(dest => dest.SendToAccountAvatarUrl, o => o.MapFrom(source => source.SendToAccount.Avatar == null ? null : source.SendToAccount.Avatar.FileName));
+                .ForMember(dest => dest.SendFromAccountAvatarUrl, o => o.MapFrom(source => source.SendFromAccount.Avatar.FileName))
+                .ForMember(dest => dest.SendToAccountAvatarUrl, o => o.MapFrom(source => source.SendToAccount.Avatar.FileName ));
             CreateMap<Notification, NotificationDTO>();
             CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
                 .ForMember(dest => dest.FullName, o => o.MapFrom(source =>
                     source.Member.FullName))
-                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar == null ? null : source.Member.Avatar.FileName));
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
 
             CreateMap<GroupMemberDetail, GroupMemberDTO>();
         }
