@@ -38,6 +38,16 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId }));
         }
 
+        [HttpDelete("{groupId}/member/{memberId}")]
+        public async Task<IActionResult> DeleteMember(int groupId,int memberId)
+        {
+            return Ok(await Mediator.Send(new DeleteMemberCommand {
+                groupId = groupId,
+                memberId = memberId,
+                adminId = GetUserId()
+            }));
+        }
+
         [HttpPost("{groupId}/member")]
         public async Task<IActionResult> AddMember(int groupId, [FromBody] AddMemberRequest request)
         {
