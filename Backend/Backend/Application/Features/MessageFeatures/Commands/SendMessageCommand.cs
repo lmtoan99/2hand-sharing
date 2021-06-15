@@ -62,7 +62,7 @@ namespace Application.Features.MessageFeatures.Commands
                     SendDate = result.SendDate,
                     SendFromAccountId = result.SendFromAccountId,
                     SendFromAccountName = user.FullName,
-                    SendFromAccountAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(user.Avatar.FileName)
+                    SendFromAccountAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(user.Avatar?.FileName)
                 };
                 DefaultContractResolver contractResolver = new DefaultContractResolver
                 {
