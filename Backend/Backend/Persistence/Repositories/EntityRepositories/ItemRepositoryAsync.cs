@@ -32,7 +32,7 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<IReadOnlyList<Item>> GetAllPostItemsAsync(int pageNumber, int pageSize)
         {
             return await _item
-                //.Where(i => i.DonateType == (int)EDonateType.DONATE_POST && i.Status != (int)ItemStatus.SUCCESS && i.Status != (int)ItemStatus.CANCEL)
+                .Where(i => i.DonateType == (int)EDonateType.DONATE_POST && i.Status != (int)ItemStatus.SUCCESS)
                 .OrderByDescending(i => i.PostTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
@@ -45,15 +45,16 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<IReadOnlyList<Item>> GetAllPostItemsByCategoryIdAsync(int pageNumber, int pageSize, int categoryId)
         {
             return await _item
-                .Where(i => (i.DonateType == (int)EDonateType.DONATE_POST) && i.CategoryId==categoryId)
+                .Where(i => (i.DonateType == (int)EDonateType.DONATE_POST) && i.CategoryId == categoryId && i.Status != (int)ItemStatus.SUCCESS)
+                .OrderByDescending(i => i.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Include(i =>i.Address)
-                .Include(i=>i.DonateAccount)
-                .Include(i=> i.ItemImageRelationships)
+                .Include(i => i.Address)
+                .Include(i => i.DonateAccount)
+                .Include(i => i.ItemImageRelationships)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync();
+                .ToListAsync();  
         }
 
         public async Task<IReadOnlyCollection<Item>> GetItemByDonateAccountId(int accountId, int pageNumber, int pageSize)
