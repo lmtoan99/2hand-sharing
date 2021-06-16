@@ -10,7 +10,7 @@ namespace Application.Interfaces.Repositories
     public interface IGroupMemberDetailRepositoryAsync: IGenericRepositoryAsync<GroupMemberDetail>
     {
         Task<IReadOnlyList<GroupMemberDetail>> GetAllGroupMemberByGroupIdAsync(int pageNumber, int pageSize, int groupId);
-        Task<IReadOnlyList<Group>> GetAllGroupJoinedByUserIdAsync(int userId);
+        Task<IReadOnlyList<Group>> GetAllGroupJoinedByUserIdAsync(int pageNumber, int pageSize, int userId);
         Task<GroupMemberDetail> GetMemberGroup(int groupId, int userId);
     }
 }

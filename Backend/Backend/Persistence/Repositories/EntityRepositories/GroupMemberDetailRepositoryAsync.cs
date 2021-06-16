@@ -29,11 +29,13 @@ namespace Persistence.Repositories.EntityRepositories
                 .ToListAsync();
         }
 
-        public async Task<IReadOnlyList<Group>> GetAllGroupJoinedByUserIdAsync(int userId)
+        public async Task<IReadOnlyList<Group>> GetAllGroupJoinedByUserIdAsync(int pageNumber, int pageSize, int userId)
         {
             return await _groupMemberDetails
                 .Where(i=> (i.MemberId==userId))
                 .Select(i=> new Group {Id=i.Group.Id, GroupName=i.Group.GroupName})
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
 
