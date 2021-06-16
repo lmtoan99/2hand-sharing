@@ -31,25 +31,25 @@ namespace WebAPI.Controllers.v1
             }));
         }
 
-        [HttpGet("{groupid}/get-group-member")]
-        public async Task<IActionResult> GetAllMember([FromQuery] GetAllGroupMemberByGroupIdParameter filter, int groupid)
+        [HttpGet("{groupId}/member")]
+        public async Task<IActionResult> GetAllMember([FromQuery] GetAllGroupMemberByGroupIdParameter filter, int groupId)
         {
             if (filter == null) return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery()));
-            return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupid }));
+            return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId }));
         }
 
-        [HttpPost("add-member")]
-        public async Task<IActionResult> AddMember([FromBody] AddMemberRequest request)
+        [HttpPost("{groupId}/member")]
+        public async Task<IActionResult> AddMember(int groupId, [FromBody] AddMemberRequest request)
         {
             return Ok(await Mediator.Send(new AddMemberCommand
             {
-                GroupId = request.GroupId,
+                GroupId = groupId,
                 Email = request.Email,
                 AdminId = GetUserId()
             }));
         }
 
-        [HttpGet("get-joined-group")]
+        [HttpGet("joined-group")]
         public async Task<IActionResult> GetAllGroupJoined()
         {
             return Ok(await Mediator.Send(new GetAllGroupJoinedQuery { UserId = this.GetUserId() }));
