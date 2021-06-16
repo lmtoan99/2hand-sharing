@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers.v1
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class GroupController : BaseApiController
     {
         [HttpGet("{id}")]
