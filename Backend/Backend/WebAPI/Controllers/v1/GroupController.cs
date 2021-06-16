@@ -60,9 +60,16 @@ namespace WebAPI.Controllers.v1
         }
 
         [HttpGet("joined-group")]
-        public async Task<IActionResult> GetAllGroupJoined()
+        public async Task<IActionResult> GetAllGroupJoined([FromQuery] GetAllGroupJoinedParameter filter)
         {
-            return Ok(await Mediator.Send(new GetAllGroupJoinedQuery { UserId = this.GetUserId() }));
+            return Ok(await Mediator.Send(new GetAllGroupJoinedQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, UserId = this.GetUserId() }));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] GetAllGroupParameter filter)
+        {
+            if (filter == null) return Ok(await Mediator.Send(new GetAllGroupQuery()));
+            return Ok(await Mediator.Send(new GetAllGroupQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
         }
     }
 }
