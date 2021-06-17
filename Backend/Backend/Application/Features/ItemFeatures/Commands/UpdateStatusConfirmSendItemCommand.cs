@@ -72,7 +72,7 @@ namespace Application.Features.ItemFeatures.Commands
                     ItemName = item.ItemName,
                     ReceiverId = acceptedRequest.ReceiverId,
                     ReceiverName = acceptedRequest.Receiver.FullName,
-                    ReceiverAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(acceptedRequest.Receiver.Avatar.FileName),
+                    ReceiverAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(acceptedRequest.Receiver.Avatar?.FileName),
                 };
                 DefaultContractResolver contractResolver = new DefaultContractResolver
                 {
