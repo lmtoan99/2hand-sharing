@@ -24,7 +24,6 @@ namespace Application.Features.FirebaseFeatures.Commands
         }
         public async Task<Response<int>> Handle(RegisterFirebaseCommand request, CancellationToken cancellationToken)
         {
-            if (request.FirebaseToken == null) throw new ApiException("Token must not be null");
             var tokens = await _firebaseTokenRepository.GetByConditionAsync(t => t.Token == request.FirebaseToken);
             if (tokens.Count > 0) throw new ApiException("Token already exists");
             await _firebaseTokenRepository.AddAsync(new Domain.Entities.FirebaseToken
