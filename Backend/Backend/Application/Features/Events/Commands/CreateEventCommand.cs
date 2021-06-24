@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Events.Commands
 {
-    public class CreateEventCommand : CreateEventDTO, IRequest<Response<Event>>
+    public class CreateEventCommand : CreateEventDTO, IRequest<Response<EventDTO>>
     {
         public int UserId { get; set; }
     }
 
-    public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Response<Event>>
+    public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Response<EventDTO>>
     {
         private readonly IEventRepositoryAsync _eventRepository;
         private readonly IGroupAdminDetailRepositoryAsync _groupAdminDetail;
@@ -28,7 +28,7 @@ namespace Application.Features.Events.Commands
             _groupAdminDetail = groupAdminDetail;
             _mapper = mapper;
         }
-        public async Task<Response<Event>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
+        public async Task<Response<EventDTO>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
         {
             var checkPermission = await _groupAdminDetail.GetInfoGroupAdminDetail(request.GroupId, request.UserId);
             if (checkPermission == null)
@@ -37,7 +37,7 @@ namespace Application.Features.Events.Commands
             }
             Event entity = _mapper.Map<Event>(request);
             var result = await _eventRepository.AddAsync(entity);
-            return new Response<Event>(result);
+            return new Response<EventDTO>(_mapper.Map<EventDTO>(result));
         }
     }
 }
