@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Account;
 using Application.DTOs.Address;
 using Application.DTOs.Award;
+using Application.DTOs.Event;
 using Application.DTOs.Group;
 using Application.DTOs.Item;
 using Application.DTOs.Message;
@@ -73,6 +74,7 @@ namespace Application.Mappings
                  .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.Account.FullName))
                  .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Account.Avatar.FileName));
+            CreateMap<Event, CreateEventDTO>().ReverseMap();
         }
     }
 }
