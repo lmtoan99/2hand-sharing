@@ -33,8 +33,8 @@ namespace Persistence.Extensions
             services.AddScoped<IGroupAdminDetailRepositoryAsync, GroupAdminDetailRepositoryAsync>();
             services.AddScoped<IMessageRepositoryAsync, MessageRepositoryAsync>();
             services.AddScoped<IFirebaseTokenRepositoryAsync, FirebaseTokenRepositoryAsync>();
-           services.AddScoped<IGroupMemberDetailRepositoryAsync, GroupMemberDetailRepositoryAsync>();
-
+            services.AddScoped<IGroupMemberDetailRepositoryAsync, GroupMemberDetailRepositoryAsync>();
+            services.AddScoped<IAwardRepositoryAsync, AwardRepositoryAsync>();
             services.AddScoped<INotificationRepositoryAsync, NotificationRepositoryAsync>();
             #endregion
 
