@@ -50,7 +50,7 @@ namespace WebAPI
 
             services.AddIdentityInfrastructure(Configuration);
 
-            services.AddOptions();                                         // Kích hoạt Options
+            services.AddOptions();
 
             services.AddSharedInfrastructure(Configuration);
 

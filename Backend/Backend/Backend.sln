@@ -19,12 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "Persistence\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{55230A4B-8DE2-4CC5-BEE4-D8A1E0681C1F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8ED2626-1729-413B-B88E-3D730B3DDC22}"
-	ProjectSection(SolutionItems) = preProject
-		twohandsharing-key.json = twohandsharing-key.json
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{41A4EEE3-EFCD-4A2C-803C-CC666DF97094}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{41A4EEE3-EFCD-4A2C-803C-CC666DF97094}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
