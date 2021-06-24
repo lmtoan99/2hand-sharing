@@ -17,7 +17,7 @@ namespace WebAPI.Controllers.v1
         [HttpGet("{id}")]
         public async Task<IActionResult> GetGroupInfo(int id)
         {
-            return Ok(await Mediator.Send(new GetGroupInfoByIdQuery {  id = id}));
+            return Ok(await Mediator.Send(new GetGroupInfoByIdQuery { id = id }));
         }
         [HttpPost]
         public async Task<IActionResult> CreateGroup([FromBody] CreateGroupRequest request)
@@ -39,7 +39,7 @@ namespace WebAPI.Controllers.v1
         }
 
         [HttpDelete("{groupId}/member/{memberId}")]
-        public async Task<IActionResult> DeleteMember(int groupId,int memberId)
+        public async Task<IActionResult> DeleteMember(int groupId, int memberId)
         {
             return Ok(await Mediator.Send(new DeleteMemberCommand {
                 groupId = groupId,
@@ -70,6 +70,15 @@ namespace WebAPI.Controllers.v1
         {
             if (filter == null) return Ok(await Mediator.Send(new GetAllGroupQuery()));
             return Ok(await Mediator.Send(new GetAllGroupQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+        }
+
+        [HttpPost("{id}/join")]
+        public async Task<IActionResult> RequestJoinGroup(int id)
+        {
+            return Ok(await Mediator.Send(new RequestJoinGroupCommand { 
+                GroupId = id,
+                UserId = this.GetUserId()
+            }));
         }
     }
 }
