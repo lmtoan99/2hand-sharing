@@ -75,6 +75,7 @@ namespace Application.Mappings
                     source.Account.FullName))
                  .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Account.Avatar.FileName));
             CreateMap<Event, CreateEventDTO>().ReverseMap();
+            CreateMap<Event, EventDTO>().ReverseMap();
         }
     }
 }
