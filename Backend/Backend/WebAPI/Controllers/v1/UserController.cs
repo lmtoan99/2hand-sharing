@@ -47,7 +47,7 @@ namespace WebAPI.Controllers.v1
             }));
         }
 
-        [HttpGet("/topAward")]
+        [HttpGet("/ward")]
         public async Task<IActionResult> GetTopAward()
         {
             return Ok(await Mediator.Send(new GetTopAwardsQuery {}));

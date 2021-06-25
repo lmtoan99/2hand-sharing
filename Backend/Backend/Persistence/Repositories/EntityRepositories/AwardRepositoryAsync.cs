@@ -20,7 +20,7 @@ namespace Persistence.Repositories.EntityRepositories
         }
         public async Task<IReadOnlyList<Award>> GetTopAwardAsync()
         {
-            return await _award.OrderByDescending(i=>i.CreateTime).Take(7).ToListAsync();
+            return await _award.OrderByDescending(i => i.CreateTime).Take(10).ToListAsync();
         }
 
 
