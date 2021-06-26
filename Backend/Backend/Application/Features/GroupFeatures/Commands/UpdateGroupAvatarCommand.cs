@@ -1,29 +1,20 @@
-﻿using Application.DTOs.Account;
-using Application.Exceptions;
-using Application.Interfaces.Repositories;
-using Application.Wrappers;
-using AutoMapper;
-using Domain.Entities;
-using MediatR;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Application.Features.UserFeature.Commands
+namespace Application.Features.GroupFeatures.Commands
 {
-    public partial class UpdateUserAvatarCommand:IRequest<Response<UpdateAvatarResponse>>
+    public partial class UpdateUserAvatarCommand : IRequest<Response<UpdateAvatarResponse>>
     {
         public int UserId { get; set; }
     }
 
-    public class UpdateUserAvatarCommandHandler:IRequestHandler<UpdateUserAvatarCommand,Response<UpdateAvatarResponse>>
+    public class UpdateUserAvatarCommandHandler : IRequestHandler<UpdateUserAvatarCommand, Response<UpdateAvatarResponse>>
     {
         private readonly IUserRepositoryAsync _userRepository;
         private readonly IImageRepository _imageRepository;
         private readonly IMapper _mapper;
-        public UpdateUserAvatarCommandHandler(IUserRepositoryAsync userRepository,IImageRepository imageRepository,IMapper mapper)
+        public UpdateUserAvatarCommandHandler(IUserRepositoryAsync userRepository, IImageRepository imageRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _imageRepository = imageRepository;
@@ -39,7 +30,7 @@ namespace Application.Features.UserFeature.Commands
             response.ImageUploads = new UpdateAvatarResponse.ImageUpload { ImageName = fileName, PresignUrl = signUrl };
 
             if (user.AvatarId == null)
-            {   
+            {
                 await _imageRepository.AddAsync(image);
                 user.AvatarId = image.Id;
                 await _userRepository.UpdateAsync(user);
@@ -56,4 +47,6 @@ namespace Application.Features.UserFeature.Commands
             return new Response<UpdateAvatarResponse>(response);
         }
     }
+}
+
 }
