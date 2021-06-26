@@ -11,5 +11,6 @@ namespace Domain.Entities
         public virtual GroupPostImageRelationship GroupPostImageRelationship { get; set; }
         public virtual ItemImageRelationship ItemImageRelationship { get; set; }
         public virtual User UserAvatar { get; set; }
+        public virtual Group GroupAvatar { get; set; }
     }
 }

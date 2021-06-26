@@ -80,5 +80,21 @@ namespace WebAPI.Controllers.v1
                 UserId = this.GetUserId()
             }));
         }
+
+        [HttpPut("{groupId}/update-avatar")]
+        public async Task<IActionResult> UpdateGroupAvatar(int groupId)
+        {
+            return Ok(await Mediator.Send(new UpdateGroupAvatarCommand
+            {
+                UserId = GetUserId(),
+                GroupId = groupId
+            }));
+        }
+
+        [HttpGet("{groupId}/my-role")]
+        public async Task<IActionResult> GetRoleMemberInGroup([FromQuery] int userId, int groupId)
+        {
+            return Ok(await Mediator.Send(new GetRoleMemberInGroupQuery { GroupId = groupId, UserId = userId}));
+        }
     }
 }

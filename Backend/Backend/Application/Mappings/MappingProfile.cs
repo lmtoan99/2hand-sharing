@@ -53,7 +53,8 @@ namespace Application.Mappings
             CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
                 .ForAllMembers(o => o.MapFrom(source => source.Items));
             CreateMap<Group, GroupDTO>();
-            CreateMap<Group, GroupViewModel>();
+            CreateMap<Group, GroupViewModel>()
+                .ForMember(dest => dest.AvatarURL, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>();
             CreateMap<Message, MessageDTO>();
             CreateMap<Message, RecentMessagesDTO>().ForMember(dest => dest.SendFromAccountName, o => o.MapFrom(source => source.SendFromAccount.FullName))
