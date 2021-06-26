@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.Enums;
+using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
@@ -25,6 +26,20 @@ namespace Persistence.Repositories.EntityRepositories
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<List<Group>> GetAllJoinedGroupByUserId(int userId,int pageNumber,int pageSize)
+        {
+            return await _dbContext
+                 .GroupAdminDetails.Where(admin => admin.AdminId == userId)
+                 .Select(admin => admin.Group)
+                 .Union(
+                     _dbContext.GroupMemberDetails.Where(member => member.MemberId == userId && member.JoinStatus == (int)MemberJoinStatus.ACCEPTED)
+                     .Select(member => member.Group)
+                 )
+                 .Skip((pageNumber - 1)*pageSize)
+                 .Take(pageSize)
+                 .ToListAsync();
         }
     }
 }
