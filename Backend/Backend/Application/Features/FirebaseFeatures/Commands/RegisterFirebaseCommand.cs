@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.Exceptions;
+using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using MediatR;
 using System;
@@ -23,6 +24,8 @@ namespace Application.Features.FirebaseFeatures.Commands
         }
         public async Task<Response<int>> Handle(RegisterFirebaseCommand request, CancellationToken cancellationToken)
         {
+            var tokens = await _firebaseTokenRepository.GetByConditionAsync(t => t.Token == request.FirebaseToken);
+            if (tokens.Count > 0) throw new ApiException("Token already exists");
             await _firebaseTokenRepository.AddAsync(new Domain.Entities.FirebaseToken
             {
                 Token = request.FirebaseToken,

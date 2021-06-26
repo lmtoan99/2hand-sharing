@@ -4,9 +4,7 @@ using System.Text;
 
 namespace Application.DTOs.Group
 {
-    public class GroupJoinedViewModel
+    class UpdateAvatarRequest
     {
-        public int id { get; set; }
-        public string GroupName { get; set; }
     }
 }

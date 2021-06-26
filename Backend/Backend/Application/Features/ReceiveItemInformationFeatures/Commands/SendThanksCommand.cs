@@ -53,7 +53,6 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
             var receiveRequest = await _receiveItemRepository.GetReceiveRequestWithItemInfoById(request.requestId);
             if (receiveRequest == null) throw new KeyNotFoundException("ReceiveId not found");
             if (receiveRequest.ReceiverId != request.userId) throw new UnauthorizedAccessException();
-            //if (receiveRequest.ReceiveStatus != (int)ReceiveItemInformationStatus.SUCCESS) throw new ApiException("Receive request not success");
             var result = await _messageRepository.AddAsync(new Domain.Entities.Message
             {
                 Content = request.thanks,
@@ -69,7 +68,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                 SendDate = result.SendDate,
                 SendFromAccountId = result.SendFromAccountId,
                 SendFromAccountName = userSend.FullName,
-                SendFromAccountAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(userSend.Avatar.FileName)
+                SendFromAccountAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(userSend.Avatar?.FileName)
             };
             DefaultContractResolver contractResolver = new DefaultContractResolver
             {

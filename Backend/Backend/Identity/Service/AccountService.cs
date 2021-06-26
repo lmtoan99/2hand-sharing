@@ -36,10 +36,9 @@ namespace Identity.Service
         private readonly IEmailService _emailService;
         private readonly JWTSettings _jwtSettings;
         private readonly IUserRepositoryAsync _userRepository;
-        private readonly string _host = "http://localhost:4200";
+        private readonly string _host = "https://secondhand-sharing.web.app";
         private readonly IMapper _mapper;
         private readonly IImageRepository _imageRepository;
-        //private readonly 
         public AccountService(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IOptions<JWTSettings> jwtSettings,

@@ -45,7 +45,6 @@ namespace Application.Features.ItemFeatures.Commands
             if (receiveRequest.Items.DonateAccountId != request.userId) throw new UnauthorizedAccessException("Unauthorized to access this item");
 
             receiveRequest.Items.Status = (int)ItemStatus.PENDING_FOR_RECEIVER;
-            //await _itemRepositoryAsync.UpdateAsync(item);
             receiveRequest.ReceiveStatus = (int)ReceiveItemInformationStatus.RECEIVING;
             await _receiveItemInformationRepositoryAsync.UpdateAsync(receiveRequest);
             DefaultContractResolver contractResolver = new DefaultContractResolver

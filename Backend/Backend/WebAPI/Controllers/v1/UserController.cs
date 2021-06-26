@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Account;
 using Application.Features.AccountsFeature.Queries;
+using Application.Features.AwardFeatures.Query;
 using Application.Features.ReceiveItemInformationFeatures.Queries;
 using Application.Features.UserFeature.Commands;
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +45,12 @@ namespace WebAPI.Controllers.v1
             {
                 UserId = GetUserId()
             }));
+        }
+
+        [HttpGet("Award")]
+        public async Task<IActionResult> GetTopAward()
+        {
+            return Ok(await Mediator.Send(new GetTopAwardsQuery {}));
         }
     }
 }

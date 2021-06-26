@@ -87,7 +87,7 @@ namespace Application.Features.ItemFeatures.Commands
                     Id = receiveItemInformation.Id,
                     ReceiverId = request.ReceiverId,
                     ReceiverName = receiver.FullName,
-                    ReceiverAvatarUrl=_imageRepository.GenerateV4SignedReadUrl(receiver.Avatar.FileName),
+                    ReceiverAvatarUrl=_imageRepository.GenerateV4SignedReadUrl(receiver.Avatar?.FileName),
                     ItemId = request.ItemId,
                     ItemName = item.ItemName,
                     ReceiveReason = request.ReceiveReason,

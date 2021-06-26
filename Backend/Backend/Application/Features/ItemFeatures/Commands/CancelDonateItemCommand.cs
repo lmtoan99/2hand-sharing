@@ -12,18 +12,18 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ItemFeatures.Commands
 {
-    public class UpdateStatusCancelDonateItemCommand : IRequest<Response<int>>
+    public class CancelDonateItemCommand : IRequest<Response<int>>
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public class UpdateStatusCancelDonateItemCommandHandler : IRequestHandler<UpdateStatusCancelDonateItemCommand, Response<int>>
+        public class UpdateStatusCancelDonateItemCommandHandler : IRequestHandler<CancelDonateItemCommand, Response<int>>
         {
             private readonly IItemRepositoryAsync _itemRepository;
             public UpdateStatusCancelDonateItemCommandHandler(IItemRepositoryAsync itemRepository)
             {
                 _itemRepository = itemRepository;
             }
-            public async Task<Response<int>> Handle(UpdateStatusCancelDonateItemCommand command, CancellationToken cancellationToken)
+            public async Task<Response<int>> Handle(CancelDonateItemCommand command, CancellationToken cancellationToken)
             {
                 var item = await _itemRepository.GetByIdAsync(command.Id);
                 if (item == null)
@@ -34,10 +34,11 @@ namespace Application.Features.ItemFeatures.Commands
                 {
                     throw new UnauthorizedAccessException();
                 }
-                if (item.Status==(int)ItemStatus.NOT_YET)
+                if (item.Status == (int)ItemStatus.NOT_YET)
                 {
-                    await _itemRepository.UpdateAsync(item);
-                    return new Response<int>(item.Id);
+                    var itemId = item.Id;
+                    await _itemRepository.DeleteAsync(item);
+                    return new Response<int>(itemId);
                 }
                 throw new ApiException($"You only can cancel when do not accept any receive information."); 
             }

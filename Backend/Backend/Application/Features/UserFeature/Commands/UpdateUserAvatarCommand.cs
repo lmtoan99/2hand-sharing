@@ -49,7 +49,7 @@ namespace Application.Features.UserFeature.Commands
                 var userAvatar = await _imageRepository.GetByIdAsync(user.AvatarId.GetValueOrDefault());
                 userAvatar.FileName = fileName;
                 await _imageRepository.UpdateAsync(userAvatar);
-                user.AvatarId=userAvatar.Id;
+                user.AvatarId = userAvatar.Id;
                 await _userRepository.UpdateAsync(user);
             }
 

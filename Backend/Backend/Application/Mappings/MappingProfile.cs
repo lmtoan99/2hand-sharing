@@ -1,5 +1,7 @@
 ﻿using Application.DTOs.Account;
 using Application.DTOs.Address;
+using Application.DTOs.Award;
+using Application.DTOs.Event;
 using Application.DTOs.Group;
 using Application.DTOs.Item;
 using Application.DTOs.Message;
@@ -51,13 +53,14 @@ namespace Application.Mappings
             CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
                 .ForAllMembers(o => o.MapFrom(source => source.Items));
             CreateMap<Group, GroupDTO>();
-            CreateMap<Group, GroupJoinedViewModel>();
+            CreateMap<Group, GroupViewModel>()
+                .ForMember(dest => dest.AvatarURL, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>();
             CreateMap<Message, MessageDTO>();
             CreateMap<Message, RecentMessagesDTO>().ForMember(dest => dest.SendFromAccountName, o => o.MapFrom(source => source.SendFromAccount.FullName))
                 .ForMember(dest => dest.SendToAccountName, o => o.MapFrom(source => source.SendToAccount.FullName))
                 .ForMember(dest => dest.SendFromAccountAvatarUrl, o => o.MapFrom(source => source.SendFromAccount.Avatar.FileName))
-                .ForMember(dest => dest.SendToAccountAvatarUrl, o => o.MapFrom(source => source.SendToAccount.Avatar.FileName));
+                .ForMember(dest => dest.SendToAccountAvatarUrl, o => o.MapFrom(source => source.SendToAccount.Avatar.FileName ));
             CreateMap<Notification, NotificationDTO>();
             CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
@@ -66,6 +69,14 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
 
             CreateMap<GroupMemberDetail, GroupMemberDTO>();
+            CreateMap<GetAllGroupJoinedQuery, GetAllGroupJoinedParameter>();
+            CreateMap<GetAllGroupQuery, GetAllGroupParameter>();
+            CreateMap<Award, GetAwardsViewModel>()
+                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
+                    source.Account.FullName))
+                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Account.Avatar.FileName));
+            CreateMap<Event, CreateEventDTO>().ReverseMap();
+            CreateMap<Event, EventDTO>().ReverseMap();
         }
     }
 }

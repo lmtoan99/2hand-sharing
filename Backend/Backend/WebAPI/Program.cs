@@ -17,8 +17,6 @@ namespace WebAPI
     {
         public static async Task Main(string[] args)
         {
-            //CreateHostBuilder(args).Build().Run();
-
             var host = CreateHostBuilder(args).Build();
             using (var scope = host.Services.CreateScope())
             {
@@ -50,8 +48,6 @@ namespace WebAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                    //.UseContentRoot(Directory.GetCurrentDirectory())
-                    //.UseIISIntegration()
                     .UseStartup<Startup>();
                 });
     }

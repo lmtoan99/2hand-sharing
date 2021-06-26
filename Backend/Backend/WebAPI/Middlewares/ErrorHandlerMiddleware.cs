@@ -33,8 +33,6 @@ namespace WebAPI.Middlewares
                 response.ContentType = "application/json";
                 var responseModel = new Response<string>() { Succeeded = false, Message = error?.Message };
 
-                //Console.WriteLine(responseModel.Message);
-
                 switch (error)
                 {
                     case ApiException e:
@@ -55,7 +53,6 @@ namespace WebAPI.Middlewares
                         break;
                 }
                 var result = JsonSerializer.Serialize(responseModel);
-                //Console.WriteLine(result);
                 await response.WriteAsync(result);
             }
         }

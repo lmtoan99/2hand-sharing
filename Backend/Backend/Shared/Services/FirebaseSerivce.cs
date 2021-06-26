@@ -21,9 +21,8 @@ namespace Shared.Services
         private readonly string path;
         private readonly FirebaseApp app;
         private readonly FirebaseMessaging firebaseMessaging;
-        //private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
 
-        public FirebaseSerivce(/*IFirebaseTokenRepositoryAsync firebaseTokenRepository*/)
+        public FirebaseSerivce()
         {
             path = "firebase-admin.json";
             try
@@ -38,8 +37,6 @@ namespace Shared.Services
                 app = FirebaseApp.GetInstance("myApp");
             }
             firebaseMessaging = FirebaseMessaging.GetMessaging(app);
-
-            //this._firebaseTokenRepository = firebaseTokenRepository;
         }
         public async Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_ids, string messageValue)
         {

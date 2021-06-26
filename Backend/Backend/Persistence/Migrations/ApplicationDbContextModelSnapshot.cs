@@ -222,6 +222,9 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int?>("AvatarId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime(6)");
 
@@ -235,6 +238,9 @@ namespace Persistence.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AvatarId")
+                        .IsUnique();
 
                     b.ToTable("Groups");
                 });
@@ -274,6 +280,9 @@ namespace Persistence.Migrations
 
                     b.Property<DateTime>("JoinDate")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int>("JoinStatus")
+                        .HasColumnType("int");
 
                     b.Property<int>("MemberId")
                         .HasColumnType("int");
@@ -679,6 +688,15 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Group", b =>
+                {
+                    b.HasOne("Domain.Entities.Image", "Avatar")
+                        .WithOne("GroupAvatar")
+                        .HasForeignKey("Domain.Entities.Group", "AvatarId");
+
+                    b.Navigation("Avatar");
+                });
+
             modelBuilder.Entity("Domain.Entities.GroupAdminDetail", b =>
                 {
                     b.HasOne("Domain.Entities.User", "Admin")
@@ -934,6 +952,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Image", b =>
                 {
+                    b.Navigation("GroupAvatar");
+
                     b.Navigation("GroupPostImageRelationship");
 
                     b.Navigation("ItemImageRelationship");

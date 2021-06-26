@@ -9,6 +9,7 @@ namespace Domain.Entities
     {
         public int MemberId { get; set; }
         public int GroupId{get;set;}
+        public int JoinStatus { get; set; }
         public bool ReportStatus{get;set;}
         public DateTime JoinDate{get;set;}
         [ForeignKey("MemberId")]
