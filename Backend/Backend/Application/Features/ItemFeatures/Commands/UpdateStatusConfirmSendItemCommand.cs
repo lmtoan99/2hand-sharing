@@ -50,7 +50,12 @@ namespace Application.Features.ItemFeatures.Commands
                 var item = await _itemRepository.GetByIdAsync(command.Id);
                 if (item == null) throw new ApiException($"Item Not Found.");
                 if (item.DonateAccountId != command.UserId) throw new UnauthorizedAccessException();
+                if (item.Status != (int)ItemStatus.PENDING_FOR_RECEIVER)
+                {
+                    throw new ApiException($"You can not confirm send.");
+                }
                 #endregion
+
                 #region FindAcceptedRequestAndUserTokens
                 ReceiveItemInformation acceptedRequest = null;
                 var requests = await _receiveItemInformationRepository.GetAllByItemId(command.Id);
@@ -65,6 +70,7 @@ namespace Application.Features.ItemFeatures.Commands
                     sendTokens.AddRange(tokens);
                 }
                 #endregion
+
                 #region SendNotification
                 ConfirmSentNotificationData data = new ConfirmSentNotificationData
                 {
@@ -91,6 +97,7 @@ namespace Application.Features.ItemFeatures.Commands
                     _firebaseTokenRepository.CleanExpiredToken(sendTokens, responses);
                 }
                 #endregion
+
                 #region SaveNotification
                 for (int i = 0; i < requests.Count; i++)
                 {
@@ -102,16 +109,12 @@ namespace Application.Features.ItemFeatures.Commands
                         CreateTime = DateTime.UtcNow
                     });
                 }
-
                 #endregion
+
                 #region UpdateItem
-                if (item.Status == (int)ItemStatus.PENDING_FOR_RECEIVER)
-                {
-                    item.Status = (int)ItemStatus.SUCCESS;
-                    await _itemRepository.UpdateAsync(item);
-                    return new Response<int>(item.Id);
-                }
-                throw new ApiException($"You can not confirm send.");
+                item.Status = (int)ItemStatus.SUCCESS;
+                await _itemRepository.UpdateAsync(item);
+                return new Response<int>(item.Id);
                 #endregion
             }
         }
