@@ -80,5 +80,15 @@ namespace WebAPI.Controllers.v1
                 UserId = this.GetUserId()
             }));
         }
+
+        [HttpPut("{groupId}/update-avatar")]
+        public async Task<IActionResult> UpdateGroupAvatar(int groupId)
+        {
+            return Ok(await Mediator.Send(new UpdateGroupAvatarCommand
+            {
+                UserId = GetUserId(),
+                GroupId = groupId
+            }));
+        }
     }
 }
