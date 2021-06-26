@@ -26,6 +26,8 @@ namespace Persistence.Repositories.EntityRepositories
                 .Where(i => ( i.GroupId == groupId))
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Include(i => i.Member)
+                .ThenInclude(m => m.Avatar)
                 .ToListAsync();
         }
 

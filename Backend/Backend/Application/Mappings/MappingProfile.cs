@@ -64,6 +64,7 @@ namespace Application.Mappings
             CreateMap<Notification, NotificationDTO>();
             CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
+                .ForMember(dest => dest.UserId, o => o.MapFrom(source => source.MemberId))
                 .ForMember(dest => dest.FullName, o => o.MapFrom(source =>
                     source.Member.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
@@ -77,6 +78,11 @@ namespace Application.Mappings
                  .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Account.Avatar.FileName));
             CreateMap<Event, CreateEventDTO>().ReverseMap();
             CreateMap<Event, EventDTO>().ReverseMap();
+            CreateMap<GroupAdminDetail, GetAllGroupMemberViewModel>()
+                .ForMember(dest => dest.JoinDate, o => o.MapFrom(source => source.AppointDate))
+                .ForMember(dest => dest.FullName, o => o.MapFrom(source => source.Admin.FullName))
+                .ForMember(dest => dest.UserId, o => o.MapFrom(source => source.AdminId))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Admin.Avatar.FileName));
         }
     }
 }

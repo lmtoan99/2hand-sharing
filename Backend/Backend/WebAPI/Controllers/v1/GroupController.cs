@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Group;
 using Application.Features.GroupFeatures.Commands;
 using Application.Features.GroupFeatures.Queries;
+using Application.Filter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -91,10 +92,19 @@ namespace WebAPI.Controllers.v1
             }));
         }
 
-        [HttpGet("{groupId}/my-role")]
+        [HttpGet("{groupId}/get-role")]
         public async Task<IActionResult> GetRoleMemberInGroup([FromQuery] int userId, int groupId)
         {
             return Ok(await Mediator.Send(new GetRoleMemberInGroupQuery { GroupId = groupId, UserId = userId}));
+        }
+
+        [HttpGet("{groupId}/admin")]
+        public async Task<IActionResult> GetListAdmin([FromQuery] RequestParameter request,int groupId)
+        {
+            return Ok(await Mediator.Send(new GetAllGroupAdminQuery {
+            GroupId = groupId,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize}));
         }
     }
 }
