@@ -20,9 +20,22 @@ namespace Persistence.Repositories.EntityRepositories
         }
         public async Task<IReadOnlyList<Award>> GetTopAwardAsync()
         {
-            return await _award.OrderByDescending(i => i.CreateTime).Take(10).ToListAsync();
+            return await _award.OrderByDescending(a => a.CreateTime)
+                .Select(a => a.AccountId)
+                .Distinct()
+                .Take(30)
+                .Join(
+                    _dbContext.Users,
+                    a => a,
+                    u => u.Id,
+                    (a, u) => new
+                    Award {
+                        Id = 0,
+                        CreateTime = DateTime.UtcNow,
+                        AccountId = a,
+                        Account = u
+                    })
+                .ToListAsync();
         }
-
-
     }
 }

@@ -29,12 +29,14 @@ namespace Application.Features.ItemFeatures.Commands
             private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
             private readonly INotificationRepositoryAsync _notificationRepository;
             private readonly IImageRepository _imageRepository;
+            private readonly IAwardRepositoryAsync _awardRepository;
             public UpdateStatusConfirmSendItemCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, 
                 IItemRepositoryAsync itemRepository, 
                 IFirebaseSerivce firebaseSerivce, 
                 IFirebaseTokenRepositoryAsync firebaseTokenRepository, 
                 INotificationRepositoryAsync notificationRepository,
-                IImageRepository imageRepository)
+                IImageRepository imageRepository,
+                IAwardRepositoryAsync awardRepository)
             {
                 _receiveItemInformationRepository = receiveItemInformationRepository;
                 _itemRepository = itemRepository;
@@ -42,6 +44,7 @@ namespace Application.Features.ItemFeatures.Commands
                 _firebaseTokenRepository = firebaseTokenRepository;
                 _notificationRepository = notificationRepository;
                 _imageRepository = imageRepository;
+                _awardRepository = awardRepository;
             }
 
             public async Task<Response<int>> Handle(UpdateStatusConfirmSendItemCommand command, CancellationToken cancellationToken)
@@ -109,6 +112,10 @@ namespace Application.Features.ItemFeatures.Commands
                         CreateTime = DateTime.UtcNow
                     });
                 }
+                #endregion
+
+                #region CreateAward
+                await _awardRepository.AddAsync(new Award { AccountId = item.DonateAccountId, CreateTime = DateTime.UtcNow });
                 #endregion
 
                 #region UpdateItem
