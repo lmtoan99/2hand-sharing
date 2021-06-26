@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers.v1
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class GroupController : BaseApiController
     {
         [HttpGet("{id}")]
@@ -89,6 +89,12 @@ namespace WebAPI.Controllers.v1
                 UserId = GetUserId(),
                 GroupId = groupId
             }));
+        }
+
+        [HttpGet("{groupId}/my-role")]
+        public async Task<IActionResult> GetRoleMemberInGroup([FromQuery] int userId, int groupId)
+        {
+            return Ok(await Mediator.Send(new GetRoleMemberInGroupQuery { GroupId = groupId, UserId = userId}));
         }
     }
 }
