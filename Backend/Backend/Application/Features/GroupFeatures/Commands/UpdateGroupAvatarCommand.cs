@@ -33,13 +33,12 @@ namespace Application.Features.GroupFeatures.Commands
         }
         public async Task<Response<UpdateAvatarResponse>> Handle(UpdateGroupAvatarCommand request, CancellationToken cancellationToken)
         {
-            var group = await _groupRepository.GetByIdAsync(request.UserId);
+            var group = await _groupRepository.GetByIdAsync(request.GroupId);
             string fileName = Guid.NewGuid().ToString();
             var image = new Image { FileName = fileName };
             string signUrl = _imageRepository.GenerateV4UploadSignedUrl(fileName);
             var response = new UpdateAvatarResponse();
             response.ImageUploads = new UpdateAvatarResponse.ImageUpload { ImageName = fileName, PresignUrl = signUrl };
-
             var groupAdminInfo = await _groupAdminDetailRepository.GetInfoGroupAdminDetail(request.GroupId, request.UserId);
             if (groupAdminInfo == null)
             {
@@ -49,14 +48,16 @@ namespace Application.Features.GroupFeatures.Commands
             {
                 await _imageRepository.AddAsync(image);
                 group.AvatarId = image.Id;
+                response.Id = image.Id;
                 await _groupRepository.UpdateAsync(group);
             }
             else
             {
-                var userAvatar = await _imageRepository.GetByIdAsync(group.AvatarId.GetValueOrDefault());
-                userAvatar.FileName = fileName;
-                await _imageRepository.UpdateAsync(userAvatar);
-                group.AvatarId = userAvatar.Id;
+                var avatar = await _imageRepository.GetByIdAsync(group.AvatarId.GetValueOrDefault());
+                avatar.FileName = fileName;
+                await _imageRepository.UpdateAsync(avatar);
+                group.AvatarId = avatar.Id;
+                response.Id = avatar.Id;
                 await _groupRepository.UpdateAsync(group);
             }
 
