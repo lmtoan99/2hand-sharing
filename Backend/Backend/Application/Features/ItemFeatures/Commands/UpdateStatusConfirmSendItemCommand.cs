@@ -29,12 +29,14 @@ namespace Application.Features.ItemFeatures.Commands
             private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
             private readonly INotificationRepositoryAsync _notificationRepository;
             private readonly IImageRepository _imageRepository;
+            private readonly IAwardRepositoryAsync _awardRepository;
             public UpdateStatusConfirmSendItemCommandHandler(IReceiveItemInformationRepositoryAsync receiveItemInformationRepository, 
                 IItemRepositoryAsync itemRepository, 
                 IFirebaseSerivce firebaseSerivce, 
                 IFirebaseTokenRepositoryAsync firebaseTokenRepository, 
                 INotificationRepositoryAsync notificationRepository,
-                IImageRepository imageRepository)
+                IImageRepository imageRepository,
+                IAwardRepositoryAsync awardRepository)
             {
                 _receiveItemInformationRepository = receiveItemInformationRepository;
                 _itemRepository = itemRepository;
@@ -42,6 +44,7 @@ namespace Application.Features.ItemFeatures.Commands
                 _firebaseTokenRepository = firebaseTokenRepository;
                 _notificationRepository = notificationRepository;
                 _imageRepository = imageRepository;
+                _awardRepository = awardRepository;
             }
 
             public async Task<Response<int>> Handle(UpdateStatusConfirmSendItemCommand command, CancellationToken cancellationToken)
@@ -50,7 +53,12 @@ namespace Application.Features.ItemFeatures.Commands
                 var item = await _itemRepository.GetByIdAsync(command.Id);
                 if (item == null) throw new ApiException($"Item Not Found.");
                 if (item.DonateAccountId != command.UserId) throw new UnauthorizedAccessException();
+                if (item.Status != (int)ItemStatus.PENDING_FOR_RECEIVER)
+                {
+                    throw new ApiException($"You can not confirm send.");
+                }
                 #endregion
+
                 #region FindAcceptedRequestAndUserTokens
                 ReceiveItemInformation acceptedRequest = null;
                 var requests = await _receiveItemInformationRepository.GetAllByItemId(command.Id);
@@ -65,6 +73,7 @@ namespace Application.Features.ItemFeatures.Commands
                     sendTokens.AddRange(tokens);
                 }
                 #endregion
+
                 #region SendNotification
                 ConfirmSentNotificationData data = new ConfirmSentNotificationData
                 {
@@ -91,6 +100,7 @@ namespace Application.Features.ItemFeatures.Commands
                     _firebaseTokenRepository.CleanExpiredToken(sendTokens, responses);
                 }
                 #endregion
+
                 #region SaveNotification
                 for (int i = 0; i < requests.Count; i++)
                 {
@@ -102,16 +112,16 @@ namespace Application.Features.ItemFeatures.Commands
                         CreateTime = DateTime.UtcNow
                     });
                 }
-
                 #endregion
+
+                #region CreateAward
+                await _awardRepository.AddAsync(new Award { AccountId = item.DonateAccountId, CreateTime = DateTime.UtcNow });
+                #endregion
+
                 #region UpdateItem
-                if (item.Status == (int)ItemStatus.PENDING_FOR_RECEIVER)
-                {
-                    item.Status = (int)ItemStatus.SUCCESS;
-                    await _itemRepository.UpdateAsync(item);
-                    return new Response<int>(item.Id);
-                }
-                throw new ApiException($"You can not confirm send.");
+                item.Status = (int)ItemStatus.SUCCESS;
+                await _itemRepository.UpdateAsync(item);
+                return new Response<int>(item.Id);
                 #endregion
             }
         }

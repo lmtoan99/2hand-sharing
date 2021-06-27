@@ -10,6 +10,7 @@ using Application.DTOs.ReceiveRequest;
 using Application.Features.AccountFeatures.Commands;
 using Application.Features.CategoryFeatures.Commands;
 using Application.Features.CategoryFeatures.Queries.GetAllCategories;
+using Application.Features.Events.Commands;
 using Application.Features.GroupFeatures.Queries;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
@@ -38,6 +39,7 @@ namespace Application.Mappings
                     source.DonateAccount.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<PostItemCommand, Item>();
+            CreateMap<DonateItemForEventCommand, Item>();
             CreateMap<GetAllItemByCategoryIdQuery, GetAllItemsParameter>();
             CreateMap<AddressDTO, Address>().ReverseMap();
             CreateMap<Item, GetItemByIdViewModel>()
@@ -64,6 +66,7 @@ namespace Application.Mappings
             CreateMap<Notification, NotificationDTO>();
             CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
+                .ForMember(dest => dest.UserId, o => o.MapFrom(source => source.MemberId))
                 .ForMember(dest => dest.FullName, o => o.MapFrom(source =>
                     source.Member.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
@@ -77,6 +80,17 @@ namespace Application.Mappings
                  .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Account.Avatar.FileName));
             CreateMap<Event, CreateEventDTO>().ReverseMap();
             CreateMap<Event, EventDTO>().ReverseMap();
+            CreateMap<GroupAdminDetail, GetAllGroupMemberViewModel>()
+                .ForMember(dest => dest.JoinDate, o => o.MapFrom(source => source.AppointDate))
+                .ForMember(dest => dest.FullName, o => o.MapFrom(source => source.Admin.FullName))
+                .ForMember(dest => dest.UserId, o => o.MapFrom(source => source.AdminId))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Admin.Avatar.FileName));
+            CreateMap<GroupMemberDetail, MemberJoinedRequestViewModel>()
+                .ForMember(dest =>dest.CreateDate, o => o.MapFrom(source => source.JoinDate))
+                .ForMember(dest => dest.RequesterId, o => o.MapFrom(source => source.MemberId))
+                .ForMember(dest => dest.RequesterName, o => o.MapFrom(source => source.Member.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
+            CreateMap<GetListJoinRequestQuery, GetListJoinGroupRequestParameter>();
         }
     }
 }

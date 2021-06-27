@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.Context;
 
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210626042405_UpdateAwardTable")]
+    partial class UpdateAwardTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,7 +86,7 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AccountId")
+                    b.Property<int?>("AccountId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateTime")
@@ -219,9 +221,6 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("AvatarId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime(6)");
 
@@ -235,9 +234,6 @@ namespace Persistence.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AvatarId")
-                        .IsUnique();
 
                     b.ToTable("Groups");
                 });
@@ -622,9 +618,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Entities.User", "Account")
                         .WithMany("Awards")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountId");
 
                     b.Navigation("Account");
                 });
@@ -685,15 +679,6 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Group", b =>
-                {
-                    b.HasOne("Domain.Entities.Image", "Avatar")
-                        .WithOne("GroupAvatar")
-                        .HasForeignKey("Domain.Entities.Group", "AvatarId");
-
-                    b.Navigation("Avatar");
                 });
 
             modelBuilder.Entity("Domain.Entities.GroupAdminDetail", b =>
@@ -951,8 +936,6 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Image", b =>
                 {
-                    b.Navigation("GroupAvatar");
-
                     b.Navigation("GroupPostImageRelationship");
 
                     b.Navigation("ItemImageRelationship");

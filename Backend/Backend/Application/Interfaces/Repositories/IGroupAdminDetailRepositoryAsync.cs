@@ -9,5 +9,6 @@ namespace Application.Interfaces.Repositories
     public interface IGroupAdminDetailRepositoryAsync : IGenericRepositoryAsync<GroupAdminDetail>
     {
         Task<GroupAdminDetail> GetInfoGroupAdminDetail(int groupId, int adminId);
+        Task<List<GroupAdminDetail>> GetListAdminByGroupId(int groupId, int pageNumber, int pageSize);
     }
 }

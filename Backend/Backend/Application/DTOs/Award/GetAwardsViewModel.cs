@@ -9,6 +9,5 @@ namespace Application.DTOs.Award
         public int AccountId { get; set; }
         public string DonateAccountName { get; set; }
         public string AvatarUrl { get; set; }
-        public int DonateTime { get; set; }
     }
 }

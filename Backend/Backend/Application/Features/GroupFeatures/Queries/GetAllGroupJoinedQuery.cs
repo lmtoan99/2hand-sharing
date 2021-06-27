@@ -19,19 +19,19 @@ namespace Application.Features.GroupFeatures.Queries
     }
     public class GetAllGroupJoinedQueryHandler : IRequestHandler<GetAllGroupJoinedQuery, Response<IEnumerable<GroupViewModel>>>
     {
-        private readonly IGroupMemberDetailRepositoryAsync _groupMemberDetailRepositoryAsync;
+        private readonly IGroupRepositoryAsync _groupRepositoryAsync;
         private readonly IImageRepository _imageRepositoryAsync;
         private readonly IMapper _mapper;
-        public GetAllGroupJoinedQueryHandler(IGroupMemberDetailRepositoryAsync groupMemberDetailRepositoryAsync, IMapper mapper, IImageRepository imageRepositoryAsync)
+        public GetAllGroupJoinedQueryHandler(IGroupRepositoryAsync groupRepositoryAsync, IMapper mapper, IImageRepository imageRepositoryAsync)
         {
-            _groupMemberDetailRepositoryAsync = groupMemberDetailRepositoryAsync;
+            _groupRepositoryAsync = groupRepositoryAsync;
             _mapper = mapper;
             _imageRepositoryAsync = imageRepositoryAsync;
         }
         public async Task<Response<IEnumerable<GroupViewModel>>> Handle(GetAllGroupJoinedQuery request, CancellationToken cancellationToken)
         {
             var validFilter = _mapper.Map<GetAllGroupJoinedParameter>(request);
-            var res = await _groupMemberDetailRepositoryAsync.GetAllGroupJoinedByUserIdAsync(validFilter.PageNumber, validFilter.PageSize, request.UserId);
+            var res = await _groupRepositoryAsync.GetAllJoinedGroupByUserId(request.UserId, validFilter.PageNumber, validFilter.PageSize);
             List<GroupViewModel> list = _mapper.Map<List<GroupViewModel>>(res);
             list.ForEach(i =>
             {

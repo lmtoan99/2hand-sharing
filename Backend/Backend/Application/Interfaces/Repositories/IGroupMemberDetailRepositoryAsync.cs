@@ -12,5 +12,6 @@ namespace Application.Interfaces.Repositories
         Task<IReadOnlyList<GroupMemberDetail>> GetAllGroupMemberByGroupIdAsync(int pageNumber, int pageSize, int groupId);
         Task<IReadOnlyList<Group>> GetAllGroupJoinedByUserIdAsync(int pageNumber, int pageSize, int userId);
         Task<GroupMemberDetail> GetMemberGroup(int groupId, int userId);
+        Task<IReadOnlyList<GroupMemberDetail>> GetListJoinGroupRequestByGroupIdAsync(int pageNumber, int pageSize, int groupId);
     }
 }

@@ -21,5 +21,15 @@ namespace Persistence.Repositories.EntityRepositories
         {
             return await _groupAdminDetails.Where(i => i.AdminId == adminId && i.GroupId == groupId).FirstOrDefaultAsync();
         }
+
+        public async Task<List<GroupAdminDetail>> GetListAdminByGroupId(int groupId, int pageNumber, int pageSize)
+        {
+            return await _groupAdminDetails
+                .Where(i => i.GroupId == groupId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(i => i.Admin.Avatar)
+                .ToListAsync();
+        }
     }
 }

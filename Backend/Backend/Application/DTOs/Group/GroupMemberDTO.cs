@@ -11,6 +11,6 @@ namespace Application.DTOs.Group
         public int GroupId { get; set; }
         public int ReportStatus { get; set; }
         public DateTime JoinDate { get; set; }
-
+        public string AvatarUrl { get; set; }
     }
 }
