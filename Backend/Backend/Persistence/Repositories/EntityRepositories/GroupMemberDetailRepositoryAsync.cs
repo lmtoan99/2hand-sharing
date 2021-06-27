@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Group;
+using Application.Enums;
 using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<IReadOnlyList<GroupMemberDetail>> GetAllGroupMemberByGroupIdAsync(int pageNumber, int pageSize, int groupId)
         {
             return await _groupMemberDetails
-                .Where(i => ( i.GroupId == groupId))
+                .Where(i => ( i.GroupId == groupId) && (i.JoinStatus == (int)MemberJoinStatus.ACCEPTED))
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Include(i => i.Member)
@@ -45,6 +46,15 @@ namespace Persistence.Repositories.EntityRepositories
         {
             return await _groupMemberDetails
                 .Where(i => (i.MemberId == userId && i.GroupId == groupId)).FirstOrDefaultAsync();
+        }
+
+        public async Task<IReadOnlyList<GroupMemberDetail>> GetListJoinGroupRequestByGroupIdAsync(int pageNumber, int pageSize, int groupId)
+        {
+            return await _groupMemberDetails
+                .Where(i => (i.JoinStatus == (int)MemberJoinStatus.JOIN_REQUEST) && i.GroupId==groupId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
     }
 }
