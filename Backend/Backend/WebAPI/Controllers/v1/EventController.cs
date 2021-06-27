@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Event;
+using Application.DTOs.Item;
 using Application.Features.Events.Commands;
 using Application.Features.Events.Queries;
 using Application.Filter;
@@ -33,6 +34,21 @@ namespace WebAPI.Controllers.v1
                     StartDate = request.StartDate,
                     UserId = this.GetUserId()
                 }));
+        }
+        [HttpPost("{eventId}/item")]
+        public async Task<IActionResult> DonateItemForEvent([FromBody] PostItemRequest item, int eventId)
+        {
+            return Ok(await Mediator.Send(
+                new DonateItemForEventCommand
+                {
+                    ItemName = item.ItemName,
+                    EventId = eventId,
+                    ReceiveAddress = item.ReceiveAddress,
+                    CategoryId = item.CategoryId,
+                    DonateAccountId = this.GetUserId(),
+                    Description = item.Description,
+                    ImageNumber = item.ImageNumber
+                })); ;
         }
     }
 }
