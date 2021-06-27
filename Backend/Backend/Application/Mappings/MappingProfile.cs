@@ -83,6 +83,12 @@ namespace Application.Mappings
                 .ForMember(dest => dest.FullName, o => o.MapFrom(source => source.Admin.FullName))
                 .ForMember(dest => dest.UserId, o => o.MapFrom(source => source.AdminId))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Admin.Avatar.FileName));
+            CreateMap<GroupMemberDetail, MemberJoinedRequestViewModel>()
+                .ForMember(dest =>dest.CreateDate, o => o.MapFrom(source => source.JoinDate))
+                .ForMember(dest => dest.RequesterId, o => o.MapFrom(source => source.MemberId))
+                .ForMember(dest => dest.RequesterName, o => o.MapFrom(source => source.Member.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
+            CreateMap<GetListJoinRequestQuery, GetListJoinGroupRequestParameter>();
         }
     }
 }

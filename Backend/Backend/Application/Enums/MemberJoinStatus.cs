@@ -7,8 +7,8 @@ namespace Application.Enums
     public enum MemberJoinStatus
     {
         JOIN_REQUEST = 1,
-        ADMIN_INVITE,
-        REJECTED,
-        ACCEPTED
+        ADMIN_INVITE = 2,
+        REJECTED = 3,
+        ACCEPTED = 4
     }
 }

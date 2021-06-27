@@ -106,5 +106,18 @@ namespace WebAPI.Controllers.v1
             PageNumber = request.PageNumber,
             PageSize = request.PageSize}));
         }
+
+        [HttpGet("{groupId}/request-join")]
+        public async Task<IActionResult> GetListJoinGroupRequest([FromQuery] RequestParameter request, int groupId)
+        {
+            return Ok(await Mediator.Send(new GetListJoinRequestQuery
+            {
+                AdminId = GetUserId(),
+                GroupId = groupId,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            })); ;
+        }
+
     }
 }
