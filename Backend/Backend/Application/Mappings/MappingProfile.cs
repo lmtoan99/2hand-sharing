@@ -10,6 +10,7 @@ using Application.DTOs.ReceiveRequest;
 using Application.Features.AccountFeatures.Commands;
 using Application.Features.CategoryFeatures.Commands;
 using Application.Features.CategoryFeatures.Queries.GetAllCategories;
+using Application.Features.Events.Commands;
 using Application.Features.GroupFeatures.Queries;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
@@ -38,6 +39,7 @@ namespace Application.Mappings
                     source.DonateAccount.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<PostItemCommand, Item>();
+            CreateMap<DonateItemForEventCommand, Item>();
             CreateMap<GetAllItemByCategoryIdQuery, GetAllItemsParameter>();
             CreateMap<AddressDTO, Address>().ReverseMap();
             CreateMap<Item, GetItemByIdViewModel>()
