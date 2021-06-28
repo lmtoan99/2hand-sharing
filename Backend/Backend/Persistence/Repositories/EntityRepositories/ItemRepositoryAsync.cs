@@ -80,5 +80,18 @@ namespace Persistence.Repositories.EntityRepositories
         {
             return await _item.Where(i => i.Id == itemId).Include(i => i.ReceiveItemInformations).FirstAsync();
         }
+
+        public async Task<IReadOnlyList<Item>> GetAllItemDonateForEventAsync(int pageNumber, int pageSize, int eventId)
+        {
+            return await _item
+                .Where(i => i.DonateType == (int)EDonateType.DONATE_EVENT && i.DonateEventInformation.EventId == eventId)
+                .OrderByDescending(i => i.PostTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(i => i.Address)
+                .Include(i => i.DonateAccount)
+                .Include(i => i.ItemImageRelationships)
+                .ToListAsync();
+        }
     }
 }
