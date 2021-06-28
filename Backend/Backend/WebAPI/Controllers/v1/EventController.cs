@@ -22,6 +22,11 @@ namespace WebAPI.Controllers.v1
         {
             return Ok(await Mediator.Send(new GetAllEventsQuery{ PageNumber = request.PageNumber, PageSize = request.PageSize}));
         }
+        [HttpGet("{eventId}")]
+        public async Task<IActionResult> Get(int eventId)
+        {
+            return Ok(await Mediator.Send(new GetEventByEventIdQuery { EventId = eventId}));
+        }
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventDTO request)
         {

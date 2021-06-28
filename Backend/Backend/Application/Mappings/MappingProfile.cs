@@ -88,6 +88,7 @@ namespace Application.Mappings
                  .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Account.Avatar.FileName));
             CreateMap<Event, CreateEventDTO>().ReverseMap();
             CreateMap<Event, EventDTO>().ReverseMap();
+            CreateMap<Event, GetEventByEventIdViewModel>();
             CreateMap<GroupAdminDetail, GetAllGroupMemberViewModel>()
                 .ForMember(dest => dest.JoinDate, o => o.MapFrom(source => source.AppointDate))
                 .ForMember(dest => dest.FullName, o => o.MapFrom(source => source.Admin.FullName))
