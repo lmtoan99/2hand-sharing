@@ -11,5 +11,7 @@ namespace Application.DTOs.Group
         public string Description { get; set; }
         public DateTime CreateDate { get; set; }
         public string Rules { get; set; }
+
+        public string AvatarUrl { get; set; }
     }
 }

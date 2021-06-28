@@ -61,7 +61,8 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
                 .ForAllMembers(o => o.MapFrom(source => source.Items));
-            CreateMap<Group, GroupDTO>();
+            CreateMap<Group, GroupDTO>()
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<Group, GroupViewModel>()
                 .ForMember(dest => dest.AvatarURL, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>();
