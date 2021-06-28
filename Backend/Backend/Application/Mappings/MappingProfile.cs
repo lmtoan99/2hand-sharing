@@ -11,6 +11,7 @@ using Application.Features.AccountFeatures.Commands;
 using Application.Features.CategoryFeatures.Commands;
 using Application.Features.CategoryFeatures.Queries.GetAllCategories;
 using Application.Features.Events.Commands;
+using Application.Features.Events.Queries;
 using Application.Features.GroupFeatures.Queries;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
@@ -33,7 +34,13 @@ namespace Application.Mappings
             CreateMap<User, AuthenticateResponse>();
             CreateMap<Category, CategoryViewModel>();
             CreateMap<GetAllPostItemQuery, GetAllItemsParameter>();
+            CreateMap<GetAllDonateItemForEventQuery, GetAllItemsParameter>();
             CreateMap<Item, GetAllItemViewModel>()
+                .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
+                .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
+                    source.DonateAccount.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
+            CreateMap<Item, GetAllItemDonateForEventViewModel>()
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName))
@@ -54,7 +61,8 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, GetAllItemViewModel>()
                 .ForAllMembers(o => o.MapFrom(source => source.Items));
-            CreateMap<Group, GroupDTO>();
+            CreateMap<Group, GroupDTO>()
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<Group, GroupViewModel>()
                 .ForMember(dest => dest.AvatarURL, o => o.MapFrom(source => source.Avatar.FileName));
             CreateMap<ReceiveItemInformation, ReceiveRequestDoneeViewModel>();
