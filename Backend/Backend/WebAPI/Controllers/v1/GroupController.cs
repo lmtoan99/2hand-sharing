@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Group;
+using Application.Features.Events.Queries;
 using Application.Features.GroupFeatures.Commands;
 using Application.Features.GroupFeatures.Queries;
 using Application.Filter;
@@ -117,6 +118,13 @@ namespace WebAPI.Controllers.v1
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize
             })); ;
+        }
+
+        [HttpGet("{groupId}/event")]
+        public async Task<IActionResult> Get([FromQuery] RequestParameter filter, int groupId)
+        {
+            if (filter == null) return Ok(await Mediator.Send(new GetAllGroupEventQuery()));
+            return Ok(await Mediator.Send(new GetAllGroupEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId }));
         }
 
     }
