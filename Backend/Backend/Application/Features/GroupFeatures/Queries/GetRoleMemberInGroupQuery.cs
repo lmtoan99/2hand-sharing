@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.Enums;
+using Application.Exceptions;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using MediatR;
@@ -35,6 +36,8 @@ namespace Application.Features.GroupFeatures.Queries
             var member = await _groupMemberDetailRepositoryAsync.GetByConditionAsync(i => i.GroupId == request.GroupId && i.MemberId == request.UserId);
             if (member.Count != 0)
             {
+                
+                if(member[0].JoinStatus == (int) MemberJoinStatus.ACCEPTED)
                 return new Response<string>("member");
             }
 

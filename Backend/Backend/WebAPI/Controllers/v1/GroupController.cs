@@ -98,6 +98,12 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetRoleMemberInGroupQuery { GroupId = groupId, UserId = userId}));
         }
 
+        [HttpGet("{groupId}/join-status")]
+        public async Task<IActionResult> GetJoinStatus(int groupId)
+        {
+            return Ok(await Mediator.Send(new GetJoinStatusQuery { GroupId = groupId, UserId = GetUserId() }));
+        }
+
         [HttpGet("{groupId}/admin")]
         public async Task<IActionResult> GetListAdmin([FromQuery] RequestParameter request,int groupId)
         {
