@@ -26,8 +26,6 @@ namespace Persistence.Repositories.EntityRepositories
                 .OrderByDescending(i => i.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
                 .ToListAsync();
         }
     }
