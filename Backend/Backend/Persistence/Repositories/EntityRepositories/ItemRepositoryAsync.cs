@@ -85,7 +85,8 @@ namespace Persistence.Repositories.EntityRepositories
         {
             return await _item
                 .Where(i => i.DonateType == (int)EDonateType.DONATE_EVENT && i.DonateEventInformation.EventId == eventId)
-                .OrderByDescending(i => i.PostTime)
+                .OrderBy( i => i.Status)
+                .ThenByDescending(i => i.PostTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Include(i => i.Address)
