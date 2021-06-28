@@ -9,7 +9,6 @@ namespace Domain.Entities
     {
         public int EventId { get; set; }
         public int ItemId{get;set;}
-        public string Note{get;set;}
         [ForeignKey("ItemId")]
         [InverseProperty("DonateEventInformation")]
         public virtual Item Item { get; set; }
