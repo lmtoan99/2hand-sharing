@@ -40,6 +40,11 @@ namespace Application.Mappings
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
+            CreateMap<Item, GetAllItemDonateForEventViewModel>()
+                .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
+                .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
+                    source.DonateAccount.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<PostItemCommand, Item>();
             CreateMap<DonateItemForEventCommand, Item>();
             CreateMap<GetAllItemByCategoryIdQuery, GetAllItemsParameter>();

@@ -12,38 +12,36 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Events.Queries
 {
-    public class GetAllDonateItemForEventQuery : IRequest<PagedResponse<IEnumerable<GetAllItemViewModel>>>
+    public class GetAllDonateItemForEventQuery : IRequest<PagedResponse<IEnumerable<GetAllItemDonateForEventViewModel>>>
     {
         public int EventId { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
     }
-    public class GetAllDonateItemForEventQueryHandler : IRequestHandler<GetAllDonateItemForEventQuery, PagedResponse<IEnumerable<GetAllItemViewModel>>>
+    public class GetAllDonateItemForEventQueryHandler : IRequestHandler<GetAllDonateItemForEventQuery, PagedResponse<IEnumerable<GetAllItemDonateForEventViewModel>>>
     {
         private readonly IItemRepositoryAsync _itemRepository;
-        private readonly IDonateEventInformationRepositoryAsync _donateEventInformationRepository;
         private readonly IImageRepository _imageRepository;
         private readonly IMapper _mapper;
-        public GetAllDonateItemForEventQueryHandler(IItemRepositoryAsync itemRepository, IDonateEventInformationRepositoryAsync donateEventInformationRepository, IImageRepository imageRepository, IMapper mapper)
+        public GetAllDonateItemForEventQueryHandler(IItemRepositoryAsync itemRepository, IImageRepository imageRepository, IMapper mapper)
         {
             _itemRepository = itemRepository;
-            _donateEventInformationRepository = donateEventInformationRepository;
             _imageRepository = imageRepository;
             _mapper = mapper;
         }
 
-        public async Task<PagedResponse<IEnumerable<GetAllItemViewModel>>> Handle(GetAllDonateItemForEventQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IEnumerable<GetAllItemDonateForEventViewModel>>> Handle(GetAllDonateItemForEventQuery request, CancellationToken cancellationToken)
         {
             var validFilter = _mapper.Map<GetAllItemsParameter>(request);
             var itemDonateEvent = await _itemRepository.GetAllItemDonateForEventAsync(validFilter.PageNumber, validFilter.PageSize, request.EventId);
-            List<GetAllItemViewModel> itemViewModel = _mapper.Map<List<GetAllItemViewModel>>(itemDonateEvent);
+            List<GetAllItemDonateForEventViewModel> itemViewModel = _mapper.Map<List<GetAllItemDonateForEventViewModel>>(itemDonateEvent);
             itemViewModel.ForEach(i =>
             {
                 i.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl);
                 i.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrl);
             });
 
-            return new PagedResponse<IEnumerable<GetAllItemViewModel>>(itemViewModel, validFilter.PageNumber, validFilter.PageSize);
+            return new PagedResponse<IEnumerable<GetAllItemDonateForEventViewModel>>(itemViewModel, validFilter.PageNumber, validFilter.PageSize);
         }
     }
 }
