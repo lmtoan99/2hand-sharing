@@ -60,6 +60,27 @@ namespace WebAPI.Controllers.v1
                 MemberId = memberId
             }));
         }
+        [HttpPut("{groupId}/join-request/{memberId}/accept")]
+        public async Task<IActionResult> AcceptJoinRequest(int groupId, int memberId)
+        {
+            return Ok(await Mediator.Send(new AcceptJoinRequestCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+                MemberId = memberId
+            }));
+        }
+        [HttpPut("{groupId}/join-request/{memberId}/reject")]
+        public async Task<IActionResult> RejectJoinRequest(int groupId, int memberId)
+        {
+            return Ok(await Mediator.Send(new RejectJoinRequestCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+                MemberId = memberId
+            }));
+        }
+
 
         [HttpDelete("{groupId}/member/{memberId}")]
         public async Task<IActionResult> DeleteMember(int groupId, int memberId)

@@ -42,7 +42,7 @@ namespace Application.Features.GroupFeatures.Commands
             {
                 throw new ApiException("Admin not exists");
             }
-            await _groupMemberDetailRepositoryAsync.AddAsync(new GroupMemberDetail { MemberId = request.AdminId, JoinDate = DateTime.Now, GroupId = request.GroupId, ReportStatus = false, JoinStatus = (int) MemberJoinStatus.ACCEPTED} );
+            await _groupMemberDetailRepositoryAsync.AddAsync(new GroupMemberDetail { MemberId = request.AdminId, JoinDate = DateTime.Now.ToUniversalTime(), GroupId = request.GroupId, ReportStatus = false, JoinStatus = (int) MemberJoinStatus.ACCEPTED} );
             await _groupAdminDetailRepositoryAsync.DeleteAsync(member[0]);
             return new Response<string>(null);
         }
