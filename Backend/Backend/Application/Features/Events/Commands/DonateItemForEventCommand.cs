@@ -48,7 +48,7 @@ namespace Application.Features.Events.Commands
         }
         public async Task<Response<PostItemResponse>> Handle(DonateItemForEventCommand request, CancellationToken cancellationToken)
         {
-            var eventInfo = _eventRepository.GetByIdAsync(request.EventId);
+            var eventInfo = await _eventRepository.GetByIdAsync(request.EventId);
             if (eventInfo == null) throw new KeyNotFoundException($"Event Not Found.");
 
             var item = _mapper.Map<Item>(request);
