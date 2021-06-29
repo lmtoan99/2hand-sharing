@@ -70,6 +70,8 @@ namespace WebAPI.Controllers.v1
                 MemberId = memberId
             }));
         }
+
+
         [HttpPut("{groupId}/join-request/{memberId}/reject")]
         public async Task<IActionResult> RejectJoinRequest(int groupId, int memberId)
         {
@@ -80,6 +82,26 @@ namespace WebAPI.Controllers.v1
                 MemberId = memberId
             }));
         }
+        [HttpPut("{groupId}/accept-invitation")]
+        public async Task<IActionResult> AcceptInvitation(int groupId)
+        {
+            return Ok(await Mediator.Send(new AcceptInvitationCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+            }));
+        }
+
+        [HttpPut("{groupId}/decline-invitation")]
+        public async Task<IActionResult> DeclineInvitation(int groupId)
+        {
+            return Ok(await Mediator.Send(new DeclineInvitationCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+            }));
+        }
+
 
 
         [HttpDelete("{groupId}/member/{memberId}")]
@@ -109,6 +131,11 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetAllGroupJoinedQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, UserId = this.GetUserId() }));
         }
 
+        [HttpGet("invitations")]
+        public async Task<IActionResult> GetGroupInvitations([FromQuery] RequestParameter filter)
+        {
+            return Ok(await Mediator.Send(new GetGroupInvitationQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, UserId = this.GetUserId() }));
+        }
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllGroupParameter filter)
         {

@@ -79,7 +79,9 @@ namespace Application.Mappings
                     source.Member.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
 
-            CreateMap<GroupMemberDetail, GroupMemberDTO>();
+            CreateMap<GroupMemberDetail, GroupMemberDTO>().ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName)); 
+            CreateMap<GroupMemberDetail, Invitation>()
+            .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Group.Avatar.FileName)).ForMember(dest => dest.GroupName, o => o.MapFrom(source => source.Group.GroupName)).ForMember(dest => dest.InvitationTime, o => o.MapFrom(source => source.JoinDate));
             CreateMap<GetAllGroupJoinedQuery, GetAllGroupJoinedParameter>();
             CreateMap<GetAllGroupQuery, GetAllGroupParameter>();
             CreateMap<Award, GetAwardsViewModel>()
