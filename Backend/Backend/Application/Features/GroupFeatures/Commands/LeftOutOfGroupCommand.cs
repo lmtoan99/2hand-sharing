@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.Enums;
+using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using MediatR;
 using System;
@@ -40,7 +41,7 @@ namespace Application.Features.GroupFeatures.Commands
                 }  
             }
 
-            var checkMember = await _groupMemberDetailRepository.GetByConditionAsync(e => e.GroupId == request.groupId && e.MemberId == request.memberId);
+            var checkMember = await _groupMemberDetailRepository.GetByConditionAsync(e => e.GroupId == request.groupId && e.MemberId == request.memberId && e.JoinStatus == (int)MemberJoinStatus.ACCEPTED);
             if (checkMember == null)
             {
                 throw new KeyNotFoundException("Group member not found.");
