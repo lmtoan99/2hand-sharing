@@ -23,7 +23,7 @@ namespace Persistence.Repositories.EntityRepositories
             return await _donateEventInformation
                 .Where(d => d.Id == donateEventId
                     && d.Event.Group.GroupAdminDetails.Any(d => d.AdminId == adminId)
-                    && d.Event.Group.GroupMemberDetails.Any(d => d.MemberId == memberId))
+                    && (d.Event.Group.GroupMemberDetails.Any(d => d.MemberId == memberId) || d.Event.Group.GroupAdminDetails.Any(d => d.AdminId == memberId)))
                 .FirstOrDefaultAsync();
         }
     }

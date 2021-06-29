@@ -107,6 +107,9 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
             CreateMap<GetListJoinRequestQuery, GetListJoinGroupRequestParameter>();
             CreateMap<Assignment, AssignmentDTO>();
+            CreateMap<Assignment, AssignmentViewDTO>()
+                .ForMember(dest => dest.AssignByAccountName, o => o.MapFrom(source => source.AssignByAccount.FullName))
+                .ForMember(dest => dest.AssignedMemberName, o => o.MapFrom(source => source.AssignedMember.FullName));
         }
     }
 }

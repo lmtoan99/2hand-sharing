@@ -32,6 +32,11 @@ namespace Application.Features.AssignmentFeatures.Commands
         }
         public async Task<Response<AssignmentDTO>> Handle(AssignItemToMemberCommand request, CancellationToken cancellationToken)
         {
+            var checkExist = await _assignmentRepository.GetByConditionAsync(a => a.DonateEventInformationId == request.DonateEventInformationId);
+            if (checkExist.Count > 0)
+            {
+                throw new ApiException("Assigned item");
+            }
             var donateEvent = await _donateEventInformation.CheckPermissonForAssignItem(request.DonateEventInformationId, request.AssignByAccountId, request.AssignedMemberId);
             if (donateEvent == null)
             {

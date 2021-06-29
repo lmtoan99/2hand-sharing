@@ -1,5 +1,7 @@
 ﻿using Application.DTOs.Assignment;
 using Application.Features.AssignmentFeatures.Commands;
+using Application.Features.AssignmentFeatures.Queries;
+using Application.Filter;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,15 @@ namespace WebAPI.Controllers.v1
 {
     public class AssignmentController : BaseApiController
     {
+        [HttpGet]
+        public async Task<IActionResult> GetAllAssignmentByEventId([FromQuery]int eventId, [FromQuery] RequestParameter request)
+        {
+            return Ok(await Mediator.Send(new GetAllAssignmentByEventIdCommand { 
+                eventId = eventId,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            }));
+        }
         [HttpPost]
         public async Task<IActionResult> AssignItemToMember([FromBody] AssignMemberDTO assign)
         {
