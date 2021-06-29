@@ -39,6 +39,27 @@ namespace WebAPI.Controllers.v1
             if (filter == null) return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery()));
             return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId }));
         }
+        [HttpPut("{groupId}/demote-admin/{adminId}")]
+        public async Task<IActionResult> DemoteAdmin(int groupId, int adminId)
+        {
+            return Ok(await Mediator.Send(new DemoteAdminCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+                AdminId = adminId
+            }));
+        }
+
+        [HttpPut("{groupId}/appoint-admin/{memberId}")]
+        public async Task<IActionResult> AppointAdmin(int groupId, int memberId)
+        {
+            return Ok(await Mediator.Send(new AppointAdminCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+                MemberId = memberId
+            }));
+        }
 
         [HttpDelete("{groupId}/member/{memberId}")]
         public async Task<IActionResult> DeleteMember(int groupId, int memberId)
@@ -113,6 +134,8 @@ namespace WebAPI.Controllers.v1
             PageNumber = request.PageNumber,
             PageSize = request.PageSize}));
         }
+
+
 
         [HttpGet("{groupId}/request-join")]
         public async Task<IActionResult> GetListJoinGroupRequest([FromQuery] RequestParameter request, int groupId)
