@@ -18,16 +18,23 @@ namespace Application.Features.Events.Queries
     public class GetAllEventsQueryHandler : IRequestHandler<GetAllEventsQuery, PagedResponse<IReadOnlyCollection<EventDTO>>>
     {
         private readonly IEventRepositoryAsync _eventRepository;
+        private readonly IImageRepository _imageRepository;
         private readonly IMapper _mapper;
-        public GetAllEventsQueryHandler(IEventRepositoryAsync eventRepository, IMapper mapper)
+        public GetAllEventsQueryHandler(IEventRepositoryAsync eventRepository, IMapper mapper, IImageRepository imageRepository)
         {
             _eventRepository = eventRepository;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
         public async Task<PagedResponse<IReadOnlyCollection<EventDTO>>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _eventRepository.GetPagedReponseAsync(request.PageNumber, request.PageSize);
-            var response = _mapper.Map<IReadOnlyCollection<EventDTO>>(result);
+            var result = await _eventRepository.GetAllEventPagedResponse(request.PageNumber, request.PageSize);
+            var response = _mapper.Map<List<EventDTO>>(result);
+            response.ForEach(e =>
+            {
+                e.GroupAvatar = this._imageRepository.GenerateV4SignedReadUrl(e.GroupAvatar);
+            });
+
             return new PagedResponse<IReadOnlyCollection<EventDTO>>(response, request.PageNumber, request.PageSize);
         }
     }

@@ -19,6 +19,17 @@ namespace Persistence.Repositories.EntityRepositories
             _event = dbContext.Set<Event>();
         }
 
+        public async Task<IReadOnlyCollection<Event>> GetAllEventPagedResponse(int pageNumber, int pageSize)
+        {
+            return await _event
+                .OrderByDescending(i => i.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(e => e.Group)
+                .ThenInclude(g => g.Avatar)
+                .ToListAsync();
+        }
+
         public async Task<IReadOnlyList<Event>> GetAllGroupEventByGroupIdAsync(int pageNumber, int pageSize, int groupId)
         {
             return await _event
