@@ -65,10 +65,8 @@ namespace Application.Features.GroupFeatures.Commands
                     JoinStatus = (int) MemberJoinStatus.ADMIN_INVITE
                 };
 
-                var result = await _groupMemberDetailRepository.AddAsync(groupMember);
-                var dto = _mapper.Map<GetAllGroupMemberViewModel>(result);
-                dto.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(dto.AvatarUrl);
-                return new Response<GetAllGroupMemberViewModel>(dto, "Invited");
+                await _groupMemberDetailRepository.AddAsync(groupMember);
+                return new Response<GetAllGroupMemberViewModel>(null);
             }
             else
             {
@@ -78,7 +76,7 @@ namespace Application.Features.GroupFeatures.Commands
                     await _groupMemberDetailRepository.UpdateAsync(checkMemberInGroup);
                     var dto = _mapper.Map<GetAllGroupMemberViewModel>(checkMemberInGroup);
                     dto.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(dto.AvatarUrl);
-                    return new Response<GetAllGroupMemberViewModel>(dto, "Added");
+                    return new Response<GetAllGroupMemberViewModel>(dto);
                 }
                 throw new ApiException("Member exist in group.");
             }
