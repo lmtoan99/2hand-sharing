@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Account;
 using Application.DTOs.Address;
+using Application.DTOs.Assignment;
 using Application.DTOs.Award;
 using Application.DTOs.Event;
 using Application.DTOs.Group;
@@ -100,6 +101,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.RequesterName, o => o.MapFrom(source => source.Member.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
             CreateMap<GetListJoinRequestQuery, GetListJoinGroupRequestParameter>();
+            CreateMap<Assignment, AssignmentDTO>();
         }
     }
 }
