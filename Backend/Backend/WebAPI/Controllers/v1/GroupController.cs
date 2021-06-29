@@ -204,5 +204,14 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetAllGroupEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId }));
         }
 
+        [HttpDelete("{groupId}/leave")]
+        public async Task<IActionResult> LeftOutOfGroup(int groupId)
+        {
+            return Ok(await Mediator.Send(new LeftOutOfGroupCommand
+            {
+                groupId = groupId,
+                memberId = GetUserId()
+            }));
+        }
     }
 }
