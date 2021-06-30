@@ -18,10 +18,10 @@ namespace WebAPI.Controllers.v1
     public class ItemController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter)
+        public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter, [FromQuery] string query)
         {
-            if (filter==null) return Ok(await Mediator.Send(new GetAllPostItemQuery()));
-            return Ok(await Mediator.Send(new GetAllPostItemQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+            if (filter==null) return Ok(await Mediator.Send(new GetAllPostItemQuery { Query = query}));
+            return Ok(await Mediator.Send(new GetAllPostItemQuery {Query = query, PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
         }
 
         [HttpPost]

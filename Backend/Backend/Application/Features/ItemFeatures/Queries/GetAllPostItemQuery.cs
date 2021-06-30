@@ -3,6 +3,7 @@ using Application.DTOs.Item;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
+using Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Application.Features.ItemFeatures.Queries
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string Query { get; set; }
     }
     public class GetAllItemsQueryHandler : IRequestHandler<GetAllPostItemQuery, PagedResponse<IEnumerable<GetAllItemViewModel>>>
     {
@@ -33,8 +35,17 @@ namespace Application.Features.ItemFeatures.Queries
         public async Task<PagedResponse<IEnumerable<GetAllItemViewModel>>> Handle(GetAllPostItemQuery request, CancellationToken cancellationToken)
         {
             var validFilter = _mapper.Map<GetAllItemsParameter>(request);
-            var item = await _itemRepository.GetAllPostItemsAsync(validFilter.PageNumber, validFilter.PageSize);
-            List<GetAllItemViewModel> itemViewModel = _mapper.Map< List<GetAllItemViewModel>>(item);
+            IReadOnlyCollection<Item> item;
+            if (request.Query != null)
+            {
+                item = await _itemRepository.SearchPostItemsAsync(request.Query, request.PageNumber, request.PageSize);
+            }
+            else
+            {
+                item = await _itemRepository.GetAllPostItemsAsync(validFilter.PageNumber, validFilter.PageSize);
+            }
+            
+            List<GetAllItemViewModel> itemViewModel = _mapper.Map<List<GetAllItemViewModel>>(item);
             itemViewModel.ForEach(i =>
             {
                 i.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl);
