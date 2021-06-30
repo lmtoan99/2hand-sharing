@@ -1,4 +1,5 @@
 ﻿using Application.Enums;
+using Application.Exceptions;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using MediatR;
@@ -32,7 +33,7 @@ namespace Application.Features.GroupFeatures.Commands
                 var adminGroup = await _groupAdminDetailRepository.GetByConditionAsync(e => e.GroupId == request.groupId);
                 if (adminGroup.Count == 1)
                 {
-                    return new Response<string>("There is only one admin in this group.");
+                    throw new ApiException("You only can leave group when more than one admin.");
                 }
                 else
                 {
