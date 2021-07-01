@@ -11,7 +11,7 @@ namespace Persistence.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(sql: "DROP INDEX ON Items(ItemName) KEY INDEX Index_Items;", suppressTransaction: true);
+            migrationBuilder.Sql(sql: "ALTER TABLE Items DROP INDEX Index_Items", suppressTransaction: true);
         }
     }
 }
