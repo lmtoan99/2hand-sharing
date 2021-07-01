@@ -12,5 +12,7 @@ namespace Application.DTOs.Event
         public DateTime EndDate { get; set; }
         public string Content { get; set; }
         public int GroupId { get; set; }
+        public string GroupName { get; set; }
+        public string GroupAvatar { get; set; }
     }
 }
