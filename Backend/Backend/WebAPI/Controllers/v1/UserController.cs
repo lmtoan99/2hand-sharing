@@ -3,6 +3,8 @@ using Application.Features.AccountsFeature.Queries;
 using Application.Features.AwardFeatures.Query;
 using Application.Features.ReceiveItemInformationFeatures.Queries;
 using Application.Features.UserFeature.Commands;
+using Application.Features.UserFeature.Queries;
+using Application.Filter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,11 +18,12 @@ namespace WebAPI.Controllers.v1
     [Authorize]
     public class UserController : BaseApiController
     {
-        [HttpGet]
-        public async Task<IActionResult> GetUserInfo()
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUser([FromQuery] string query, [FromQuery] RequestParameter request)
         {
-            return Ok(await Mediator.Send(new GetUserInfoQuery { UserId = GetUserId() }));
+            return Ok(await Mediator.Send(new FindUserBySearchQuery { Query = query,PageNumber = request.PageNumber, PageSize = request.PageSize }));
         }
+
         [HttpPut]
         public async Task<IActionResult> UpdateUserInfo(UpdateUserDTO request)
         {
@@ -32,6 +35,13 @@ namespace WebAPI.Controllers.v1
                 Address = request.Address
             }));
         }
+
+        [HttpGet()]
+        public async Task<IActionResult> GetSelfUserInfo()
+        {
+            return Ok(await Mediator.Send(new GetUserInfoByIdQuery { UserId = GetUserId() }));
+        }
+
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserInfo(int userId)
         {

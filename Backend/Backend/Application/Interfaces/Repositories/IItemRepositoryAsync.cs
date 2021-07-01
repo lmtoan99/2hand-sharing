@@ -15,5 +15,6 @@ namespace Application.Interfaces.Repositories
         Task<IReadOnlyCollection<Item>> GetAllItemHaveRequestWithReceiverId(int receiverId, int pageNumber, int pageSize);
         Task<Item> GetItemDetailByIdAsync(int itemId);
         Task<IReadOnlyList<Item>> GetAllItemDonateForEventAsync(int pageNumber, int pageSize, int eventId);
+        Task<IReadOnlyCollection<Item>> SearchPostItemsAsync(string query, int pageNumber, int pageSize);
     }
 }
