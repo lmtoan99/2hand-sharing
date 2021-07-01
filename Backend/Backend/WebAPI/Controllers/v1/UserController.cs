@@ -3,6 +3,8 @@ using Application.Features.AccountsFeature.Queries;
 using Application.Features.AwardFeatures.Query;
 using Application.Features.ReceiveItemInformationFeatures.Queries;
 using Application.Features.UserFeature.Commands;
+using Application.Features.UserFeature.Queries;
+using Application.Filter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,9 +19,9 @@ namespace WebAPI.Controllers.v1
     public class UserController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> GetUserInfo()
+        public async Task<IActionResult> SearchUser([FromQuery] string query, [FromQuery] RequestParameter request)
         {
-            return Ok(await Mediator.Send(new GetUserInfoQuery { UserId = GetUserId() }));
+            return Ok(await Mediator.Send(new FindUserBySearchQuery { Query = query,PageNumber = request.PageNumber, PageSize = request.PageSize }));
         }
         [HttpPut]
         public async Task<IActionResult> UpdateUserInfo(UpdateUserDTO request)
