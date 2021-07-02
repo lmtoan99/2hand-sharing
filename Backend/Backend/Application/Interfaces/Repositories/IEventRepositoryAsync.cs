@@ -10,5 +10,6 @@ namespace Application.Interfaces.Repositories
     {
         Task<IReadOnlyList<Event>> GetAllGroupEventByGroupIdAsync(int pageNumber, int pageSize, int groupId);
         Task<IReadOnlyCollection<Event>> GetAllEventPagedResponse(int pageNumber, int pageSize);
+
     }
 }

@@ -9,5 +9,6 @@ namespace Application.Interfaces.Repositories
     public interface IAssignmentRepositoryAsync : IGenericRepositoryAsync<Assignment>
     {
         public Task<IReadOnlyCollection<Assignment>> GetPagedAssignmentByEventIdAsync(int eventId, int pageNumber, int pageSize);
+        public Task<Assignment> CheckAssignBefore(int userId);
     }
 }
