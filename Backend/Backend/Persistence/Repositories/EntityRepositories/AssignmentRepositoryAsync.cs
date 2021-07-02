@@ -27,5 +27,9 @@ namespace Persistence.Repositories.EntityRepositories
                 .Include(a => a.AssignedMember)
                 .ToListAsync();
         }
+        public async Task<Assignment> CheckAssignBefore(int userId)
+        {
+            return await _assignments.Where(a => a.AssignByAccountId == userId).FirstOrDefaultAsync();
+        }
     }
 }
