@@ -8,5 +8,6 @@ namespace Application.Interfaces.Repositories
 {
     public interface IAssignmentRepositoryAsync : IGenericRepositoryAsync<Assignment>
     {
+        public Task<Assignment> GetAssignmentByItemId(int itemId);
     }
 }

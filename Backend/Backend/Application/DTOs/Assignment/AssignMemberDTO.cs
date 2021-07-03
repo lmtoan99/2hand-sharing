@@ -8,7 +8,7 @@ namespace Application.DTOs.Assignment
     {
         public DateTime ExpirationDate { get; set; }
         public string Note { get; set; }
-        public int DonateEventInformationId { get; set; }
+        public int ItemId { get; set; }
         public int AssignedMemberId { get; set; }
     }
 }

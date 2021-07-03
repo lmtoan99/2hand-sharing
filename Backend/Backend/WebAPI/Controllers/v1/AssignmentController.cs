@@ -16,7 +16,7 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new AssignItemToMemberCommand { 
                 AssignByAccountId = GetUserId(),
                 AssignedMemberId = assign.AssignedMemberId,
-                DonateEventInformationId = assign.DonateEventInformationId,
+                ItemId = assign.ItemId,
                 ExpirationDate = assign.ExpirationDate,
                 Note = assign.Note
             }));
