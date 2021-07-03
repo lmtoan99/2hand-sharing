@@ -39,6 +39,8 @@ namespace Persistence.Extensions
             services.AddScoped<IEventRepositoryAsync, EventRepositoryAsync>();
             services.AddScoped<IDonateEventInformationRepositoryAsync, DonateEventInformationRepositoryAsync>();
             services.AddScoped<IAssignmentRepositoryAsync, AssignmentRepositoryAsync>();
+            services.AddScoped<IGroupPostRepositoryAsync, GroupPostRepositoryAsync>();
+            services.AddScoped<IGroupPostImageRelationshipRepositoryAsync, GroupPostImageRelationshipRepositoryAsync>();
             #endregion
 
             #region ApplicationContext
