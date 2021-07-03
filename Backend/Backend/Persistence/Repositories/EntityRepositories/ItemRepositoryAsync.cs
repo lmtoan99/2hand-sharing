@@ -61,9 +61,13 @@ namespace Persistence.Repositories.EntityRepositories
         {
             return await _item
                 .Where(i => i.DonateAccountId == accountId)
+                .OrderByDescending(i => i.PostTime)
                 .Include(i => i.Address)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Include(i => i.DonateAccount)
+                .Include(i => i.ItemImageRelationships)
+                .Include(i => i.DonateEventInformation.Event)
                 .ToListAsync();
         }
 

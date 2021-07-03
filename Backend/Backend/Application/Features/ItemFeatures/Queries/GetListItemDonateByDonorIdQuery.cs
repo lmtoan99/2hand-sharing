@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ItemFeatures.Queries
 {
-    public class GetListItemDonateByDonorIdQuery : IRequest<Response<IEnumerable<GetAllItemViewModel>>>
+    public class GetListItemDonateByDonorIdQuery : IRequest<Response<IEnumerable<GetMyDonatedItemsViewModel>>>
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
 
         public int userId { get; set; }
     }
-    public class GetListItemDonateByDonorIdQueryHandler : IRequestHandler<GetListItemDonateByDonorIdQuery, Response<IEnumerable<GetAllItemViewModel>>>
+    public class GetListItemDonateByDonorIdQueryHandler : IRequestHandler<GetListItemDonateByDonorIdQuery, Response<IEnumerable<GetMyDonatedItemsViewModel>>>
     {
         private readonly IItemRepositoryAsync _itemRepositoryAsync;
         private readonly IImageRepository _imageRepository;
@@ -29,16 +29,16 @@ namespace Application.Features.ItemFeatures.Queries
             _imageRepository = imageRepository;
             _mapper = mapper;
         }
-        public async Task<Response<IEnumerable<GetAllItemViewModel>>> Handle(GetListItemDonateByDonorIdQuery request, CancellationToken cancellationToken)
+        public async Task<Response<IEnumerable<GetMyDonatedItemsViewModel>>> Handle(GetListItemDonateByDonorIdQuery request, CancellationToken cancellationToken)
         {
             var result = await _itemRepositoryAsync.GetItemByDonateAccountId(request.userId, request.PageNumber, request.PageSize);
-            var res = _mapper.Map<List<GetAllItemViewModel>>(result);
+            var res = _mapper.Map<List<GetMyDonatedItemsViewModel>>(result);
             res.ForEach(i =>
             {
                 i.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl);
                 i.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrl);
             });
-            return new Response<IEnumerable<GetAllItemViewModel>>(res);
+            return new Response<IEnumerable<GetMyDonatedItemsViewModel>>(res);
         }
     }
 }
