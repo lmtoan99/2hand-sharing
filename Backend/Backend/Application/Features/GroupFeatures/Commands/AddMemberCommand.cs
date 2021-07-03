@@ -18,7 +18,7 @@ namespace Application.Features.GroupFeatures.Commands
 
     public class AddMemberCommand : IRequest<Response<GetAllGroupMemberViewModel>>
     {
-        public string Email { get; set; }
+        public int UserId { get; set; }
         public int GroupId { get; set; }
         public int AdminId { get; set; }
     }
@@ -28,32 +28,29 @@ namespace Application.Features.GroupFeatures.Commands
         private readonly IGroupMemberDetailRepositoryAsync _groupMemberDetailRepository;
         private readonly IGroupAdminDetailRepositoryAsync _groupAdminDetailRepository;
         private readonly IImageRepository _imageRepository;
-        private readonly IAccountService _accountService;
         private readonly IUserRepositoryAsync _userRepositoryAsync;
         private readonly IMapper _mapper;
         public AddMemberCommandHandle(IImageRepository imageRepository,IGroupMemberDetailRepositoryAsync groupMemberDetailRepository, IGroupAdminDetailRepositoryAsync groupAdminDetailRepository, IAccountService accountService, IUserRepositoryAsync userRepositoryAsync, IMapper mapper)
         {
             _groupMemberDetailRepository = groupMemberDetailRepository;
             _groupAdminDetailRepository = groupAdminDetailRepository;
-            _accountService = accountService;
             _userRepositoryAsync = userRepositoryAsync;
             _imageRepository =  imageRepository;
             _mapper = mapper;
         }
         public async Task<Response<GetAllGroupMemberViewModel>> Handle(AddMemberCommand request, CancellationToken cancellationToken)
         {
-            var accountId = await _accountService.GetAcccountIdByEmail(request.Email);
-            if (accountId == null)
+            var user = await _userRepositoryAsync.GetByIdAsync(request.UserId);
+            if (user == null)
             {
-                throw new ApiException("Email does not exist.");
+                throw new ApiException("UserId not exist.");
             }
-            var user = await _userRepositoryAsync.GetUserByAccountId(accountId);
             var groupAdminInfo = await _groupAdminDetailRepository.GetInfoGroupAdminDetail(request.GroupId, request.AdminId);
             if (groupAdminInfo == null)
             {
                 throw new ApiException("You are not admin of this group.");
             }
-            var checkMemberInGroup = await _groupMemberDetailRepository.GetMemberGroup(request.GroupId, user.Id);
+            var checkMemberInGroup = await _groupMemberDetailRepository.GetMemberGroup(request.GroupId, request.UserId);
             if (checkMemberInGroup == null)
             {
                 GroupMemberDetail groupMember = new GroupMemberDetail
@@ -65,8 +62,10 @@ namespace Application.Features.GroupFeatures.Commands
                     JoinStatus = (int) MemberJoinStatus.ADMIN_INVITE
                 };
 
-                await _groupMemberDetailRepository.AddAsync(groupMember);
-                return new Response<GetAllGroupMemberViewModel>(null);
+                var result = await _groupMemberDetailRepository.AddAsync(groupMember);
+                var dto = _mapper.Map<GetAllGroupMemberViewModel>(result);
+                dto.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(dto.AvatarUrl);
+                return new Response<GetAllGroupMemberViewModel>(dto);
             }
             else
             {
@@ -78,7 +77,7 @@ namespace Application.Features.GroupFeatures.Commands
                     dto.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(dto.AvatarUrl);
                     return new Response<GetAllGroupMemberViewModel>(dto);
                 }
-                throw new ApiException("Member exist in group.");
+                throw new ApiException("Member invivted or exist in group.");
             }
         }
     }
