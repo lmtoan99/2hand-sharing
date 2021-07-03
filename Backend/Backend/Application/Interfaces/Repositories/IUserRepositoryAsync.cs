@@ -14,5 +14,6 @@ namespace Application.Interfaces.Repositories
         Task<User> GetUserInfoByUserId(string id);
         Task<User> GetUserInfoById(int id);
         Task<string> GetUserFullnameById(int id);
+        Task<IList<User>> GetListUserByQuery(string query, int pageNumber,int pageSize);
     }
 }

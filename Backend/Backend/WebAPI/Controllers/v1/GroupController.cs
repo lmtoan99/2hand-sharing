@@ -1,8 +1,12 @@
 ﻿using Application.DTOs.Group;
+using Application.DTOs.GroupPost;
 using Application.Features.Events.Queries;
 using Application.Features.GroupFeatures.Commands;
 using Application.Features.GroupFeatures.Queries;
+using Application.Features.PostGroupFeatures.Commands;
 using Application.Filter;
+using Application.Wrappers;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -39,6 +43,68 @@ namespace WebAPI.Controllers.v1
             if (filter == null) return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery()));
             return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId }));
         }
+        [HttpPut("{groupId}/demote-admin/{adminId}")]
+        public async Task<IActionResult> DemoteAdmin(int groupId, int adminId)
+        {
+            return Ok(await Mediator.Send(new DemoteAdminCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+                AdminId = adminId
+            }));
+        }
+
+        [HttpPut("{groupId}/appoint-admin/{memberId}")]
+        public async Task<IActionResult> AppointAdmin(int groupId, int memberId)
+        {
+            return Ok(await Mediator.Send(new AppointAdminCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+                MemberId = memberId
+            }));
+        }
+        [HttpPut("{groupId}/join-request/{memberId}/accept")]
+        public async Task<IActionResult> AcceptJoinRequest(int groupId, int memberId)
+        {
+            return Ok(await Mediator.Send(new AcceptJoinRequestCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+                MemberId = memberId
+            }));
+        }
+
+
+        [HttpPut("{groupId}/join-request/{memberId}/reject")]
+        public async Task<IActionResult> RejectJoinRequest(int groupId, int memberId)
+        {
+            return Ok(await Mediator.Send(new RejectJoinRequestCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+                MemberId = memberId
+            }));
+        }
+        [HttpPut("{groupId}/accept-invitation")]
+        public async Task<IActionResult> AcceptInvitation(int groupId)
+        {
+            return Ok(await Mediator.Send(new AcceptInvitationCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+            }));
+        }
+
+        [HttpPut("{groupId}/decline-invitation")]
+        public async Task<IActionResult> DeclineInvitation(int groupId)
+        {
+            return Ok(await Mediator.Send(new DeclineInvitationCommand
+            {
+                GroupId = groupId,
+                UserId = GetUserId(),
+            }));
+        }
 
         [HttpDelete("{groupId}/member/{memberId}")]
         public async Task<IActionResult> DeleteMember(int groupId, int memberId)
@@ -67,6 +133,11 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetAllGroupJoinedQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, UserId = this.GetUserId() }));
         }
 
+        [HttpGet("invitations")]
+        public async Task<IActionResult> GetGroupInvitations([FromQuery] RequestParameter filter)
+        {
+            return Ok(await Mediator.Send(new GetGroupInvitationQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, UserId = this.GetUserId() }));
+        }
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllGroupParameter filter)
         {
@@ -99,6 +170,12 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetRoleMemberInGroupQuery { GroupId = groupId, UserId = userId}));
         }
 
+        [HttpGet("{groupId}/join-status")]
+        public async Task<IActionResult> GetJoinStatus(int groupId)
+        {
+            return Ok(await Mediator.Send(new GetJoinStatusQuery { GroupId = groupId, UserId = GetUserId() }));
+        }
+
         [HttpGet("{groupId}/admin")]
         public async Task<IActionResult> GetListAdmin([FromQuery] RequestParameter request,int groupId)
         {
@@ -125,6 +202,32 @@ namespace WebAPI.Controllers.v1
         {
             if (filter == null) return Ok(await Mediator.Send(new GetAllGroupEventQuery()));
             return Ok(await Mediator.Send(new GetAllGroupEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId }));
+        }
+
+        [HttpDelete("{groupId}/leave")]
+        public async Task<IActionResult> LeftOutOfGroup(int groupId)
+        {
+            return Ok(await Mediator.Send(new LeftOutOfGroupCommand
+            {
+                groupId = groupId,
+                memberId = GetUserId()
+            }));
+        }
+
+
+        [HttpPost("{groupId}/post")]
+        public async Task<IActionResult> Post([FromBody] GroupPostRequest groupPost, int groupId)
+        {
+            Response<GroupPostResponse> groupPostResponse = await Mediator.Send(new CreatePostInGroupCommand()
+            {
+                Content = groupPost.Content,
+                GroupId = groupId,
+                PostByAccountId = GetUserId(),
+                Visibility = groupPost.Visibility,
+                ImageNumber = groupPost.ImageNumber
+            });
+
+            return Ok(groupPostResponse);
         }
 
     }

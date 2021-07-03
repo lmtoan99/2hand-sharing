@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Account;
 using Application.DTOs.Address;
+using Application.DTOs.Assignment;
 using Application.DTOs.Award;
 using Application.DTOs.Event;
 using Application.DTOs.Group;
@@ -15,6 +16,7 @@ using Application.Features.Events.Queries;
 using Application.Features.GroupFeatures.Queries;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
+using Application.Features.PostGroupFeatures.Commands;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -79,7 +81,9 @@ namespace Application.Mappings
                     source.Member.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
 
-            CreateMap<GroupMemberDetail, GroupMemberDTO>();
+            CreateMap<GroupMemberDetail, GroupMemberDTO>().ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName)); 
+            CreateMap<GroupMemberDetail, Invitation>()
+            .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Group.Avatar.FileName)).ForMember(dest => dest.GroupName, o => o.MapFrom(source => source.Group.GroupName)).ForMember(dest => dest.InvitationTime, o => o.MapFrom(source => source.JoinDate));
             CreateMap<GetAllGroupJoinedQuery, GetAllGroupJoinedParameter>();
             CreateMap<GetAllGroupQuery, GetAllGroupParameter>();
             CreateMap<Award, GetAwardsViewModel>()
@@ -87,7 +91,10 @@ namespace Application.Mappings
                     source.Account.FullName))
                  .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Account.Avatar.FileName));
             CreateMap<Event, CreateEventDTO>().ReverseMap();
-            CreateMap<Event, EventDTO>().ReverseMap();
+            CreateMap<Event, EventDTO>()
+                .ForMember(dest => dest.GroupAvatar, o => o.MapFrom(source => source.Group.Avatar.FileName))
+                .ForMember(dest => dest.GroupName, o => o.MapFrom(source => source.Group.GroupName))
+                .ReverseMap();
             CreateMap<Event, GetEventByEventIdViewModel>();
             CreateMap<GroupAdminDetail, GetAllGroupMemberViewModel>()
                 .ForMember(dest => dest.JoinDate, o => o.MapFrom(source => source.AppointDate))
@@ -100,6 +107,11 @@ namespace Application.Mappings
                 .ForMember(dest => dest.RequesterName, o => o.MapFrom(source => source.Member.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
             CreateMap<GetListJoinRequestQuery, GetListJoinGroupRequestParameter>();
+            CreateMap<Assignment, AssignmentDTO>();
+            CreateMap<Assignment, AssignmentViewDTO>()
+                .ForMember(dest => dest.AssignByAccountName, o => o.MapFrom(source => source.AssignByAccount.FullName))
+                .ForMember(dest => dest.AssignedMemberName, o => o.MapFrom(source => source.AssignedMember.FullName));
+            CreateMap<CreatePostInGroupCommand, GroupPost>();
         }
     }
 }
