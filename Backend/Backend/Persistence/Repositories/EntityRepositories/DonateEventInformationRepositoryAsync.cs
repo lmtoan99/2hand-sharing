@@ -18,11 +18,10 @@ namespace Persistence.Repositories.EntityRepositories
             _donateEventInformation = dbContext.Set<DonateEventInformation>();
         }
 
-        public async Task<DonateEventInformation> CheckPermissonForAssignItem(int donateEventId, int adminId, int memberId)
+        public async Task<DonateEventInformation> CheckPermissonForAssignItem(int itemId, int adminId, int memberId)
         {
             return await _donateEventInformation
-                .Where(d => d.Id == donateEventId
-                    && d.Event.Group.GroupAdminDetails.Any(d => d.AdminId == adminId)
+                .Where(d => d.ItemId == itemId && d.Event.Group.GroupAdminDetails.Any(d => d.AdminId == adminId)
                     && (d.Event.Group.GroupMemberDetails.Any(d => d.MemberId == memberId) || d.Event.Group.GroupAdminDetails.Any(d => d.AdminId == memberId)))
                 .FirstOrDefaultAsync();
         }

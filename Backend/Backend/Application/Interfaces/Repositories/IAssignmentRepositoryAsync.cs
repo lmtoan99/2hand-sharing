@@ -10,5 +10,6 @@ namespace Application.Interfaces.Repositories
     {
         public Task<IReadOnlyCollection<Assignment>> GetPagedAssignmentByEventIdAsync(int eventId, int pageNumber, int pageSize);
         public Task<Assignment> CheckAssignBefore(int userId);
+        public Task<Assignment> GetAssignmentByItemId(int itemId);
     }
 }
