@@ -6,6 +6,7 @@ namespace Application.DTOs.Assignment
 {
     public class AssignmentDTO
     {
+        public int Id { get; set; }
         public DateTime AssignmentDate { get; set; }
         public DateTime ExpirationDate { get; set; }
         public int Status { get; set; }

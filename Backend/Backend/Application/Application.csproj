@@ -11,6 +11,7 @@
   <ItemGroup>
     <Folder Include="Features\AccountsFeature\Queries\" />
     <Folder Include="Features\NotificationFeatures\Commands\" />
+    <Folder Include="Features\PostGroupFeatures\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

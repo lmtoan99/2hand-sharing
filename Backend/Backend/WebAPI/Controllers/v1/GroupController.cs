@@ -1,8 +1,12 @@
 ﻿using Application.DTOs.Group;
+using Application.DTOs.GroupPost;
 using Application.Features.Events.Queries;
 using Application.Features.GroupFeatures.Commands;
 using Application.Features.GroupFeatures.Queries;
+using Application.Features.PostGroupFeatures.Commands;
 using Application.Filter;
+using Application.Wrappers;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -102,8 +106,6 @@ namespace WebAPI.Controllers.v1
             }));
         }
 
-
-
         [HttpDelete("{groupId}/member/{memberId}")]
         public async Task<IActionResult> DeleteMember(int groupId, int memberId)
         {
@@ -120,7 +122,7 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new AddMemberCommand
             {
                 GroupId = groupId,
-                Email = request.Email,
+                UserId = request.UserId,
                 AdminId = GetUserId()
             }));
         }
@@ -183,8 +185,6 @@ namespace WebAPI.Controllers.v1
             PageSize = request.PageSize}));
         }
 
-
-
         [HttpGet("{groupId}/request-join")]
         public async Task<IActionResult> GetListJoinGroupRequest([FromQuery] RequestParameter request, int groupId)
         {
@@ -213,5 +213,22 @@ namespace WebAPI.Controllers.v1
                 memberId = GetUserId()
             }));
         }
+
+
+        [HttpPost("{groupId}/post")]
+        public async Task<IActionResult> Post([FromBody] GroupPostRequest groupPost, int groupId)
+        {
+            Response<GroupPostResponse> groupPostResponse = await Mediator.Send(new CreatePostInGroupCommand()
+            {
+                Content = groupPost.Content,
+                GroupId = groupId,
+                PostByAccountId = GetUserId(),
+                Visibility = groupPost.Visibility,
+                ImageNumber = groupPost.ImageNumber
+            });
+
+            return Ok(groupPostResponse);
+        }
+
     }
 }

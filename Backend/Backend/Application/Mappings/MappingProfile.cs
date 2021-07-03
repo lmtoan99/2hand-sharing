@@ -16,6 +16,7 @@ using Application.Features.Events.Queries;
 using Application.Features.GroupFeatures.Queries;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
+using Application.Features.PostGroupFeatures.Commands;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -118,6 +119,7 @@ namespace Application.Mappings
             CreateMap<Assignment, AssignmentViewDTO>()
                 .ForMember(dest => dest.AssignByAccountName, o => o.MapFrom(source => source.AssignByAccount.FullName))
                 .ForMember(dest => dest.AssignedMemberName, o => o.MapFrom(source => source.AssignedMember.FullName));
+            CreateMap<CreatePostInGroupCommand, GroupPost>();
         }
     }
 }

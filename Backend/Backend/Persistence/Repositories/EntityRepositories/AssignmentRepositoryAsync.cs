@@ -31,5 +31,9 @@ namespace Persistence.Repositories.EntityRepositories
         {
             return await _assignments.Where(a => a.AssignByAccountId == userId).FirstOrDefaultAsync();
         }
+        public async Task<Assignment> GetAssignmentByItemId(int itemId)
+        {
+            return await _assignments.Where(a => a.DonateEventInformation.ItemId == itemId).FirstOrDefaultAsync();
+        }
     }
 }
