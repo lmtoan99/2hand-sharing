@@ -94,5 +94,15 @@ namespace Persistence.Repositories.EntityRepositories
                 .Include(i => i.ItemImageRelationships)
                 .ToListAsync();
         }
+
+        public async Task<IReadOnlyCollection<Item>> SearchPostItemsAsync(string query, int pageNumber, int pageSize)
+        {
+            return await _item
+                .Where(i => i.DonateType == (int)EDonateType.DONATE_POST && i.Status != (int)ItemStatus.SUCCESS)
+                .Where(i => EF.Functions.Match(i.ItemName,query, MySqlMatchSearchMode.NaturalLanguage))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }

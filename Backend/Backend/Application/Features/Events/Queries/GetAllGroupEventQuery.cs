@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Events.Queries
 {
-    public class GetAllGroupEventQuery : RequestParameter, IRequest<PagedResponse<IReadOnlyCollection<EventDTO>>>
+    public class GetAllGroupEventQuery : RequestParameter, IRequest<PagedResponse<IReadOnlyCollection<GetEventByEventIdViewModel>>>
     {
         public int GroupId { get; set; }
     }
-    public class GetAllGroupEventQueryHandler : IRequestHandler<GetAllGroupEventQuery, PagedResponse<IReadOnlyCollection<EventDTO>>>
+    public class GetAllGroupEventQueryHandler : IRequestHandler<GetAllGroupEventQuery, PagedResponse<IReadOnlyCollection<GetEventByEventIdViewModel>>>
     {
         private readonly IEventRepositoryAsync _eventRepository;
         private readonly IMapper _mapper;
@@ -25,11 +25,11 @@ namespace Application.Features.Events.Queries
             _eventRepository = eventRepository;
             _mapper = mapper;
         }
-        public async Task<PagedResponse<IReadOnlyCollection<EventDTO>>> Handle(GetAllGroupEventQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IReadOnlyCollection<GetEventByEventIdViewModel>>> Handle(GetAllGroupEventQuery request, CancellationToken cancellationToken)
         {
             var result = await _eventRepository.GetAllGroupEventByGroupIdAsync(request.PageNumber, request.PageSize, request.GroupId);
-            var response = _mapper.Map<IReadOnlyCollection<EventDTO>>(result);
-            return new PagedResponse<IReadOnlyCollection<EventDTO>>(response, request.PageNumber, request.PageSize);
+            var response = _mapper.Map<IReadOnlyCollection<GetEventByEventIdViewModel>>(result);
+            return new PagedResponse<IReadOnlyCollection<GetEventByEventIdViewModel>>(response, request.PageNumber, request.PageSize);
         }
     }
 }

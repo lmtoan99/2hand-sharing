@@ -9,5 +9,7 @@ namespace Application.Interfaces.Repositories
     public interface IEventRepositoryAsync : IGenericRepositoryAsync<Event>
     {
         Task<IReadOnlyList<Event>> GetAllGroupEventByGroupIdAsync(int pageNumber, int pageSize, int groupId);
+        Task<IReadOnlyCollection<Event>> GetAllEventPagedResponse(int pageNumber, int pageSize);
+
     }
 }

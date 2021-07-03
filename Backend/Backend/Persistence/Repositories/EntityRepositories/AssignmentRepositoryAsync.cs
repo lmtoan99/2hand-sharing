@@ -18,6 +18,19 @@ namespace Persistence.Repositories.EntityRepositories
             _assignments = dbContext.Set<Assignment>();
         }
 
+        public async Task<IReadOnlyCollection<Assignment>> GetPagedAssignmentByEventIdAsync(int eventId, int pageNumber, int pageSize)
+        {
+            return await _assignments.Where(a => a.DonateEventInformation.EventId == eventId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(a => a.AssignByAccount)
+                .Include(a => a.AssignedMember)
+                .ToListAsync();
+        }
+        public async Task<Assignment> CheckAssignBefore(int userId)
+        {
+            return await _assignments.Where(a => a.AssignByAccountId == userId).FirstOrDefaultAsync();
+        }
         public async Task<Assignment> GetAssignmentByItemId(int itemId)
         {
             return await _assignments.Where(a => a.DonateEventInformation.ItemId == itemId).FirstOrDefaultAsync();

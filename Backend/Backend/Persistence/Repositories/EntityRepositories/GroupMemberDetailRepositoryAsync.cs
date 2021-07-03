@@ -56,5 +56,13 @@ namespace Persistence.Repositories.EntityRepositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+        public async Task<IReadOnlyList<GroupMemberDetail>> GetInvitationListByUserIdAsync(int pageNumber, int pageSize, int userId)
+        {
+            return await _groupMemberDetails
+                .Where(i => (i.JoinStatus == (int)MemberJoinStatus.ADMIN_INVITE) && i.MemberId == userId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }
