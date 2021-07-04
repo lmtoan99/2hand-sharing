@@ -2,6 +2,7 @@
 using Application.DTOs.Address;
 using Application.DTOs.Assignment;
 using Application.DTOs.Award;
+using Application.DTOs.Comment;
 using Application.DTOs.Event;
 using Application.DTOs.Group;
 using Application.DTOs.GroupPost;
@@ -43,7 +44,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName))
-                            .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source =>
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source =>
                     source.DonateAccount.Avatar.FileName));
             CreateMap<Item, GetMyDonatedItemsViewModel>()
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
@@ -129,6 +130,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.PostByAccountName, o => o.MapFrom(source => source.PostByAccount.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName));
             CreateMap<GetAllGroupPostsQuery, GetAllGroupPostsParameter>();
+            CreateMap<Comment, CommentDTO>();
         }
     }
 }

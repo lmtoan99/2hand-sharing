@@ -56,12 +56,54 @@ namespace WebAPI.Controllers.v1
                     ImageNumber = item.ImageNumber
                 })); ;
         }
+        [HttpPut("{eventId}/accept-item/{itemId}")]
+        public async Task<IActionResult> AcceptItem(int eventId,int itemId)
+        {
+            return Ok(await Mediator.Send(
+                new AcceptItemCommand
+                {
+                    UserId = GetUserId(),
+                    EventId = eventId,
+                    ItemId = itemId,
+                   
+                })); 
+        }
+        [HttpPut("{eventId}/cancel-accept/{itemId}")]
+        public async Task<IActionResult> CancelAccept(int eventId, int itemId)
+        {
+            return Ok(await Mediator.Send(
+                new CancelAcceptItemCommand
+                {
+                    UserId = GetUserId(),
+                    EventId = eventId,
+                    ItemId = itemId,
+
+                }));
+        }
+        [HttpDelete("{eventId}/reject-item/{itemId}")]
+        public async Task<IActionResult> RejectItem(int eventId, int itemId)
+        {
+            return Ok(await Mediator.Send(
+                new RejectItemCommand
+                {
+                    UserId = GetUserId(),
+                    EventId = eventId,
+                    ItemId = itemId,
+
+                }));
+        }
+
 
         [HttpGet("{eventId}/item")]
         public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter, int eventId)
         {
             if (filter == null) return Ok(await Mediator.Send(new GetAllDonateItemForEventQuery()));
             return Ok(await Mediator.Send(new GetAllDonateItemForEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, EventId = eventId }));
+        }
+        [HttpGet("{eventId}/my-donations")]
+        public async Task<IActionResult> GetMyDonations([FromQuery] RequestParameter filter, int eventId)
+        {
+            return Ok(await Mediator.Send(new GetMyDonationInEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, EventId = eventId, UserId = GetUserId() }));
         }
     }
 }
