@@ -77,7 +77,6 @@ namespace Persistence.Repositories.EntityRepositories
                 .Include(i => i.Address)
                 .Include(i => i.DonateAccount)
                 .Include(i => i.ItemImageRelationships)
-                .Include(i => i.DonateEventInformation)
                 .FirstAsync();
         }
 
@@ -96,6 +95,19 @@ namespace Persistence.Repositories.EntityRepositories
             return await _item
                 .Where(i => i.DonateType == (int)EDonateType.DONATE_EVENT && i.DonateEventInformation.EventId == eventId)
                 .OrderBy( i => i.Status)
+                .ThenByDescending(i => i.PostTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(i => i.Address)
+                .Include(i => i.DonateAccount)
+                .Include(i => i.ItemImageRelationships)
+                .ToListAsync();
+        }
+        public async Task<IReadOnlyList<Item>> GetAllMyDonationsInEventAsync(int pageNumber, int pageSize, int eventId, int userId)
+        {
+            return await _item
+                .Where(i => i.DonateType == (int)EDonateType.DONATE_EVENT && i.DonateEventInformation.EventId == eventId && userId == i.DonateAccountId)
+                .OrderBy(i => i.Status)
                 .ThenByDescending(i => i.PostTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)

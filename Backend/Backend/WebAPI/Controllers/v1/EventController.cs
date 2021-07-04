@@ -100,5 +100,10 @@ namespace WebAPI.Controllers.v1
             if (filter == null) return Ok(await Mediator.Send(new GetAllDonateItemForEventQuery()));
             return Ok(await Mediator.Send(new GetAllDonateItemForEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, EventId = eventId }));
         }
+        [HttpGet("{eventId}/my-donations")]
+        public async Task<IActionResult> GetMyDonations([FromQuery] RequestParameter filter, int eventId)
+        {
+            return Ok(await Mediator.Send(new GetMyDonationInEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, EventId = eventId, UserId = GetUserId() }));
+        }
     }
 }
