@@ -4,6 +4,7 @@ using Application.Features.Events.Queries;
 using Application.Features.GroupFeatures.Commands;
 using Application.Features.GroupFeatures.Queries;
 using Application.Features.PostGroupFeatures.Commands;
+using Application.Features.PostGroupFeatures.Queries;
 using Application.Filter;
 using Application.Wrappers;
 using MediatR;
@@ -43,6 +44,7 @@ namespace WebAPI.Controllers.v1
             if (filter == null) return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery()));
             return Ok(await Mediator.Send(new GetAllGroupMemberByGroupIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId }));
         }
+
         [HttpPut("{groupId}/demote-admin/{adminId}")]
         public async Task<IActionResult> DemoteAdmin(int groupId, int adminId)
         {
@@ -230,5 +232,12 @@ namespace WebAPI.Controllers.v1
             return Ok(groupPostResponse);
         }
 
+        
+        [HttpGet("{groupId}/post")]
+        public async Task<IActionResult> GetGroupPost([FromQuery] GetAllGroupPostsParameter filter, int groupId)
+        {
+            if (filter == null) return Ok(await Mediator.Send(new GetAllGroupPostsQuery()));
+            return Ok(await Mediator.Send(new GetAllGroupPostsQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId, PostByAccountId = GetUserId() }));
+        }
     }
 }

@@ -8,6 +8,6 @@ namespace Application.Interfaces.Repositories
 {
     public interface IGroupPostRepositoryAsync : IGenericRepositoryAsync<GroupPost>
     {
-        //Task<IReadOnlyList<GroupPost>> GetAllPostInGroupAsync(int pageNumber, int pageSize);
+        Task<IReadOnlyList<GroupPost>> GetAllPublicPostInGroupAsync(int pageNumber, int pageSize, int groupId);
     }
 }
