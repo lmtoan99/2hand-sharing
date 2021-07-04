@@ -58,62 +58,63 @@ namespace Application.Features.ItemFeatures.Commands
                     throw new ApiException($"You can not confirm send.");
                 }
                 #endregion
-
-                #region FindAcceptedRequestAndUserTokens
-                ReceiveItemInformation acceptedRequest = null;
-                var requests = await _receiveItemInformationRepository.GetAllByItemId(command.Id);
-                List<string> sendTokens = new List<string>();
-                for(int i = 0; i < requests.Count; i++)
+                if (item.DonateType == (int)EDonateType.DONATE_POST)
                 {
-                    if(requests[i].ReceiveStatus == (int) ReceiveItemInformationStatus.RECEIVING)
+                    #region FindAcceptedRequestAndUserTokens
+                    ReceiveItemInformation acceptedRequest = null;
+                    var requests = await _receiveItemInformationRepository.GetAllByItemId(command.Id);
+                    List<string> sendTokens = new List<string>();
+                    for (int i = 0; i < requests.Count; i++)
                     {
-                        acceptedRequest = requests[i];
+                        if (requests[i].ReceiveStatus == (int)ReceiveItemInformationStatus.RECEIVING)
+                        {
+                            acceptedRequest = requests[i];
+                        }
+                        var tokens = await _firebaseTokenRepository.GetListFirebaseToken(requests[i].ReceiverId);
+                        sendTokens.AddRange(tokens);
                     }
-                    var tokens = await _firebaseTokenRepository.GetListFirebaseToken(requests[i].ReceiverId);
-                    sendTokens.AddRange(tokens);
-                }
-                #endregion
+                    #endregion
 
-                #region SendNotification
-                ConfirmSentNotificationData data = new ConfirmSentNotificationData
-                {
-                    ItemId = item.Id,
-                    ItemName = item.ItemName,
-                    ReceiverId = acceptedRequest.ReceiverId,
-                    ReceiverName = acceptedRequest.Receiver.FullName,
-                    ReceiverAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(acceptedRequest.Receiver.Avatar?.FileName),
-                };
-                DefaultContractResolver contractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                };
-
-                var settings = new JsonSerializerSettings
-                {
-                    ContractResolver = contractResolver,
-                    Formatting = Formatting.Indented
-                };
-                var confirmSentNotificationData = JsonConvert.SerializeObject(data, settings);
-                if (sendTokens.Count > 0)
-                {
-                    var responses = await _firebaseSerivce.SendConfirmSentNotification(sendTokens, confirmSentNotificationData);
-                    _firebaseTokenRepository.CleanExpiredToken(sendTokens, responses);
-                }
-                #endregion
-
-                #region SaveNotification
-                for (int i = 0; i < requests.Count; i++)
-                {
-                    await _notificationRepository.AddAsync(new Notification
+                    #region SendNotification
+                    ConfirmSentNotificationData data = new ConfirmSentNotificationData
                     {
-                        Type = "6",
-                        Data = confirmSentNotificationData,
-                        UserId = requests[i].ReceiverId,
-                        CreateTime = DateTime.UtcNow
-                    });
-                }
-                #endregion
+                        ItemId = item.Id,
+                        ItemName = item.ItemName,
+                        ReceiverId = acceptedRequest.ReceiverId,
+                        ReceiverName = acceptedRequest.Receiver.FullName,
+                        ReceiverAvatarUrl = _imageRepository.GenerateV4SignedReadUrl(acceptedRequest.Receiver.Avatar?.FileName),
+                    };
+                    DefaultContractResolver contractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy()
+                    };
 
+                    var settings = new JsonSerializerSettings
+                    {
+                        ContractResolver = contractResolver,
+                        Formatting = Formatting.Indented
+                    };
+                    var confirmSentNotificationData = JsonConvert.SerializeObject(data, settings);
+                    if (sendTokens.Count > 0)
+                    {
+                        var responses = await _firebaseSerivce.SendConfirmSentNotification(sendTokens, confirmSentNotificationData);
+                        _firebaseTokenRepository.CleanExpiredToken(sendTokens, responses);
+                    }
+                    #endregion
+
+                    #region SaveNotification
+                    for (int i = 0; i < requests.Count; i++)
+                    {
+                        await _notificationRepository.AddAsync(new Notification
+                        {
+                            Type = "6",
+                            Data = confirmSentNotificationData,
+                            UserId = requests[i].ReceiverId,
+                            CreateTime = DateTime.UtcNow
+                        });
+                    }
+                    #endregion
+                }
                 #region CreateAward
                 await _awardRepository.AddAsync(new Award { AccountId = item.DonateAccountId, CreateTime = DateTime.UtcNow });
                 #endregion
