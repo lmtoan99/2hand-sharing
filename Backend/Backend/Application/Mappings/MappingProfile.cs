@@ -5,6 +5,7 @@ using Application.DTOs.Award;
 using Application.DTOs.Comment;
 using Application.DTOs.Event;
 using Application.DTOs.Group;
+using Application.DTOs.GroupPost;
 using Application.DTOs.Item;
 using Application.DTOs.Message;
 using Application.DTOs.Notification;
@@ -18,6 +19,7 @@ using Application.Features.GroupFeatures.Queries;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
 using Application.Features.PostGroupFeatures.Commands;
+using Application.Features.PostGroupFeatures.Queries;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -123,6 +125,11 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AssignByAccountName, o => o.MapFrom(source => source.AssignByAccount.FullName))
                 .ForMember(dest => dest.AssignedMemberName, o => o.MapFrom(source => source.AssignedMember.FullName));
             CreateMap<CreatePostInGroupCommand, GroupPost>();
+            CreateMap<GroupPost, GetAllGroupPostViewModel>()
+                .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.GroupPostImageRelationships.ToList().FirstOrDefault().Image.FileName))
+                .ForMember(dest => dest.PostByAccountName, o => o.MapFrom(source => source.PostByAccount.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName));
+            CreateMap<GetAllGroupPostsQuery, GetAllGroupPostsParameter>();
             CreateMap<Comment, CommentDTO>();
         }
     }
