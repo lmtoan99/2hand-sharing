@@ -41,7 +41,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName))
-                            .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source =>
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source =>
                     source.DonateAccount.Avatar.FileName));
             CreateMap<Item, GetMyDonatedItemsViewModel>()
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
@@ -65,6 +65,8 @@ namespace Application.Mappings
                  .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().Select(e => e.Image.FileName)))
                  .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName))
+                                  .ForMember(dest => dest.EventId, o => o.MapFrom(source =>
+                    source.DonateEventInformation.EventId))
                  .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<ReceiveItemInformation, ReceiveRequestDonorViewModel>()
                 .ForMember(dest => dest.ReceiverName, o => o.MapFrom(source => source.Receiver.FullName))

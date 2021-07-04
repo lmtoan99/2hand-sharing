@@ -77,12 +77,18 @@ namespace Persistence.Repositories.EntityRepositories
                 .Include(i => i.Address)
                 .Include(i => i.DonateAccount)
                 .Include(i => i.ItemImageRelationships)
+                .Include(i => i.DonateEventInformation)
                 .FirstAsync();
         }
 
         public async Task<Item> GetItemWithReceiveRequestByIdAsync(int itemId)
         {
             return await _item.Where(i => i.Id == itemId).Include(i => i.ReceiveItemInformations).FirstAsync();
+        }
+
+        public async Task<Item> GetItemWithEvent(int itemId)
+        {
+            return await _item.Where(i => i.Id == itemId).Include(i => i.DonateEventInformation).FirstAsync();
         }
 
         public async Task<IReadOnlyList<Item>> GetAllItemDonateForEventAsync(int pageNumber, int pageSize, int eventId)
