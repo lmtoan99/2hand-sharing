@@ -10,5 +10,6 @@ namespace Application.Interfaces.Repositories
     {
         Task<IReadOnlyList<Group>> GetAllGroupAsync(int pageNumber, int pageSize);
         Task<List<Group>> GetAllJoinedGroupByUserId(int userId,int pageNumber,int pageSize);
+        Task<bool> CheckUserInGroup(int groupId, int userId);
     }
 }

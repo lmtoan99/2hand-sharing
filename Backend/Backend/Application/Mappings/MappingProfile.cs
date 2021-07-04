@@ -2,6 +2,7 @@
 using Application.DTOs.Address;
 using Application.DTOs.Assignment;
 using Application.DTOs.Award;
+using Application.DTOs.Comment;
 using Application.DTOs.Event;
 using Application.DTOs.Group;
 using Application.DTOs.Item;
@@ -122,6 +123,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AssignByAccountName, o => o.MapFrom(source => source.AssignByAccount.FullName))
                 .ForMember(dest => dest.AssignedMemberName, o => o.MapFrom(source => source.AssignedMember.FullName));
             CreateMap<CreatePostInGroupCommand, GroupPost>();
+            CreateMap<Comment, CommentDTO>();
         }
     }
 }
