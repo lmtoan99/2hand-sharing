@@ -122,7 +122,7 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new AddMemberCommand
             {
                 GroupId = groupId,
-                Email = request.Email,
+                UserId = request.UserId,
                 AdminId = GetUserId()
             }));
         }

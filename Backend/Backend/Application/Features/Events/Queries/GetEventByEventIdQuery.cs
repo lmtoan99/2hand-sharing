@@ -11,25 +11,28 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Events.Queries
 {
-    public class GetEventByEventIdQuery : IRequest<Response<GetEventByEventIdViewModel>>
+    public class GetEventByEventIdQuery : IRequest<Response<EventDTO>>
     {
         public int EventId { get; set; }
     }
-    public class GetEventByEventIdQueryHandler : IRequestHandler<GetEventByEventIdQuery, Response<GetEventByEventIdViewModel>>
+    public class GetEventByEventIdQueryHandler : IRequestHandler<GetEventByEventIdQuery, Response<EventDTO>>
     {
         private readonly IEventRepositoryAsync _eventRepository;
+        private readonly IImageRepository _imageRepository;
         private readonly IMapper _mapper;
-        public GetEventByEventIdQueryHandler(IEventRepositoryAsync eventRepository, IMapper mapper, IReceiveItemInformationRepositoryAsync receiveItemInformationRepository)
+        public GetEventByEventIdQueryHandler(IImageRepository imageRepository,IEventRepositoryAsync eventRepository, IMapper mapper, IReceiveItemInformationRepositoryAsync receiveItemInformationRepository)
         {
             _eventRepository = eventRepository;
+            _imageRepository = imageRepository;
             _mapper = mapper;
         }
-        public async Task<Response<GetEventByEventIdViewModel>> Handle(GetEventByEventIdQuery query, CancellationToken cancellationToken)
+        public async Task<Response<EventDTO>> Handle(GetEventByEventIdQuery query, CancellationToken cancellationToken)
         {
             var eventInfo = await _eventRepository.GetByIdAsync(query.EventId);
             if (eventInfo == null) throw new KeyNotFoundException($"Event Not Found.");
-            var eventViewModel = _mapper.Map<GetEventByEventIdViewModel>(eventInfo);           
-            return new Response<GetEventByEventIdViewModel>(eventViewModel);
+            var eventViewModel = _mapper.Map<EventDTO>(eventInfo);
+            eventViewModel.GroupAvatar = _imageRepository.GenerateV4SignedReadUrl(eventViewModel.GroupAvatar);
+            return new Response<EventDTO>(eventViewModel);
         }
     }
 }

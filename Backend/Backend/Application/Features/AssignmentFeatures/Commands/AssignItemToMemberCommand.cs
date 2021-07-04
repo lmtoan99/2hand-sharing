@@ -32,15 +32,16 @@ namespace Application.Features.AssignmentFeatures.Commands
         }
         public async Task<Response<AssignmentDTO>> Handle(AssignItemToMemberCommand request, CancellationToken cancellationToken)
         {
-            var checkExist = await _assignmentRepository.GetByConditionAsync(a => a.DonateEventInformationId == request.DonateEventInformationId);
-            if (checkExist.Count > 0)
-            {
-                throw new ApiException("Assigned item");
-            }
-            var donateEvent = await _donateEventInformation.CheckPermissonForAssignItem(request.DonateEventInformationId, request.AssignByAccountId, request.AssignedMemberId);
+            var donateEvent = await _donateEventInformation.CheckPermissonForAssignItem(request.ItemId, request.AssignByAccountId, request.AssignedMemberId);
             if (donateEvent == null)
             {
                 throw new ApiException("Invalid request");
+            }
+
+            var checkAssigned = await _assignmentRepository.GetAssignmentByItemId(request.ItemId);
+            if (checkAssigned != null)
+            {
+                throw new ApiException("Item assigned");
             }
 
             var result = await _assignmentRepository.AddAsync(new Domain.Entities.Assignment
@@ -48,7 +49,7 @@ namespace Application.Features.AssignmentFeatures.Commands
                 AssignByAccountId = request.AssignByAccountId,
                 AssignedMemberId = request.AssignedMemberId,
                 AssignmentDate = DateTime.UtcNow,
-                DonateEventInformationId = request.DonateEventInformationId,
+                DonateEventInformationId = donateEvent.Id,
                 ExpirationDate = request.ExpirationDate,
                 Note = request.Note,
                 Status = (int)ReceiveItemInformationStatus.RECEIVING

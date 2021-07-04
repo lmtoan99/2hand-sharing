@@ -11,23 +11,18 @@ using System.Threading.Tasks;
 
 namespace Application.Features.AssignmentFeatures.Commands
 {
-    public class CancelAssignReceiveItemToMemberCommand : IRequest<Response<int>>
+    public class CancelAssignReceiveItemToMemberCommand : IRequest<Response<int?>>
     {
         public int AssignmentId { get; set; }
         public int UserId { get; set; }
-        public class CancelAssignReceiveItemToMemberCommandHandler : IRequestHandler<CancelAssignReceiveItemToMemberCommand, Response<int>>
+        public class CancelAssignReceiveItemToMemberCommandHandler : IRequestHandler<CancelAssignReceiveItemToMemberCommand, Response<int?>>
         {
-            private readonly IDonateEventInformationRepositoryAsync _donateEventInformationRepository;
-            private readonly IEventRepositoryAsync _eventRepository;
             private readonly IAssignmentRepositoryAsync _assignmentRepository;
-            public CancelAssignReceiveItemToMemberCommandHandler(IDonateEventInformationRepositoryAsync donateEventInformationRepository, 
-                IAssignmentRepositoryAsync assignmentRepository, IEventRepositoryAsync eventRepository)
-            {
-                _donateEventInformationRepository = donateEventInformationRepository;
+            public CancelAssignReceiveItemToMemberCommandHandler(IAssignmentRepositoryAsync assignmentRepository)
+            {       
                 _assignmentRepository = assignmentRepository;
-                _eventRepository = eventRepository;
             }
-            public async Task<Response<int>> Handle(CancelAssignReceiveItemToMemberCommand command, CancellationToken cancellationToken)
+            public async Task<Response<int?>> Handle(CancelAssignReceiveItemToMemberCommand command, CancellationToken cancellationToken)
             {
                 var checkAdmin = await _assignmentRepository.CheckAssignBefore(command.UserId);
                 if (checkAdmin == null)
@@ -42,7 +37,7 @@ namespace Application.Features.AssignmentFeatures.Commands
                 }
 
                 await _assignmentRepository.DeleteAsync(assignment);
-                return new Response<int>(1);
+                return new Response<int?>(null);
             }
         }
     }

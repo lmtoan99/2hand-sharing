@@ -1,12 +1,12 @@
 ﻿using Application.DTOs.Address;
-using Domain.Entities;
+using Application.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Application.DTOs.Item
 {
-    public class GetAllItemViewModel
+    public class GetMyDonatedItemsViewModel
     {
         public int Id { get; set; }
         public string ItemName { get; set; }
@@ -17,5 +17,7 @@ namespace Application.DTOs.Item
         public int DonateAccountId { get; set; }
         public string DonateAccountName { get; set; }
         public string AvatarUrl { get; set; }
+        public int EventId { get; set; }
+        public string EventName { get; set; }
     }
 }
