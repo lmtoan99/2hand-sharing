@@ -50,6 +50,11 @@ namespace Application.Features.GroupFeatures.Commands
             {
                 throw new ApiException("You are not admin of this group.");
             }
+            var admin = await _groupAdminDetailRepository.GetInfoGroupAdminDetail(request.GroupId, request.UserId);
+            if (admin != null)
+            {
+                throw new ApiException("Member exist in group.");
+            }
             var checkMemberInGroup = await _groupMemberDetailRepository.GetMemberGroup(request.GroupId, request.UserId);
             if (checkMemberInGroup == null)
             {
@@ -65,7 +70,7 @@ namespace Application.Features.GroupFeatures.Commands
                 var result = await _groupMemberDetailRepository.AddAsync(groupMember);
                 var dto = _mapper.Map<GetAllGroupMemberViewModel>(result);
                 dto.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(dto.AvatarUrl);
-                return new Response<GetAllGroupMemberViewModel>(dto);
+                return new Response<GetAllGroupMemberViewModel>(null);
             }
             else
             {
@@ -77,8 +82,12 @@ namespace Application.Features.GroupFeatures.Commands
                     dto.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(dto.AvatarUrl);
                     return new Response<GetAllGroupMemberViewModel>(dto);
                 }
-                throw new ApiException("Member invivted or exist in group.");
+                if (checkMemberInGroup.JoinStatus == (int)MemberJoinStatus.ADMIN_INVITE)
+                    throw new ApiException("Member already invited");
+
+
             }
+            throw new ApiException("Member exist in group.");
         }
     }
 }
