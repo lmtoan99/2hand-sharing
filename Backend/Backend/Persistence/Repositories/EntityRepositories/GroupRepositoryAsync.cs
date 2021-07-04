@@ -20,6 +20,14 @@ namespace Persistence.Repositories.EntityRepositories
             _group = dbContext.Set<Group>();
         }
 
+        public async Task<bool> CheckUserInGroup(int groupId, int userId)
+        {
+            return (await _group.Where(g => g.Id == groupId &&
+                (g.GroupMemberDetails.Any(m => m.MemberId == userId) ||
+                g.GroupAdminDetails.Any(a => a.AdminId == userId)))
+                .CountAsync()) > 0;
+        }
+
         public async Task<IReadOnlyList<Group>> GetAllGroupAsync(int pageNumber, int pageSize)
         {
             return await _group
