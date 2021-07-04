@@ -14,6 +14,7 @@ namespace Application.DTOs.Item
         public DateTime PostTime { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
+        public int DonateAccountId { get; set; }
         public string DonateAccountName { get; set; }
         public string AvatarUrl { get; set; }
         public int EventId { get; set; }

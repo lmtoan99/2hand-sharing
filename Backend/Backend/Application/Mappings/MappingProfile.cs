@@ -40,7 +40,9 @@ namespace Application.Mappings
             CreateMap<Item, GetAllItemViewModel>()
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
-                    source.DonateAccount.FullName));
+                    source.DonateAccount.FullName))
+                            .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source =>
+                    source.DonateAccount.Avatar.FileName));
             CreateMap<Item, GetMyDonatedItemsViewModel>()
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
