@@ -126,6 +126,8 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AssignedMemberName, o => o.MapFrom(source => source.AssignedMember.FullName));
             CreateMap<CreatePostInGroupCommand, GroupPost>();
             CreateMap<Comment, CommentDTO>();
+            CreateMap<Comment, ListCommentDTO>()
+                .ForMember(c => c.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName));
         }
     }
 }
