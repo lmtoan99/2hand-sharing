@@ -15,5 +15,7 @@ namespace Application.DTOs.GroupPost
 
         [Required]
         public int ImageNumber { get; set; }
+        [Required]
+        public int GroupId { get; set; }
     }
 }

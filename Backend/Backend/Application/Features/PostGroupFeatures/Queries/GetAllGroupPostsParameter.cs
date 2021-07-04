@@ -7,5 +7,6 @@ namespace Application.Features.PostGroupFeatures.Queries
 {
     public class GetAllGroupPostsParameter : RequestParameter
     {
+        public int GroupId { get; set; }
     }
 }

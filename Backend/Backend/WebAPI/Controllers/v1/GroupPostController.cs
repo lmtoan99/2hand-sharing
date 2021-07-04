@@ -1,7 +1,11 @@
 ﻿using Application.DTOs.Comment;
+using Application.DTOs.GroupPost;
 using Application.Features.GroupPostFeatures.Commands;
 using Application.Features.GroupPostFeatures.Queries;
+using Application.Features.PostGroupFeatures.Commands;
+using Application.Features.PostGroupFeatures.Queries;
 using Application.Filter;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,6 +19,26 @@ namespace WebAPI.Controllers.v1
     [Authorize]
     public class GroupPostController : BaseApiController
     {
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] GroupPostRequest groupPost)
+        {
+            return Ok(await Mediator.Send(new CreatePostInGroupCommand()
+            {
+                Content = groupPost.Content,
+                GroupId = groupPost.GroupId,
+                PostByAccountId = GetUserId(),
+                Visibility = groupPost.Visibility,
+                ImageNumber = groupPost.ImageNumber
+            }));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetGroupPost([FromQuery] GetAllGroupPostsParameter filter)
+        {
+            if (filter == null) return Ok(await Mediator.Send(new GetAllGroupPostsQuery { GroupId = filter.GroupId,PostByAccountId = GetUserId()}));
+            return Ok(await Mediator.Send(new GetAllGroupPostsQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = filter.GroupId, PostByAccountId = GetUserId() }));
+        }
+
         [HttpPost("{postId}/comment")]
         public async Task<IActionResult> PostCommentOnGroupPost([FromBody] PostCommentOnGroupDTO comment, int postId)
         {
@@ -24,6 +48,10 @@ namespace WebAPI.Controllers.v1
         [HttpGet("{postId}/comment")]
         public async Task<IActionResult> GetListCommentOnPost([FromQuery] RequestParameter request, int postId)
         {
+            if (request == null)
+            {
+                request = new RequestParameter();
+            }
             return Ok(await Mediator.Send(new GetListCommentOnPostQuery { PostId = postId, UserId = GetUserId(),PageNumber = request.PageNumber, PageSize = request.PageSize}));
         }
     }

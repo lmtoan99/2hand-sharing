@@ -215,29 +215,5 @@ namespace WebAPI.Controllers.v1
                 memberId = GetUserId()
             }));
         }
-
-
-        [HttpPost("{groupId}/post")]
-        public async Task<IActionResult> Post([FromBody] GroupPostRequest groupPost, int groupId)
-        {
-            Response<GroupPostResponse> groupPostResponse = await Mediator.Send(new CreatePostInGroupCommand()
-            {
-                Content = groupPost.Content,
-                GroupId = groupId,
-                PostByAccountId = GetUserId(),
-                Visibility = groupPost.Visibility,
-                ImageNumber = groupPost.ImageNumber
-            });
-
-            return Ok(groupPostResponse);
-        }
-
-        
-        [HttpGet("{groupId}/post")]
-        public async Task<IActionResult> GetGroupPost([FromQuery] GetAllGroupPostsParameter filter, int groupId)
-        {
-            if (filter == null) return Ok(await Mediator.Send(new GetAllGroupPostsQuery()));
-            return Ok(await Mediator.Send(new GetAllGroupPostsQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = groupId, PostByAccountId = GetUserId() }));
-        }
     }
 }
