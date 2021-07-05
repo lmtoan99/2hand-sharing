@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Address;
 using Application.DTOs.Item;
 using Application.Enums;
+using Application.Exceptions;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
@@ -48,8 +49,12 @@ namespace Application.Features.Events.Commands
         }
         public async Task<Response<PostItemResponse>> Handle(DonateItemForEventCommand request, CancellationToken cancellationToken)
         {
-            var eventInfo = _eventRepository.GetByIdAsync(request.EventId);
+            var eventInfo = await _eventRepository.GetByIdAsync(request.EventId);
             if (eventInfo == null) throw new KeyNotFoundException($"Event Not Found.");
+            if (eventInfo.EndDate < DateTime.UtcNow)
+            {
+                throw new ApiException("Event ended");
+            }
 
             var item = _mapper.Map<Item>(request);
             item.DonateType = (int)EDonateType.DONATE_EVENT;
