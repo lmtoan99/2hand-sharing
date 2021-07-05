@@ -36,6 +36,7 @@ namespace Application.Features.Events.Commands
                 throw new UnauthorizedAccessException("Not have permission");
             }
             Event entity = _mapper.Map<Event>(request);
+            entity.StartDate = DateTime.UtcNow;
             var result = await _eventRepository.AddAsync(entity);
             return new Response<Event>(result);
         }
