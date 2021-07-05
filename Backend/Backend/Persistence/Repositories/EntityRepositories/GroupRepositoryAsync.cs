@@ -33,6 +33,7 @@ namespace Persistence.Repositories.EntityRepositories
             return await _group
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Include(g => g.Avatar)
                 .ToListAsync();
         }
 
@@ -48,6 +49,15 @@ namespace Persistence.Repositories.EntityRepositories
                  .Skip((pageNumber - 1)*pageSize)
                  .Take(pageSize)
                  .ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<Group>> SearchGroupAsync(string query, int pageNumber, int pageSize)
+        {
+            return await _group
+                .Where(g => EF.Functions.Match(g.GroupName, query, MySqlMatchSearchMode.NaturalLanguage))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
     }
 }
