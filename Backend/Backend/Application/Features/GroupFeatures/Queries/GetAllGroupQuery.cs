@@ -1,7 +1,9 @@
 ﻿using Application.DTOs.Group;
+using Application.Filter;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
+using Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,10 +13,9 @@ using System.Threading.Tasks;
 
 namespace Application.Features.GroupFeatures.Queries
 {
-    public class GetAllGroupQuery : IRequest<Response<IEnumerable<GroupViewModel>>>
+    public class GetAllGroupQuery : RequestParameter, IRequest<Response<IEnumerable<GroupViewModel>>>
     {
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+        public string Query { get; set; }
     }
     public class GetAllGroupQueryHandler : IRequestHandler<GetAllGroupQuery, Response<IEnumerable<GroupViewModel>>>
     {
@@ -29,8 +30,15 @@ namespace Application.Features.GroupFeatures.Queries
         }
         public async Task<Response<IEnumerable<GroupViewModel>>> Handle(GetAllGroupQuery request, CancellationToken cancellationToken)
         {
-            var validFilter = _mapper.Map<GetAllGroupParameter>(request);
-            var res = await _groupRepositoryAsync.GetAllGroupAsync(validFilter.PageNumber, validFilter.PageSize);
+            IReadOnlyCollection<Group> res; 
+            if (request.Query != null)
+            {
+                res = await _groupRepositoryAsync.SearchGroupAsync(request.Query, request.PageNumber, request.PageSize);
+            }
+            else
+            {
+                res = await _groupRepositoryAsync.GetAllGroupAsync(request.PageNumber, request.PageSize);
+            }
             List<GroupViewModel> list = _mapper.Map<List<GroupViewModel>>(res);
             list.ForEach(i =>
             {
