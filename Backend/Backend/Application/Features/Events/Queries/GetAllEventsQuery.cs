@@ -3,6 +3,7 @@ using Application.Filter;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
+using Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace Application.Features.Events.Queries
 {
     public class GetAllEventsQuery : RequestParameter, IRequest<PagedResponse<IReadOnlyCollection<EventDTO>>>
     {
+        public string Query { get; set; }
     }
     public class GetAllEventsQueryHandler : IRequestHandler<GetAllEventsQuery, PagedResponse<IReadOnlyCollection<EventDTO>>>
     {
@@ -28,7 +30,15 @@ namespace Application.Features.Events.Queries
         }
         public async Task<PagedResponse<IReadOnlyCollection<EventDTO>>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _eventRepository.GetAllEventPagedResponse(request.PageNumber, request.PageSize);
+            IReadOnlyCollection<Event> result;
+            if (request.Query != null)
+            {
+                result = await _eventRepository.SearchEventPagedResponse(request.Query, request.PageNumber, request.PageSize);
+            }
+            else
+            {
+                result = await _eventRepository.GetAllEventPagedResponse(request.PageNumber, request.PageSize);
+            }
             var response = _mapper.Map<List<EventDTO>>(result);
             response.ForEach(e =>
             {

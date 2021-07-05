@@ -39,5 +39,16 @@ namespace Persistence.Repositories.EntityRepositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+
+        public async Task<IReadOnlyCollection<Event>> SearchEventPagedResponse(string query, int pageNumber, int pageSize)
+        {
+            return await _event
+                .Where(e => EF.Functions.Match(e.EventName, query, MySqlMatchSearchMode.NaturalLanguage))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(e => e.Group)
+                .ThenInclude(g => g.Avatar)
+                .ToListAsync();
+        }
     }
 }

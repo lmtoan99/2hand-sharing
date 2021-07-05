@@ -18,9 +18,9 @@ namespace WebAPI.Controllers.v1
     public class EventController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllEvents([FromQuery] RequestParameter request)
+        public async Task<IActionResult> GetAllEvents([FromQuery] RequestParameter request, [FromQuery] string query)
         {
-            return Ok(await Mediator.Send(new GetAllEventsQuery{ PageNumber = request.PageNumber, PageSize = request.PageSize}));
+            return Ok(await Mediator.Send(new GetAllEventsQuery{Query = query, PageNumber = request.PageNumber, PageSize = request.PageSize}));
         }
         [HttpGet("{eventId}")]
         public async Task<IActionResult> Get(int eventId)
