@@ -130,5 +130,15 @@ namespace Persistence.Repositories.EntityRepositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+
+        public async Task<IReadOnlyCollection<Item>> SearchPostItemsWithCategoryIdAsync(string query, int categoryId,int pageNumber, int pageSize)
+        {
+            return await _item
+                .Where(i => i.DonateType == (int)EDonateType.DONATE_POST && i.Status != (int)ItemStatus.SUCCESS && i.CategoryId == categoryId)
+                .Where(i => EF.Functions.Match(i.ItemName, query, MySqlMatchSearchMode.NaturalLanguage))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }

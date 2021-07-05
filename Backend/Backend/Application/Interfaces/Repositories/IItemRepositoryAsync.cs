@@ -18,5 +18,6 @@ namespace Application.Interfaces.Repositories
         Task<Item> GetItemDetailByIdAsync(int itemId);
         Task<IReadOnlyList<Item>> GetAllItemDonateForEventAsync(int pageNumber, int pageSize, int eventId);
         Task<IReadOnlyCollection<Item>> SearchPostItemsAsync(string query, int pageNumber, int pageSize);
+        Task<IReadOnlyCollection<Item>> SearchPostItemsWithCategoryIdAsync(string query, int categoryId, int pageNumber, int pageSize);
     }
 }
