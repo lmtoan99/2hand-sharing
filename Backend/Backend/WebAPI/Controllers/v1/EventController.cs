@@ -37,7 +37,6 @@ namespace WebAPI.Controllers.v1
                     EndDate = request.EndDate,
                     EventName = request.EventName,
                     GroupId = request.GroupId,
-                    StartDate = request.StartDate,
                     UserId = this.GetUserId()
                 }));
         }
