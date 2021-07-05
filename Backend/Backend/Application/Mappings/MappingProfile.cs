@@ -133,6 +133,10 @@ namespace Application.Mappings
             CreateMap<Comment, CommentDTO>();
             CreateMap<Comment, ListCommentDTO>()
                 .ForMember(c => c.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName));
+            CreateMap<GroupPost, GetGroupPostByIdViewModel>()
+                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.GroupPostImageRelationships.ToList().Select(e => e.Image.FileName)))
+                 .ForMember(dest => dest.PostByAccountName, o => o.MapFrom(source => source.PostByAccount.FullName))
+                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName));
         }
     }
 }

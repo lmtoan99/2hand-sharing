@@ -20,10 +20,10 @@ namespace Persistence.Repositories.EntityRepositories
             _groupPost = dbContext.Set<GroupPost>();
         }
 
-        public async Task<IReadOnlyList<GroupPost>> GetAllPublicPostInGroupAsync(int pageNumber, int pageSize, int groupId)
+        public async Task<IReadOnlyList<GroupPost>> GetAllPostInGroupAsync(int pageNumber, int pageSize, int groupId)
         {
             return await _groupPost
-                .Where(e => e.GroupId == groupId && e.Visibility == (int)GroupPostType.PUBLIC_POST)
+                .Where(e => e.GroupId == groupId)
                 .OrderByDescending(i => i.PostTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
