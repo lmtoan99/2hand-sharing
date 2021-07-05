@@ -125,10 +125,9 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AssignByAccountName, o => o.MapFrom(source => source.AssignByAccount.FullName))
                 .ForMember(dest => dest.AssignedMemberName, o => o.MapFrom(source => source.AssignedMember.FullName));
             CreateMap<CreatePostInGroupCommand, GroupPost>();
-            CreateMap<GroupPost, GetAllGroupPostViewModel>()
-                .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.GroupPostImageRelationships.ToList().FirstOrDefault().Image.FileName))
-                .ForMember(dest => dest.PostByAccountName, o => o.MapFrom(source => source.PostByAccount.FullName))
-                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName));
+            CreateMap<GroupPost, GetAllGroupPostViewModel>().ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.GroupPostImageRelationships.ToList().Select(e => e.Image.FileName)))
+                 .ForMember(dest => dest.PostByAccountName, o => o.MapFrom(source => source.PostByAccount.FullName))
+                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName));
             CreateMap<GetAllGroupPostsQuery, GetAllGroupPostsParameter>();
             CreateMap<Comment, CommentDTO>();
             CreateMap<Comment, ListCommentDTO>()

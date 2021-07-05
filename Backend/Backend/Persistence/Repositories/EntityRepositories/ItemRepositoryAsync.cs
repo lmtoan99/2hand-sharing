@@ -25,7 +25,11 @@ namespace Persistence.Repositories.EntityRepositories
             return await _item.Where(i => i.ReceiveItemInformations.Where(r => r.ReceiverId == receiverId).Count() > 0)
                 .OrderByDescending(i => i.PostTime)
                 .Skip((pageNumber - 1) * pageSize)
+
                 .Take(pageSize)
+                .Include(i => i.Address)
+                .Include(i => i.DonateAccount)
+                .Include(i => i.ItemImageRelationships)
                 .ToListAsync();
         }
 

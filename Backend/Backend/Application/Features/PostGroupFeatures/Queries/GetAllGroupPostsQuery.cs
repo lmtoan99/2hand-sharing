@@ -59,7 +59,9 @@ namespace Application.Features.PostGroupFeatures.Queries
                 List<GetAllGroupPostViewModel> groupPostViewModel = _mapper.Map<List<GetAllGroupPostViewModel>>(groupPosts);
                 groupPostViewModel.ForEach(i =>
                 {
-                    i.ImageUrl = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl);
+                    for (int j = 0; j < i.ImageUrl.Count; j++) {
+                        i.ImageUrl[j] = _imageRepository.GenerateV4SignedReadUrl(i.ImageUrl[j]);
+                    }
                     i.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(i.AvatarUrl);
                 });
 
