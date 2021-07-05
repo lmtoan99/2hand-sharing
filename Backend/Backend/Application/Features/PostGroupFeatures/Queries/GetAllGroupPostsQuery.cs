@@ -54,7 +54,7 @@ namespace Application.Features.PostGroupFeatures.Queries
 
             if (checkAdmin.Count > 0 || checkMember.Count > 0)
             {
-                var groupPosts = await _groupPostRepository.GetAllPublicPostInGroupAsync(request.PageNumber, request.PageSize, request.GroupId);
+                var groupPosts = await _groupPostRepository.GetAllPostInGroupAsync(request.PageNumber, request.PageSize, request.GroupId);
 
                 List<GetAllGroupPostViewModel> groupPostViewModel = _mapper.Map<List<GetAllGroupPostViewModel>>(groupPosts);
                 groupPostViewModel.ForEach(i =>

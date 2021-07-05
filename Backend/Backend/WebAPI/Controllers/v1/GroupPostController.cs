@@ -35,8 +35,14 @@ namespace WebAPI.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> GetGroupPost([FromQuery] GetAllGroupPostsParameter filter)
         {
-            if (filter == null) return Ok(await Mediator.Send(new GetAllGroupPostsQuery { GroupId = filter.GroupId,PostByAccountId = GetUserId()}));
+            if (filter == null) return Ok(await Mediator.Send(new GetAllGroupPostsQuery { GroupId = filter.GroupId, PostByAccountId = GetUserId()}));
             return Ok(await Mediator.Send(new GetAllGroupPostsQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, GroupId = filter.GroupId, PostByAccountId = GetUserId() }));
+        }
+
+        [HttpGet("{postId}")]
+        public async Task<IActionResult> GetListReceiveRequest(int postId)
+        {
+            return Ok(await Mediator.Send(new GetGroupPostByPostIdQuery {PostId = postId, UserId= GetUserId() }));
         }
 
         [HttpPost("{postId}/comment")]
@@ -54,5 +60,7 @@ namespace WebAPI.Controllers.v1
             }
             return Ok(await Mediator.Send(new GetListCommentOnPostQuery { PostId = postId, UserId = GetUserId(),PageNumber = request.PageNumber, PageSize = request.PageSize}));
         }
+
+        
     }
 }
