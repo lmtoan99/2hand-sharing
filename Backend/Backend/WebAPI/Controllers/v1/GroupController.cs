@@ -141,9 +141,9 @@ namespace WebAPI.Controllers.v1
             return Ok(await Mediator.Send(new GetGroupInvitationQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, UserId = this.GetUserId() }));
         }
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetAllGroupParameter filter)
+        public async Task<IActionResult> Get([FromQuery] RequestParameter
+            filter, [FromQuery] string query)
         {
-            if (filter == null) return Ok(await Mediator.Send(new GetAllGroupQuery()));
             return Ok(await Mediator.Send(new GetAllGroupQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
         }
 
