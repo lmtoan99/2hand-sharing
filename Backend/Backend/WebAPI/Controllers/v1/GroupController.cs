@@ -155,6 +155,15 @@ namespace WebAPI.Controllers.v1
                 UserId = this.GetUserId()
             }));
         }
+        [HttpDelete("{id}/cancel-request")]
+        public async Task<IActionResult> CancelJoinRequest(int id)
+        {
+            return Ok(await Mediator.Send(new CancelJoinRequestCommand
+            {
+                GroupId = id,
+                UserId = this.GetUserId()
+            }));
+        }
 
         [HttpPut("{groupId}/update-avatar")]
         public async Task<IActionResult> UpdateGroupAvatar(int groupId)
