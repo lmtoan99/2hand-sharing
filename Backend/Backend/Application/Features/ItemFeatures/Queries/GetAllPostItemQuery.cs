@@ -48,6 +48,10 @@ namespace Application.Features.ItemFeatures.Queries
                     item = await _itemRepository.SearchPostItemsAsync(request.Query, request.PageNumber, request.PageSize);
                 }
             }
+            else if (request.CategoryId != 0)
+            {
+                item = await _itemRepository.GetAllPostItemsByCategoryIdAsync(request.PageNumber, request.PageSize, request.CategoryId);
+            }
             else
             {
                 item = await _itemRepository.GetAllPostItemsAsync(validFilter.PageNumber, validFilter.PageSize);
