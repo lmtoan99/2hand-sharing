@@ -155,7 +155,7 @@ namespace WebAPI.Controllers.v1
                 UserId = this.GetUserId()
             }));
         }
-        [HttpDelete("{id}/join-request/cancel")]
+        [HttpDelete("{id}/join-request")]
         public async Task<IActionResult> CancelJoinRequest(int id)
         {
             return Ok(await Mediator.Send(new CancelJoinRequestCommand
