@@ -149,5 +149,14 @@ namespace Persistence.Repositories.EntityRepositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+
+        public async Task<Item> GetItemDetailForUpdatingById(int id)
+        {
+            return await _item.Where(i => i.Id == id)
+                .Include(i => i.Address)
+                .Include(i => i.ItemImageRelationships)
+                .ThenInclude(re => re.Image)
+                .FirstOrDefaultAsync();
+        }
     }
 }
