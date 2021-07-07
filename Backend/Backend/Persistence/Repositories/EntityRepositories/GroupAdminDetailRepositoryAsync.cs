@@ -17,6 +17,14 @@ namespace Persistence.Repositories.EntityRepositories
         {
             _groupAdminDetails = dbContext.Set<GroupAdminDetail>();
         }
+
+        public async Task<List<GroupAdminDetail>> GetAdminsByGroupId(int groupId)
+        {
+            return await _groupAdminDetails
+                .Where(i => i.GroupId == groupId)
+                .ToListAsync();
+        }
+
         public async Task<GroupAdminDetail> GetInfoGroupAdminDetail(int groupId, int adminId)
         {
             return await _groupAdminDetails.Where(i => i.AdminId == adminId && i.GroupId == groupId).FirstOrDefaultAsync();

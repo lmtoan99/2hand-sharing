@@ -47,6 +47,14 @@ namespace Persistence.Repositories.EntityRepositories
             return await _groupMemberDetails
                 .Where(i => (i.MemberId == userId && i.GroupId == groupId)).Include(i => i.Group).FirstOrDefaultAsync();
         }
+        public async Task<GroupMemberDetail> GetInvitation(int groupId, int userId)
+        {
+            return await _groupMemberDetails
+                .Where(i => (i.MemberId == userId && i.GroupId == groupId && i.JoinStatus == (int)MemberJoinStatus.ADMIN_INVITE))
+                .Include(i => i.Group)
+                .Include(i => i.Member)
+                .FirstOrDefaultAsync();
+        }
 
         public async Task<IReadOnlyList<GroupMemberDetail>> GetListJoinGroupRequestByGroupIdAsync(int pageNumber, int pageSize, int groupId)
         {
