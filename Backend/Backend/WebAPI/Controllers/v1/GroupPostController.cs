@@ -40,9 +40,15 @@ namespace WebAPI.Controllers.v1
         }
 
         [HttpGet("{postId}")]
-        public async Task<IActionResult> GetListReceiveRequest(int postId)
+        public async Task<IActionResult> GetGroupPostDetail(int postId)
         {
             return Ok(await Mediator.Send(new GetGroupPostByPostIdQuery {PostId = postId, UserId= GetUserId() }));
+        }
+
+        [HttpPut("{postId}")]
+        public async Task<IActionResult> UpdateGroupPost(int postId, [FromBody] UpdateGroupPostRequest groupPost)
+        {
+            return Ok(await Mediator.Send(new UpdateGroupPostCommand {Content =  groupPost.Content, Visibility = groupPost.Visibility, ImageNumber = groupPost.ImageNumber,DeletedImages = groupPost.DeletedImages, PostId = postId, UserId = GetUserId()}));
         }
 
         [HttpPost("{postId}/comment")]
