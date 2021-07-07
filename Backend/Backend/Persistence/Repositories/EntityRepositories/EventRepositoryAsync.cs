@@ -22,6 +22,7 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<IReadOnlyCollection<Event>> GetAllEventPagedResponse(int pageNumber, int pageSize)
         {
             return await _event
+                .Where(e => e.EndDate >= DateTime.UtcNow)
                 .OrderByDescending(i => i.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
@@ -43,7 +44,7 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<IReadOnlyCollection<Event>> SearchEventPagedResponse(string query, int pageNumber, int pageSize)
         {
             return await _event
-                .Where(e => EF.Functions.Match(e.EventName, query, MySqlMatchSearchMode.NaturalLanguage))
+                .Where(e => e.EndDate >= DateTime.UtcNow && EF.Functions.Match(e.EventName, query, MySqlMatchSearchMode.NaturalLanguage))
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Include(e => e.Group)
