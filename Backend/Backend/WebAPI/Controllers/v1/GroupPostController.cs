@@ -60,7 +60,5 @@ namespace WebAPI.Controllers.v1
             }
             return Ok(await Mediator.Send(new GetListCommentOnPostQuery { PostId = postId, UserId = GetUserId(),PageNumber = request.PageNumber, PageSize = request.PageSize}));
         }
-
-        
     }
 }
