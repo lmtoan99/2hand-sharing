@@ -104,5 +104,18 @@ namespace WebAPI.Controllers.v1
         {
             return Ok(await Mediator.Send(new GetMyDonationInEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, EventId = eventId, UserId = GetUserId() }));
         }
+
+        [HttpPut("{eventId}")]
+        public async Task<IActionResult> UpdateGroupInfo([FromBody] UpdateEventDTO request, int eventId)
+        {
+            return Ok(await Mediator.Send(new UpdateEventCommand
+            {
+                UserId = GetUserId(),
+                EventId = eventId,
+                EventName = request.EventName,
+                EndDate = request.EndDate,
+                Content = request.Content
+            }));
+        }
     }
 }

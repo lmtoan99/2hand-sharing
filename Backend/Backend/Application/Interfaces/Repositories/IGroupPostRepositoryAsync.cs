@@ -9,5 +9,6 @@ namespace Application.Interfaces.Repositories
     public interface IGroupPostRepositoryAsync : IGenericRepositoryAsync<GroupPost>
     {
         Task<IReadOnlyList<GroupPost>> GetAllPostInGroupAsync(int pageNumber, int pageSize, int groupId);
+        Task<GroupPost> GetGroupPostForUpdatingById(int id);
     }
 }

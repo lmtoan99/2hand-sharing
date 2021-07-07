@@ -224,5 +224,18 @@ namespace WebAPI.Controllers.v1
                 memberId = GetUserId()
             }));
         }
+
+        [HttpPut("{groupId}")]
+        public async Task<IActionResult> UpdateGroupInfo([FromBody] UpdateGroupDTO request, int groupId)
+        {
+            return Ok(await Mediator.Send(new UpdateGroupCommand
+            {
+                UserId = GetUserId(),
+                GroupId = groupId,
+                GroupName = request.GroupName,
+                Description = request.Description,
+                Rules = request.Rules
+            }));
+        }
     }
 }

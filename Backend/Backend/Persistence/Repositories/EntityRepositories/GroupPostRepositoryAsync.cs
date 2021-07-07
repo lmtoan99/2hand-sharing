@@ -31,5 +31,14 @@ namespace Persistence.Repositories.EntityRepositories
                 .Include(i => i.GroupPostImageRelationships)
                 .ToListAsync();
         }
+
+        public async Task<GroupPost> GetGroupPostForUpdatingById(int id)
+        {
+            return await _groupPost
+                .Where(g => g.Id == id)
+                .Include(g => g.GroupPostImageRelationships)
+                .ThenInclude(re => re.Image)
+                .FirstOrDefaultAsync();
+        }
     }
 }
