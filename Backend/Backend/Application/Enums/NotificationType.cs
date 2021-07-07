@@ -15,5 +15,6 @@ namespace Application.Enums
         CONFIRM_SENT,
         INVITE_MEMBER,
         ACCEPT_INVITATION,
+        JOIN_REQUEST,
     }
 }
