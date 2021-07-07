@@ -51,6 +51,14 @@ namespace Persistence.Repositories.EntityRepositories
                  .ToListAsync();
         }
 
+        public async Task<Group> GetGroupByIdAsync(int id)
+        {
+            return await _group
+                .Where(g => g.Id == id)
+                .Include(g => g.Avatar)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<IReadOnlyList<Group>> SearchGroupAsync(string query, int pageNumber, int pageSize)
         {
             return await _group

@@ -107,7 +107,7 @@ namespace Application.Features.ItemFeatures.Commands
             if (tokens.Count > 0)
             {
                 
-                var responses = await _firebaseSerivce.SendReceiveRequestNotification(tokens, messageData);
+                var responses = await _firebaseSerivce.SendMessage(tokens, messageData, NotificationType.RECEIVE_REQUEST);
                 _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
 
             }

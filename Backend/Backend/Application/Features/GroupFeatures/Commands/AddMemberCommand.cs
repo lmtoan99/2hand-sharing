@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Group;
+﻿using Application.DTOs.Firebase;
+using Application.DTOs.Group;
 using Application.Enums;
 using Application.Exceptions;
 using Application.Interfaces.Repositories;
@@ -7,6 +8,8 @@ using Application.Wrappers;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,19 +30,40 @@ namespace Application.Features.GroupFeatures.Commands
     {
         private readonly IGroupMemberDetailRepositoryAsync _groupMemberDetailRepository;
         private readonly IGroupAdminDetailRepositoryAsync _groupAdminDetailRepository;
+        private readonly IGroupRepositoryAsync _groupRepository;
         private readonly IImageRepository _imageRepository;
         private readonly IUserRepositoryAsync _userRepositoryAsync;
+        private readonly IFirebaseTokenRepositoryAsync _firebaseTokenRepository;
+        private readonly INotificationRepositoryAsync _notificationRepository;
+        private readonly IFirebaseSerivce _firebaseSerivce;
         private readonly IMapper _mapper;
-        public AddMemberCommandHandle(IImageRepository imageRepository,IGroupMemberDetailRepositoryAsync groupMemberDetailRepository, IGroupAdminDetailRepositoryAsync groupAdminDetailRepository, IAccountService accountService, IUserRepositoryAsync userRepositoryAsync, IMapper mapper)
+        private JsonSerializerSettings _settings;
+
+        public AddMemberCommandHandle(IGroupRepositoryAsync groupRepository,IFirebaseSerivce firebaseSerivce,IGroupMemberDetailRepositoryAsync groupMemberDetailRepository, IGroupAdminDetailRepositoryAsync groupAdminDetailRepository, IImageRepository imageRepository, IUserRepositoryAsync userRepositoryAsync, IFirebaseTokenRepositoryAsync firebaseTokenRepository, INotificationRepositoryAsync notificationRepository, IMapper mapper)
         {
             _groupMemberDetailRepository = groupMemberDetailRepository;
             _groupAdminDetailRepository = groupAdminDetailRepository;
+            _imageRepository = imageRepository;
             _userRepositoryAsync = userRepositoryAsync;
-            _imageRepository =  imageRepository;
+            _firebaseTokenRepository = firebaseTokenRepository;
+            _notificationRepository = notificationRepository;
+            _groupRepository = groupRepository;
+            _firebaseSerivce = firebaseSerivce;
             _mapper = mapper;
+            DefaultContractResolver contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+            _settings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.Indented
+            };
         }
+
         public async Task<Response<GetAllGroupMemberViewModel>> Handle(AddMemberCommand request, CancellationToken cancellationToken)
         {
+            #region Validate
             var user = await _userRepositoryAsync.GetByIdAsync(request.UserId);
             if (user == null)
             {
@@ -55,6 +79,8 @@ namespace Application.Features.GroupFeatures.Commands
             {
                 throw new ApiException("Member exist in group.");
             }
+            #endregion
+            #region InviteMember
             var checkMemberInGroup = await _groupMemberDetailRepository.GetMemberGroup(request.GroupId, request.UserId);
             if (checkMemberInGroup == null)
             {
@@ -67,9 +93,33 @@ namespace Application.Features.GroupFeatures.Commands
                     JoinStatus = (int) MemberJoinStatus.ADMIN_INVITE
                 };
 
-                var result = await _groupMemberDetailRepository.AddAsync(groupMember);
-                var dto = _mapper.Map<GetAllGroupMemberViewModel>(result);
-                dto.AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(dto.AvatarUrl);
+                await _groupMemberDetailRepository.AddAsync(groupMember);
+                var group = await _groupRepository.GetGroupByIdAsync(request.GroupId);
+                var data = new InvitationData
+                {
+                    GroupId = group.Id,
+                    GroupName = group.GroupName,
+                    AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(group.Avatar.FileName),
+                    InvitationTime = DateTime.UtcNow
+                };
+
+                var messageData = JsonConvert.SerializeObject(data, _settings);
+
+                await _notificationRepository.AddAsync(new Notification
+                {
+                    Type = "7",
+                    Data = messageData,
+                    UserId = request.UserId,
+                    CreateTime = DateTime.UtcNow
+                });
+                var tokens = await _firebaseTokenRepository.GetListFirebaseToken(request.UserId);
+                if (tokens.Count > 0)
+                {
+
+                    var responses = await _firebaseSerivce.SendMessage(tokens, messageData, NotificationType.INVITE_MEMBER);
+                    _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
+
+                }
                 return new Response<GetAllGroupMemberViewModel>(null);
             }
             else
@@ -87,6 +137,10 @@ namespace Application.Features.GroupFeatures.Commands
 
 
             }
+            #endregion
+
+
+
             throw new ApiException("Member exist in group.");
         }
     }

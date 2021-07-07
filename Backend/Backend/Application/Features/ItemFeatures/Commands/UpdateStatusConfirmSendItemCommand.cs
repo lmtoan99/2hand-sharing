@@ -97,7 +97,7 @@ namespace Application.Features.ItemFeatures.Commands
                     var confirmSentNotificationData = JsonConvert.SerializeObject(data, settings);
                     if (sendTokens.Count > 0)
                     {
-                        var responses = await _firebaseSerivce.SendConfirmSentNotification(sendTokens, confirmSentNotificationData);
+                        var responses = await _firebaseSerivce.SendMessage(sendTokens, confirmSentNotificationData, NotificationType.CONFIRM_SENT);
                         _firebaseTokenRepository.CleanExpiredToken(sendTokens, responses);
                     }
                     #endregion

@@ -45,7 +45,7 @@ namespace Persistence.Repositories.EntityRepositories
         public async Task<GroupMemberDetail> GetMemberGroup(int groupId, int userId)
         {
             return await _groupMemberDetails
-                .Where(i => (i.MemberId == userId && i.GroupId == groupId)).FirstOrDefaultAsync();
+                .Where(i => (i.MemberId == userId && i.GroupId == groupId)).Include(i => i.Group).FirstOrDefaultAsync();
         }
 
         public async Task<IReadOnlyList<GroupMemberDetail>> GetListJoinGroupRequestByGroupIdAsync(int pageNumber, int pageSize, int groupId)

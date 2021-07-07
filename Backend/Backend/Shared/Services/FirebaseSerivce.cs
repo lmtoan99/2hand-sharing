@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Firebase;
+using Application.Enums;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Service;
 using FirebaseAdmin;
@@ -38,87 +39,13 @@ namespace Shared.Services
             }
             firebaseMessaging = FirebaseMessaging.GetMessaging(app);
         }
-        public async Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_ids, string messageValue)
+        public async Task<IReadOnlyList<SendResponse>> SendMessage(IReadOnlyList<string> registration_ids, string messageValue, NotificationType type)
         {
             var message = new MulticastMessage()
             {
                 Data = new Dictionary<string, string>()
                 {
-                    {"type",1.ToString() },
-                    { "message", messageValue}
-                },
-                Tokens = registration_ids,
-                Android = new AndroidConfig{ 
-                    Priority = Priority.High
-                },
-            };
-            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
-        }
-
-        public async Task<IReadOnlyList<SendResponse>> SendReceiveRequestNotification(IReadOnlyList<string> registration_ids, string receiveRequestData)
-        {
-            var message = new MulticastMessage()
-            {
-                Data = new Dictionary<string, string>()
-                {
-                    {"type",2.ToString() },
-                    { "message", receiveRequestData}
-
-                },
-                Tokens = registration_ids,
-                Android = new AndroidConfig
-                {
-                    Priority = Priority.High
-                },
-            };
-            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
-        }
-
-        public async Task<IReadOnlyList<SendResponse>> SendCancelReceiveRequestNotification(IReadOnlyList<string> registration_ids, string cancelReceiveRequestData)
-        {
-            var message = new MulticastMessage()
-            {
-                Data = new Dictionary<string, string>()
-                {
-                    {"type",3.ToString() },
-                    { "message", cancelReceiveRequestData}
-
-                },
-                Tokens = registration_ids,
-                Android = new AndroidConfig
-                {
-                    Priority = Priority.High
-                },
-            };
-            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
-        }
-
-        public async Task<IReadOnlyList<SendResponse>> SendReceiveRequestStatusNotification(IReadOnlyList<string> registration_ids, string receiveRequestAcceptedData)
-        {
-            var message = new MulticastMessage()
-            {
-                Data = new Dictionary<string, string>()
-                {
-                    {"type", 4.ToString() },
-                    { "message", receiveRequestAcceptedData}
-
-                },
-                Tokens = registration_ids,
-                Android = new AndroidConfig
-                {
-                    Priority = Priority.High
-                },
-            };
-            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
-        }
-
-        public async Task<IReadOnlyList<SendResponse>> SendThanksMessage(IReadOnlyList<string> registration_ids, string messageValue)
-        {
-            var message = new MulticastMessage()
-            {
-                Data = new Dictionary<string, string>()
-                {
-                    {"type",5.ToString() },
+                    {"type", ((int)type).ToString() },
                     { "message", messageValue}
                 },
                 Tokens = registration_ids,
@@ -130,22 +57,5 @@ namespace Shared.Services
             return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
         }
 
-        public async Task<IReadOnlyList<SendResponse>> SendConfirmSentNotification(IReadOnlyList<string> registration_ids, string confirmSentData)
-        {
-            var message = new MulticastMessage()
-            {
-                Data = new Dictionary<string, string>()
-                {
-                    {"type",6.ToString() },
-                    { "message", confirmSentData}
-                },
-                Tokens = registration_ids,
-                Android = new AndroidConfig
-                {
-                    Priority = Priority.High
-                },
-            };
-            return (await firebaseMessaging.SendMulticastAsync(message)).Responses;
-        }
     }
 }
