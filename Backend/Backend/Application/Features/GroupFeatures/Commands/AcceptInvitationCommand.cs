@@ -64,7 +64,7 @@ namespace Application.Features.GroupFeatures.Commands
                 FullName = member.Member.FullName,
                 GroupId = member.GroupId,
                 GroupName = member.Group.GroupName,
-                AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(member.Group.Avatar.FileName),
+                AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(member.Group.Avatar?.FileName),
             };
 
             member.JoinStatus = (int)MemberJoinStatus.ACCEPTED;

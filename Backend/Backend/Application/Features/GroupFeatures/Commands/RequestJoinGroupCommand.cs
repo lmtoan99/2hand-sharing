@@ -77,7 +77,7 @@ namespace Application.Features.GroupFeatures.Commands
                 FullName = user.FullName,
                 GroupId =request.GroupId,
                 GroupName = group.GroupName,
-                AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(group.Avatar.FileName),
+                AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(group.Avatar?.FileName),
             };
 
             var messageData = JsonConvert.SerializeObject(data, _settings);

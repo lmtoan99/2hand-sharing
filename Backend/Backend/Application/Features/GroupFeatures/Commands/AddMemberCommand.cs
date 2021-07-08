@@ -99,7 +99,7 @@ namespace Application.Features.GroupFeatures.Commands
                 {
                     GroupId = group.Id,
                     GroupName = group.GroupName,
-                    AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(group.Avatar.FileName),
+                    AvatarUrl = _imageRepository.GenerateV4SignedReadUrl(group.Avatar?.FileName),
                     InvitationTime = DateTime.UtcNow
                 };
 
