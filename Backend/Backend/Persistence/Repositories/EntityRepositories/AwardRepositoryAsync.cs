@@ -23,7 +23,6 @@ namespace Persistence.Repositories.EntityRepositories
             return await _award.OrderByDescending(a => a.CreateTime)
                 .Select(a => a.AccountId)
                 .Distinct()
-                .Take(30)
                 .Join(
                     _dbContext.Users,
                     a => a,
