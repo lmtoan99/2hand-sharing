@@ -144,7 +144,7 @@ namespace WebAPI.Controllers.v1
         public async Task<IActionResult> Get([FromQuery] RequestParameter
             filter, [FromQuery] string query)
         {
-            return Ok(await Mediator.Send(new GetAllGroupQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+            return Ok(await Mediator.Send(new GetAllGroupQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, Query = query}));
         }
 
         [HttpPost("{id}/join")]

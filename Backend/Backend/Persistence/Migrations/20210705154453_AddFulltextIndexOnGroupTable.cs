@@ -6,12 +6,12 @@ namespace Persistence.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(sql: "ALTER TABLE Groups ADD FULLTEXT Index_Groups(GroupName) WITH PARSER NGRAM", suppressTransaction: true);
+            migrationBuilder.Sql(sql: "ALTER TABLE `Groups` ADD FULLTEXT Index_Groups(GroupName) WITH PARSER NGRAM", suppressTransaction: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(sql: "ALTER TABLE Groups DROP INDEX Index_Groups", suppressTransaction: true);
+            migrationBuilder.Sql(sql: "ALTER TABLE `Groups` DROP INDEX Index_Groups", suppressTransaction: true);
         }
     }
 }

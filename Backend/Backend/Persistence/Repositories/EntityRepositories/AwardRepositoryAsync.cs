@@ -20,7 +20,10 @@ namespace Persistence.Repositories.EntityRepositories
         }
         public async Task<IReadOnlyList<Award>> GetTopAwardAsync()
         {
-            return await _award.OrderByDescending(a => a.CreateTime)
+            var endDate = DateTime.UtcNow.AddDays(1 - DateTime.UtcNow.Day);
+            return await _award
+                .Where(a => a.CreateTime > endDate.AddMonths(-1) && a.CreateTime < endDate)
+                .OrderByDescending(a => a.CreateTime)
                 .Select(a => a.AccountId)
                 .Distinct()
                 .Join(
