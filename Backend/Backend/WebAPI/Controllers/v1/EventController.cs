@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers.v1
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class EventController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllEvents([FromQuery] RequestParameter request)
+        public async Task<IActionResult> GetAllEvents([FromQuery] RequestParameter request, [FromQuery] string query)
         {
-            return Ok(await Mediator.Send(new GetAllEventsQuery{ PageNumber = request.PageNumber, PageSize = request.PageSize}));
+            return Ok(await Mediator.Send(new GetAllEventsQuery{Query = query, PageNumber = request.PageNumber, PageSize = request.PageSize}));
         }
         [HttpGet("{eventId}")]
         public async Task<IActionResult> Get(int eventId)
@@ -37,7 +37,6 @@ namespace WebAPI.Controllers.v1
                     EndDate = request.EndDate,
                     EventName = request.EventName,
                     GroupId = request.GroupId,
-                    StartDate = request.StartDate,
                     UserId = this.GetUserId()
                 }));
         }
@@ -56,12 +55,67 @@ namespace WebAPI.Controllers.v1
                     ImageNumber = item.ImageNumber
                 })); ;
         }
+        [HttpPut("{eventId}/accept-item/{itemId}")]
+        public async Task<IActionResult> AcceptItem(int eventId,int itemId)
+        {
+            return Ok(await Mediator.Send(
+                new AcceptItemCommand
+                {
+                    UserId = GetUserId(),
+                    EventId = eventId,
+                    ItemId = itemId,
+                   
+                })); 
+        }
+        [HttpPut("{eventId}/cancel-accept/{itemId}")]
+        public async Task<IActionResult> CancelAccept(int eventId, int itemId)
+        {
+            return Ok(await Mediator.Send(
+                new CancelAcceptItemCommand
+                {
+                    UserId = GetUserId(),
+                    EventId = eventId,
+                    ItemId = itemId,
+
+                }));
+        }
+        [HttpDelete("{eventId}/reject-item/{itemId}")]
+        public async Task<IActionResult> RejectItem(int eventId, int itemId)
+        {
+            return Ok(await Mediator.Send(
+                new RejectItemCommand
+                {
+                    UserId = GetUserId(),
+                    EventId = eventId,
+                    ItemId = itemId,
+
+                }));
+        }
+
 
         [HttpGet("{eventId}/item")]
         public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter, int eventId)
         {
             if (filter == null) return Ok(await Mediator.Send(new GetAllDonateItemForEventQuery()));
             return Ok(await Mediator.Send(new GetAllDonateItemForEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, EventId = eventId }));
+        }
+        [HttpGet("{eventId}/my-donations")]
+        public async Task<IActionResult> GetMyDonations([FromQuery] RequestParameter filter, int eventId)
+        {
+            return Ok(await Mediator.Send(new GetMyDonationInEventQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, EventId = eventId, UserId = GetUserId() }));
+        }
+
+        [HttpPut("{eventId}")]
+        public async Task<IActionResult> UpdateGroupInfo([FromBody] UpdateEventDTO request, int eventId)
+        {
+            return Ok(await Mediator.Send(new UpdateEventCommand
+            {
+                UserId = GetUserId(),
+                EventId = eventId,
+                EventName = request.EventName,
+                EndDate = request.EndDate,
+                Content = request.Content
+            }));
         }
     }
 }

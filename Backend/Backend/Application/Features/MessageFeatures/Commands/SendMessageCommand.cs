@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Firebase;
 using Application.DTOs.Message;
+using Application.Enums;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Service;
 using Application.Wrappers;
@@ -73,7 +74,7 @@ namespace Application.Features.MessageFeatures.Commands
                     ContractResolver = contractResolver,
                     Formatting = Formatting.Indented
                 };
-                var responses = await _firebaseSerivce.SendMessage(tokens, JsonConvert.SerializeObject(message, settings));
+                var responses = await _firebaseSerivce.SendMessage(tokens, JsonConvert.SerializeObject(message, settings),NotificationType.MESSAGE);
                 _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
             }
             return new Response<MessageDTO>(_mapper.Map<MessageDTO>(result));

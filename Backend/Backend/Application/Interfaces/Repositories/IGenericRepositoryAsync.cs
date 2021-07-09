@@ -16,5 +16,6 @@ namespace Application.Interfaces
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
         Task<IReadOnlyList<T>> GetByConditionAsync(Expression<Func<T, bool>> predicate);
+        Task<int> SaveChangeAsync();
     }
 }

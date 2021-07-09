@@ -18,10 +18,9 @@ namespace WebAPI.Controllers.v1
     public class ItemController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter, [FromQuery] string query)
+        public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter, [FromQuery] string query, [FromQuery] int categoryId)
         {
-            if (filter==null) return Ok(await Mediator.Send(new GetAllPostItemQuery { Query = query}));
-            return Ok(await Mediator.Send(new GetAllPostItemQuery {Query = query, PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+            return Ok(await Mediator.Send(new GetAllPostItemQuery {Query = query, CategoryId = categoryId, PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
         }
 
         [HttpPost]
@@ -43,6 +42,14 @@ namespace WebAPI.Controllers.v1
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await Mediator.Send(new GetItemByIdQuery { Id = id, UserId = GetUserId()}));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateItem(int id, [FromBody] UpdateItemDTO item)
+        {
+            return Ok(await Mediator.Send(new UpdateItemCommand {
+                Id = id, ItemName = item.ItemName, CategoryId = item.CategoryId, DeletedImages = item.DeletedImages, Description = item.Description, ImageNumber = item.ImageNumber, ReceiveAddress = item.ReceiveAddress
+            }));
         }
 
         [HttpGet("{itemId}/receive-request")]

@@ -20,11 +20,20 @@ namespace Persistence.Repositories.EntityRepositories
             _group = dbContext.Set<Group>();
         }
 
+        public async Task<bool> CheckUserInGroup(int groupId, int userId)
+        {
+            return (await _group.Where(g => g.Id == groupId &&
+                (g.GroupMemberDetails.Any(m => m.MemberId == userId) ||
+                g.GroupAdminDetails.Any(a => a.AdminId == userId)))
+                .CountAsync()) > 0;
+        }
+
         public async Task<IReadOnlyList<Group>> GetAllGroupAsync(int pageNumber, int pageSize)
         {
             return await _group
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Include(g => g.Avatar)
                 .ToListAsync();
         }
 
@@ -40,6 +49,23 @@ namespace Persistence.Repositories.EntityRepositories
                  .Skip((pageNumber - 1)*pageSize)
                  .Take(pageSize)
                  .ToListAsync();
+        }
+
+        public async Task<Group> GetGroupByIdAsync(int id)
+        {
+            return await _group
+                .Where(g => g.Id == id)
+                .Include(g => g.Avatar)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<IReadOnlyList<Group>> SearchGroupAsync(string query, int pageNumber, int pageSize)
+        {
+            return await _group
+                .Where(g => EF.Functions.Match(g.GroupName, query, MySqlMatchSearchMode.NaturalLanguage))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
     }
 }

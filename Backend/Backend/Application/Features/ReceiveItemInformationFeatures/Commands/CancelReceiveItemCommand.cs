@@ -64,7 +64,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
                     {
                         await _notificationRepository.DeleteAsync(notifications[0]);
                     }
-                    var responses = await _firebaseSerivce.SendCancelReceiveRequestNotification(tokens, cancelReceiveItemData);
+                    var responses = await _firebaseSerivce.SendMessage(tokens, cancelReceiveItemData, NotificationType.CANCEL_RECEIVE_REQUEST);
                     _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
 
                 }

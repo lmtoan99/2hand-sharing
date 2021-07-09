@@ -11,7 +11,7 @@ namespace Domain.Entities
         public int PostByAccontId{get;set;}
         public DateTime PostTime{get;set;}
         public int PostId { get; set; }
-        [ForeignKey("PostByAccountId")]
+        [ForeignKey("PostByAccontId")]
         [InverseProperty("Comments")]
         public virtual User PostByAccount { get; set; }
         [ForeignKey("PostId")]

@@ -64,5 +64,10 @@ namespace Persistence.Repositories
         {
             return  await _dbContext.Set<T>().Where(predicate).ToListAsync();
         }
+
+        public async Task<int> SaveChangeAsync()
+        {
+            return await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace Application.Features.ItemFeatures.Queries
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public string Query { get; set; }
+        public int CategoryId { get; set; }
     }
     public class GetAllItemsQueryHandler : IRequestHandler<GetAllPostItemQuery, PagedResponse<IEnumerable<GetAllItemViewModel>>>
     {
@@ -38,7 +39,18 @@ namespace Application.Features.ItemFeatures.Queries
             IReadOnlyCollection<Item> item;
             if (request.Query != null)
             {
-                item = await _itemRepository.SearchPostItemsAsync(request.Query, request.PageNumber, request.PageSize);
+                if (request.CategoryId != 0)
+                {
+                    item = await _itemRepository.SearchPostItemsWithCategoryIdAsync(request.Query, request.CategoryId, request.PageNumber, request.PageSize);
+                }
+                else
+                {
+                    item = await _itemRepository.SearchPostItemsAsync(request.Query, request.PageNumber, request.PageSize);
+                }
+            }
+            else if (request.CategoryId != 0)
+            {
+                item = await _itemRepository.GetAllPostItemsByCategoryIdAsync(request.PageNumber, request.PageSize, request.CategoryId);
             }
             else
             {

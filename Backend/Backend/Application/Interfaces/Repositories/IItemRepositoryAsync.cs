@@ -13,8 +13,12 @@ namespace Application.Interfaces.Repositories
         Task<Item> GetItemWithReceiveRequestByIdAsync(int itemId);
         Task<IReadOnlyCollection<Item>> GetItemByDonateAccountId(int accountId, int pageNumber, int pageSize);
         Task<IReadOnlyCollection<Item>> GetAllItemHaveRequestWithReceiverId(int receiverId, int pageNumber, int pageSize);
+        Task<IReadOnlyList<Item>> GetAllMyDonationsInEventAsync(int pageNumber, int pageSize, int eventId, int userId);
+        Task<Item> GetItemWithEvent(int itemId);
         Task<Item> GetItemDetailByIdAsync(int itemId);
         Task<IReadOnlyList<Item>> GetAllItemDonateForEventAsync(int pageNumber, int pageSize, int eventId);
         Task<IReadOnlyCollection<Item>> SearchPostItemsAsync(string query, int pageNumber, int pageSize);
+        Task<IReadOnlyCollection<Item>> SearchPostItemsWithCategoryIdAsync(string query, int categoryId, int pageNumber, int pageSize);
+        Task<Item> GetItemDetailForUpdatingById(int id);
     }
 }

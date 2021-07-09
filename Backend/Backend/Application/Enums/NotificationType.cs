@@ -12,6 +12,9 @@ namespace Application.Enums
         CANCEL_RECEIVE_REQUEST,
         REQUEST_STATUS,
         SEND_THANKS,
-        CONFIRM_SENT
+        CONFIRM_SENT,
+        INVITE_MEMBER,
+        ACCEPT_INVITATION,
+        JOIN_REQUEST,
     }
 }

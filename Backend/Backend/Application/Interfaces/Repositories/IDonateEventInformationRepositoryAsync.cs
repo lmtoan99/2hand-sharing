@@ -8,6 +8,6 @@ namespace Application.Interfaces.Repositories
 {
     public interface IDonateEventInformationRepositoryAsync : IGenericRepositoryAsync<DonateEventInformation>
     {
-        Task<DonateEventInformation> CheckPermissonForAssignItem(int donateEventId, int adminId, int memberId);
+        Task<DonateEventInformation> CheckPermissonForAssignItem(int itemId, int adminId, int memberId);
     }
 }

@@ -20,5 +20,6 @@ namespace Application.DTOs.Item
         public int UserRequestId { get; set; }
         public ItemStatus Status { get; set; }
         public string AvatarUrl { get; set; }
+        public int DonateType { get; set; }
     }
 }

@@ -123,9 +123,6 @@ namespace Persistence.Migrations
                     b.Property<int>("PostByAccontId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PostByAccountId")
-                        .HasColumnType("int");
-
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
@@ -134,7 +131,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostByAccountId");
+                    b.HasIndex("PostByAccontId");
 
                     b.HasIndex("PostId");
 
@@ -630,7 +627,9 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Entities.User", "PostByAccount")
                         .WithMany("Comments")
-                        .HasForeignKey("PostByAccountId");
+                        .HasForeignKey("PostByAccontId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.GroupPost", "Post")
                         .WithMany("Comments")

@@ -84,7 +84,7 @@ namespace Application.Features.ReceiveItemInformationFeatures.Commands
             {
 
 
-                var responses = await _firebaseSerivce.SendThanksMessage(tokens, data);
+                var responses = await _firebaseSerivce.SendMessage(tokens, data,NotificationType.SEND_THANKS);
 
                 _firebaseTokenRepository.CleanExpiredToken(tokens, responses);
             }

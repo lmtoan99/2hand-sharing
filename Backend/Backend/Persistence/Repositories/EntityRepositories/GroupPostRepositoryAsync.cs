@@ -1,10 +1,13 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.Enums;
+using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Persistence.Repositories.EntityRepositories
 {
@@ -17,5 +20,25 @@ namespace Persistence.Repositories.EntityRepositories
             _groupPost = dbContext.Set<GroupPost>();
         }
 
+        public async Task<IReadOnlyList<GroupPost>> GetAllPostInGroupAsync(int pageNumber, int pageSize, int groupId)
+        {
+            return await _groupPost
+                .Where(e => e.GroupId == groupId)
+                .OrderByDescending(i => i.PostTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(i => i.PostByAccount)
+                .Include(i => i.GroupPostImageRelationships)
+                .ToListAsync();
+        }
+
+        public async Task<GroupPost> GetGroupPostForUpdatingById(int id)
+        {
+            return await _groupPost
+                .Where(g => g.Id == id)
+                .Include(g => g.GroupPostImageRelationships)
+                .ThenInclude(re => re.Image)
+                .FirstOrDefaultAsync();
+        }
     }
 }

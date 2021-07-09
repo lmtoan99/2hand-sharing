@@ -19,10 +19,10 @@ namespace WebAPI.Controllers.v1
         }
 
         [HttpGet("{categoryid}")]
-        public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter,int categoryid)
+        public async Task<IActionResult> Get([FromQuery] GetAllItemsParameter filter, [FromQuery] string query, int categoryid)
         {
             if (filter == null) return Ok(await Mediator.Send(new GetAllItemByCategoryIdQuery()));
-            return Ok(await Mediator.Send(new GetAllItemByCategoryIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, CategoryId=categoryid }));
+            return Ok(await Mediator.Send(new GetAllItemByCategoryIdQuery { PageSize = filter.PageSize, PageNumber = filter.PageNumber, CategoryId=categoryid, Query = query }));
         }
     }
 }

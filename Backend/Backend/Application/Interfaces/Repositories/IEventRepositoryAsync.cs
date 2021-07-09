@@ -10,6 +10,7 @@ namespace Application.Interfaces.Repositories
     {
         Task<IReadOnlyList<Event>> GetAllGroupEventByGroupIdAsync(int pageNumber, int pageSize, int groupId);
         Task<IReadOnlyCollection<Event>> GetAllEventPagedResponse(int pageNumber, int pageSize);
+        Task<IReadOnlyCollection<Event>> SearchEventPagedResponse(string query, int pageNumber, int pageSize);
 
     }
 }

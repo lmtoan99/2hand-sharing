@@ -26,6 +26,11 @@ namespace Persistence.Repositories.EntityRepositories
                 .OrderByDescending(i => i.PostTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Include(i => i.Address)
+                .Include(i => i.DonateAccount)
+                .ThenInclude(a => a.Avatar)
+                .Include(i => i.ItemImageRelationships)
+                .ThenInclude(r => r.Image)
                 .ToListAsync();
         }
 
@@ -38,7 +43,9 @@ namespace Persistence.Repositories.EntityRepositories
                 .Take(pageSize)
                 .Include(i => i.Address)
                 .Include(i => i.DonateAccount)
+                .ThenInclude(a => a.Avatar)
                 .Include(i => i.ItemImageRelationships)
+                .ThenInclude(r => r.Image)
                 .ToListAsync();
         }
 
@@ -51,9 +58,9 @@ namespace Persistence.Repositories.EntityRepositories
                 .Take(pageSize)
                 .Include(i => i.Address)
                 .Include(i => i.DonateAccount)
+                .ThenInclude(a => a.Avatar)
                 .Include(i => i.ItemImageRelationships)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                .ThenInclude(r => r.Image)
                 .ToListAsync();  
         }
 
@@ -61,9 +68,13 @@ namespace Persistence.Repositories.EntityRepositories
         {
             return await _item
                 .Where(i => i.DonateAccountId == accountId)
+                .OrderByDescending(i => i.PostTime)
                 .Include(i => i.Address)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Include(i => i.DonateAccount)
+                .Include(i => i.ItemImageRelationships)
+                .Include(i => i.DonateEventInformation.Event)
                 .ToListAsync();
         }
 
@@ -72,13 +83,20 @@ namespace Persistence.Repositories.EntityRepositories
             return await _item.Where(i => i.Id == itemId)
                 .Include(i => i.Address)
                 .Include(i => i.DonateAccount)
+                .ThenInclude(a => a.Avatar)
                 .Include(i => i.ItemImageRelationships)
+                .ThenInclude(r => r.Image)
                 .FirstAsync();
         }
 
         public async Task<Item> GetItemWithReceiveRequestByIdAsync(int itemId)
         {
             return await _item.Where(i => i.Id == itemId).Include(i => i.ReceiveItemInformations).FirstAsync();
+        }
+
+        public async Task<Item> GetItemWithEvent(int itemId)
+        {
+            return await _item.Where(i => i.Id == itemId).Include(i => i.DonateEventInformation).FirstAsync();
         }
 
         public async Task<IReadOnlyList<Item>> GetAllItemDonateForEventAsync(int pageNumber, int pageSize, int eventId)
@@ -91,7 +109,24 @@ namespace Persistence.Repositories.EntityRepositories
                 .Take(pageSize)
                 .Include(i => i.Address)
                 .Include(i => i.DonateAccount)
+                .ThenInclude(a => a.Avatar)
                 .Include(i => i.ItemImageRelationships)
+                .ThenInclude(r => r.Image)
+                .ToListAsync();
+        }
+        public async Task<IReadOnlyList<Item>> GetAllMyDonationsInEventAsync(int pageNumber, int pageSize, int eventId, int userId)
+        {
+            return await _item
+                .Where(i => i.DonateType == (int)EDonateType.DONATE_EVENT && i.DonateEventInformation.EventId == eventId && userId == i.DonateAccountId)
+                .OrderBy(i => i.Status)
+                .ThenByDescending(i => i.PostTime)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(i => i.Address)
+                .Include(i => i.DonateAccount)
+                .ThenInclude(a => a.Avatar)
+                .Include(i => i.ItemImageRelationships)
+                .ThenInclude(r => r.Image)
                 .ToListAsync();
         }
 
@@ -103,6 +138,25 @@ namespace Persistence.Repositories.EntityRepositories
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<Item>> SearchPostItemsWithCategoryIdAsync(string query, int categoryId,int pageNumber, int pageSize)
+        {
+            return await _item
+                .Where(i => i.DonateType == (int)EDonateType.DONATE_POST && i.Status != (int)ItemStatus.SUCCESS && i.CategoryId == categoryId)
+                .Where(i => EF.Functions.Match(i.ItemName, query, MySqlMatchSearchMode.NaturalLanguage))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<Item> GetItemDetailForUpdatingById(int id)
+        {
+            return await _item.Where(i => i.Id == id)
+                .Include(i => i.Address)
+                .Include(i => i.ItemImageRelationships)
+                .ThenInclude(re => re.Image)
+                .FirstOrDefaultAsync();
         }
     }
 }

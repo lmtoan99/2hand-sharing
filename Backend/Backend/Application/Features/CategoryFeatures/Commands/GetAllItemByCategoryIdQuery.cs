@@ -4,6 +4,7 @@ using Application.Features.ItemFeatures.Queries;
 using Application.Interfaces.Repositories;
 using Application.Wrappers;
 using AutoMapper;
+using Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace Application.Features.CategoryFeatures.Commands
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string Query { get; set; }
         public int CategoryId { get; set; }
     }
     public class GetAllItemByCategoryIdQueryHandler : IRequestHandler<GetAllItemByCategoryIdQuery, PagedResponse<IEnumerable<GetAllItemViewModel>>>
@@ -35,7 +37,14 @@ namespace Application.Features.CategoryFeatures.Commands
         public async Task<PagedResponse<IEnumerable<GetAllItemViewModel>>> Handle(GetAllItemByCategoryIdQuery request, CancellationToken cancellationToken)
         {
             var validFilter = _mapper.Map<GetAllItemsParameter>(request);
-            var item = await _itemRepository.GetAllPostItemsByCategoryIdAsync(validFilter.PageNumber, validFilter.PageSize,request.CategoryId);
+            IReadOnlyCollection<Item> item;
+            if (request.Query != null)
+            {
+                item = await _itemRepository.SearchPostItemsWithCategoryIdAsync(request.Query, request.CategoryId, request.PageNumber, request.PageSize);
+            } else
+            {
+                item = await _itemRepository.GetAllPostItemsByCategoryIdAsync(validFilter.PageNumber, validFilter.PageSize, request.CategoryId);
+            }
             var itemViewModel = _mapper.Map<List<GetAllItemViewModel>>(item);
 
             itemViewModel.ForEach(item =>

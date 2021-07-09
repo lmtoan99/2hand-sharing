@@ -2,8 +2,10 @@
 using Application.DTOs.Address;
 using Application.DTOs.Assignment;
 using Application.DTOs.Award;
+using Application.DTOs.Comment;
 using Application.DTOs.Event;
 using Application.DTOs.Group;
+using Application.DTOs.GroupPost;
 using Application.DTOs.Item;
 using Application.DTOs.Message;
 using Application.DTOs.Notification;
@@ -17,6 +19,7 @@ using Application.Features.GroupFeatures.Queries;
 using Application.Features.ItemFeatures.Commands;
 using Application.Features.ItemFeatures.Queries;
 using Application.Features.PostGroupFeatures.Commands;
+using Application.Features.PostGroupFeatures.Queries;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -41,6 +44,16 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
                 .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
                     source.DonateAccount.FullName))
+                .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source =>
+                    source.DonateAccount.Avatar.FileName));
+            CreateMap<Item, GetMyDonatedItemsViewModel>()
+                .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
+                .ForMember(dest => dest.DonateAccountName, o => o.MapFrom(source =>
+                    source.DonateAccount.FullName))
+                .ForMember(dest => dest.EventName, o => o.MapFrom(source =>
+                    source.DonateEventInformation.Event.EventName))
+                                .ForMember(dest => dest.EventId, o => o.MapFrom(source =>
+                    source.DonateEventInformation.Event.Id))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.DonateAccount.Avatar.FileName));
             CreateMap<Item, GetAllItemDonateForEventViewModel>()
                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.ItemImageRelationships.ToList().FirstOrDefault().Image.FileName))
@@ -72,7 +85,7 @@ namespace Application.Mappings
             CreateMap<Message, RecentMessagesDTO>().ForMember(dest => dest.SendFromAccountName, o => o.MapFrom(source => source.SendFromAccount.FullName))
                 .ForMember(dest => dest.SendToAccountName, o => o.MapFrom(source => source.SendToAccount.FullName))
                 .ForMember(dest => dest.SendFromAccountAvatarUrl, o => o.MapFrom(source => source.SendFromAccount.Avatar.FileName))
-                .ForMember(dest => dest.SendToAccountAvatarUrl, o => o.MapFrom(source => source.SendToAccount.Avatar.FileName ));
+                .ForMember(dest => dest.SendToAccountAvatarUrl, o => o.MapFrom(source => source.SendToAccount.Avatar.FileName));
             CreateMap<Notification, NotificationDTO>();
             CreateMap<GetAllGroupMemberByGroupIdQuery, GetAllGroupMemberByGroupIdParameter>();
             CreateMap<GroupMemberDetail, GetAllGroupMemberViewModel>()
@@ -81,7 +94,7 @@ namespace Application.Mappings
                     source.Member.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
 
-            CreateMap<GroupMemberDetail, GroupMemberDTO>().ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName)); 
+            CreateMap<GroupMemberDetail, GroupMemberDTO>().ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
             CreateMap<GroupMemberDetail, Invitation>()
             .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Group.Avatar.FileName)).ForMember(dest => dest.GroupName, o => o.MapFrom(source => source.Group.GroupName)).ForMember(dest => dest.InvitationTime, o => o.MapFrom(source => source.JoinDate));
             CreateMap<GetAllGroupJoinedQuery, GetAllGroupJoinedParameter>();
@@ -102,7 +115,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.UserId, o => o.MapFrom(source => source.AdminId))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Admin.Avatar.FileName));
             CreateMap<GroupMemberDetail, MemberJoinedRequestViewModel>()
-                .ForMember(dest =>dest.CreateDate, o => o.MapFrom(source => source.JoinDate))
+                .ForMember(dest => dest.CreateDate, o => o.MapFrom(source => source.JoinDate))
                 .ForMember(dest => dest.RequesterId, o => o.MapFrom(source => source.MemberId))
                 .ForMember(dest => dest.RequesterName, o => o.MapFrom(source => source.Member.FullName))
                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.Member.Avatar.FileName));
@@ -112,6 +125,18 @@ namespace Application.Mappings
                 .ForMember(dest => dest.AssignByAccountName, o => o.MapFrom(source => source.AssignByAccount.FullName))
                 .ForMember(dest => dest.AssignedMemberName, o => o.MapFrom(source => source.AssignedMember.FullName));
             CreateMap<CreatePostInGroupCommand, GroupPost>();
+            CreateMap<GroupPost, GetAllGroupPostViewModel>().ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.GroupPostImageRelationships.ToList().Select(e => e.Image.FileName)))
+                 .ForMember(dest => dest.PostByAccountName, o => o.MapFrom(source => source.PostByAccount.FullName))
+                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName));
+            CreateMap<GetAllGroupPostsQuery, GetAllGroupPostsParameter>();
+            CreateMap<Comment, CommentDTO>();
+            CreateMap<Comment, ListCommentDTO>()
+                .ForMember(c => c.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName))
+                .ForMember(c => c.PostByAccountName, o => o.MapFrom(source => source.PostByAccount.FullName));
+            CreateMap<GroupPost, GetGroupPostByIdViewModel>()
+                 .ForMember(dest => dest.ImageUrl, o => o.MapFrom(source => source.GroupPostImageRelationships.ToList().Select(e => e.Image.FileName)))
+                 .ForMember(dest => dest.PostByAccountName, o => o.MapFrom(source => source.PostByAccount.FullName))
+                 .ForMember(dest => dest.AvatarUrl, o => o.MapFrom(source => source.PostByAccount.Avatar.FileName));
         }
     }
 }

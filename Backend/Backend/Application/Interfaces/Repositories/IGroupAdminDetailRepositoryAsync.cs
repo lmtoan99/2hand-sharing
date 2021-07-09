@@ -10,5 +10,6 @@ namespace Application.Interfaces.Repositories
     {
         Task<GroupAdminDetail> GetInfoGroupAdminDetail(int groupId, int adminId);
         Task<List<GroupAdminDetail>> GetListAdminByGroupId(int groupId, int pageNumber, int pageSize);
+        Task<List<GroupAdminDetail>> GetAdminsByGroupId(int groupId);
     }
 }
